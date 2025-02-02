@@ -1,2 +1,2 @@
-In this folder should be located Program.g4 grammar file and 
+In this folder should be located Eo.g4 grammar file and 
 You may run "npm run get-grammar" inside "server" folder to automatically download it.
