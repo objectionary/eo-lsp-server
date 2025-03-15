@@ -4,14 +4,14 @@ import * as path from "path";
 
 describe("Parser module", () => {
     test("Gets a EO grammar token name from an ANTLR token number", () => {
-        expect(antlrTypeNumToString(1)).toBe("COMMENT");
+        expect(antlrTypeNumToString(1)).toBe("COMMENTARY");
     });
 
     test("Retrieves all token type names as defined in EOs grammar", () => {
         const tokenTypes = getTokenTypes();
 
-        expect(tokenTypes.size).toBe(35);
-        expect(tokenTypes.has("COMMENT")).toBeTruthy();
+        expect(tokenTypes.size).toBe(30);
+        expect(tokenTypes.has("COMMENTARY")).toBeTruthy();
         expect(tokenTypes.has("TEXT")).toBeTruthy();
         expect(tokenTypes.has("Q")).toBeFalsy();
     });
@@ -27,7 +27,7 @@ describe("Parser module", () => {
         const inputText = fs.readFileSync(filePathCode).toString();
         const actualTokens = tokenize(inputText);
 
-        expect(actualTokens.length).toBe(22);
+        expect(actualTokens.length).toBe(expectedTokens.length);
         actualTokens.forEach((item, i) => {
             expect(item.line.toString()).toBe(expectedTokens[i][0]);
             expect(item.charPositionInLine.toString()).toBe(expectedTokens[i][1]);
