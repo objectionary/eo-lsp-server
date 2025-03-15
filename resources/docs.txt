@@ -1,2 +1,3 @@
 In this folder should be located Eo.g4 grammar file and 
-You may run "npm run get-grammar" inside "server" folder to automatically download it.
+You may run "npm run get-grammar" inside "server" folder to automatically download it from https://github.com/objectionary/eo.
+The specific commit to take the file from is specified in package.json under .config.grammar.commit

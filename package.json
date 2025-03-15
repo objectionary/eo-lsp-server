@@ -19,11 +19,16 @@
         "vscode-languageserver-textdocument": "^1.0.4"
     },
     "scripts": {
-        "get-grammar": "curl https://raw.githubusercontent.com/objectionary/eo/refs/heads/master/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4 > resources/Eo.g4",
+        "get-grammar": "curl https://raw.githubusercontent.com/objectionary/eo/$npm_package_config_grammar_commit/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4 > resources/Eo.g4",
         "build-parser": "antlr4ts -visitor resources/Eo.g4 && mv resources/*.ts src/parser"
     },
     "devDependencies": {
         "@types/vscode": "^1.63.0",
         "antlr4ts-cli": "^0.5.0-alpha.4"
+    },
+    "config": {
+        "grammar": {
+            "commit": "c6d149991f1dcfd131cbf5c100a2ad936f1a8af4"
+        }
     }
 }
