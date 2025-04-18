@@ -5,7 +5,7 @@
     "author": "Eduardo Fernandes, Anatoliy Baskakov, Roman Nabiullin",
     "license": "MIT",
     "engines": {
-        "node": ">=16.0.0",
+        "node": "==20.0.0",
         "vscode": "^1.63.0"
     },
     "repository": {
@@ -20,10 +20,13 @@
     },
     "scripts": {
         "get-grammar": "curl https://raw.githubusercontent.com/objectionary/eo/$npm_package_config_grammar_commit/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4 > resources/Eo.g4",
-        "build-parser": "antlr4ts -visitor resources/Eo.g4 && mv resources/*.ts src/parser"
+        "build-parser": "antlr4ts -visitor resources/Eo.g4 && mv resources/*.ts src/parser",
+        "package": "ncc build ./out/server.js && pkg dist/package.json"
     },
     "devDependencies": {
         "@types/vscode": "^1.63.0",
+        "@vercel/ncc": "^0.38.3",
+        "@yao-pkg/pkg": "^6.4.0",
         "antlr4ts-cli": "^0.5.0-alpha.4"
     },
     "config": {
