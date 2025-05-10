@@ -141,13 +141,16 @@ export class SemanticTokensProvider {
      * @returns - Array of VSCode tokens present in the document
      */
     tokenize(document: TextDocument): VSCodeToken[] {
+        process.stderr.write("making tokens");
         const tokens: VSCodeToken[] = [];
         const antlrTokens = tokenize(document.getText());
 
         antlrTokens.forEach(tk => {
             const vscodeTokenType = this.tokenTypeMap.get(antlrTypeNumToString(tk.type));
             const legendNum = vscodeTokenType ? this.legend.tokenTypes.indexOf(vscodeTokenType) : -1;
-
+            if (legendNum == -1) {
+                return;
+            }
             tokens.push({
                 line: tk.line - 1,
                 start: tk.charPositionInLine,
@@ -156,6 +159,8 @@ export class SemanticTokensProvider {
                 tokenModifier: 0
             });
         });
+        process.stderr.write("sending tokens");
+        process.stderr.write(tokens.map(x => x.tokenType).toString());
         return tokens;
     }
 
@@ -205,6 +210,7 @@ export class SemanticTokensProvider {
     provideSemanticTokens(document: TextDocument) {
         const builder = this.getTokenBuilder(document);
 
+        builder.previousResult("nonexistent id");  // clear the builder
         this.populateBuilder(builder, document);
         return builder.build();
     }
@@ -217,10 +223,10 @@ export class SemanticTokensProvider {
      * @returns - SemanticTokensBuilder containing the semantic
      *            token of the given document
      */
-    provideDeltas(document: TextDocument, resultsId: string) {
+    provideDeltas(document: TextDocument) {
         const builder = this.getTokenBuilder(document);
 
-        builder.previousResult(resultsId);
+        builder.previousResult(builder.id);
         this.populateBuilder(builder, document);
         return builder.buildEdits();
     }

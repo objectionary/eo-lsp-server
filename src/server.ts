@@ -25,6 +25,8 @@ import { Capabilities } from "./capabilities";
 import { SemanticTokensProvider } from "./semantics";
 import { getParserErrors } from "./parser";
 
+import { ParserError } from "./parserError";
+
 import { DefaultSettings } from "./defaultSettings";
 
 /**
@@ -157,11 +159,11 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     const errors = getParserErrors(text);
 
     errors.forEach((error, index) => {
-        if (index >= settings.maxNumberOfProblems) {
+        if (settings?.maxNumberOfProblems != null && index >= settings.maxNumberOfProblems) {
             return;
         }
         const diagnostic: Diagnostic = {
-            severity: DiagnosticSeverity.Warning,
+            severity: DiagnosticSeverity.Error,
             range: {
                 start: { line: error.line - 1, character: error.column },
                 end: { line: error.line - 1, character: error.column }
@@ -235,7 +237,7 @@ connection.languages.semanticTokens.onDelta(params => {
     if (!document) {
         return { data: [] };
     }
-    return semanticTokensProvider.provideDeltas(document, params.textDocument.uri);
+    return semanticTokensProvider.provideDeltas(document);
 });
 
 /**
