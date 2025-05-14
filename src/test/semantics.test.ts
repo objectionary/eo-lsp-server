@@ -55,9 +55,9 @@ describe("Semantics module", () => {
 
     test("Compute Legend obtains all used VSCode token types", () => {
         const semanticTokensLegend = new Set<string>(provider.computeLegend(clientCapabilities).tokenTypes);
-        const expectedTokens = ["comment", "macro", "keyword", "operator", "class", "method", "number", "string", "variable"];
+        const expectedTokens = ["comment", "macro", "keyword", "operator", "method", "number", "string", "variable"];
 
-        expect(semanticTokensLegend.size).toBe(9);
+        expect(semanticTokensLegend.size).toBe(8);
         expectedTokens.forEach(token => expect(semanticTokensLegend.has(token)).toBeTruthy());
     });
 
@@ -72,7 +72,7 @@ describe("Semantics module", () => {
         const expectedTokensString = expectedText.split("\n");
         const expectedTokens = expectedTokensString.map(item => item.split(" "));
 
-        expect(actualTokens.length).toBe(22);
+        expect(actualTokens.length).toBe(expectedTokens.length);
         actualTokens.forEach((item, i) => {
             expect(item.line.toString()).toBe(expectedTokens[i][0]);
             expect(item.start.toString()).toBe(expectedTokens[i][1]);

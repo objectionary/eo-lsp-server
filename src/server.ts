@@ -159,7 +159,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     const errors = getParserErrors(text);
 
     errors.forEach((error, index) => {
-        if (settings?.maxNumberOfProblems != null && index >= settings.maxNumberOfProblems) {
+        if (settings?.maxNumberOfProblems !== null && index >= settings.maxNumberOfProblems) {
             return;
         }
         const diagnostic: Diagnostic = {

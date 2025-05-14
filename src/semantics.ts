@@ -79,7 +79,7 @@ export class SemanticTokensProvider {
                   'regexp',        'operator'
             ]
         */
-        this.tokenTypeMap.set("COMMENT", "comment");
+        this.tokenTypeMap.set("COMMENTARY", "comment");
         this.tokenTypeMap.set("META", "macro");
         this.tokenTypeMap.set("ROOT", "keyword");
         this.tokenTypeMap.set("HOME", "keyword");
@@ -141,14 +141,14 @@ export class SemanticTokensProvider {
      * @returns - Array of VSCode tokens present in the document
      */
     tokenize(document: TextDocument): VSCodeToken[] {
-        process.stderr.write("making tokens");
         const tokens: VSCodeToken[] = [];
         const antlrTokens = tokenize(document.getText());
 
         antlrTokens.forEach(tk => {
             const vscodeTokenType = this.tokenTypeMap.get(antlrTypeNumToString(tk.type));
             const legendNum = vscodeTokenType ? this.legend.tokenTypes.indexOf(vscodeTokenType) : -1;
-            if (legendNum == -1) {
+
+            if (legendNum === -1) {
                 return;
             }
             tokens.push({
@@ -159,8 +159,6 @@ export class SemanticTokensProvider {
                 tokenModifier: 0
             });
         });
-        process.stderr.write("sending tokens");
-        process.stderr.write(tokens.map(x => x.tokenType).toString());
         return tokens;
     }
 
@@ -210,7 +208,7 @@ export class SemanticTokensProvider {
     provideSemanticTokens(document: TextDocument) {
         const builder = this.getTokenBuilder(document);
 
-        builder.previousResult("nonexistent id");  // clear the builder
+        builder.previousResult("nonexistent id"); // clear the builder
         this.populateBuilder(builder, document);
         return builder.build();
     }
@@ -218,8 +216,6 @@ export class SemanticTokensProvider {
     /**
      * Returns a SemanticTokensBuilder for a modified text document
      * @param document - TextDocument to be semanticaly highlighted
-     * @param resultsId - The ID of the previous semantic analysis performed
-     *                    on the document
      * @returns - SemanticTokensBuilder containing the semantic
      *            token of the given document
      */

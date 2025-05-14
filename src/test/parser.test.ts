@@ -51,9 +51,9 @@ describe("Parser module", () => {
         const parseErrors = getParserErrors(inputText);
 
         expect(parseErrors.length).toBe(1);
-        expect(parseErrors[0].line).toBe(12);
+        expect(parseErrors[0].line).toBe(7);
         expect(parseErrors[0].column).toBe(17);
-        expect(parseErrors[0].msg).toBe("missing EOL at '<EOF>'");
+        expect(parseErrors[0].msg).toBe("no viable alternative at input 'fibonacci n'");
     });
 
     test("Two parsing errors detected", () => {
@@ -63,12 +63,12 @@ describe("Parser module", () => {
 
         expect(parseErrors.length).toBe(2);
 
-        expect(parseErrors[0].line).toBe(15);
-        expect(parseErrors[0].column).toBe(30);
-        expect(parseErrors[0].msg).toBe("missing EOL at 'n'");
+        expect(parseErrors[0].line).toBe(1);
+        expect(parseErrors[0].column).toBe(0);
+        expect(parseErrors[0].msg).toBe("extraneous input '\\n' expecting {COMMENTARY, META, 'Q', 'QQ', '*', '$', '[', '(', '@', '^', '~', BYTES, STRING, INT, FLOAT, HEX, NAME, TEXT}");
 
-        expect(parseErrors[1].line).toBe(16);
-        expect(parseErrors[1].column).toBe(0);
-        expect(parseErrors[1].msg).toBe("mismatched input ' ' expecting EOL");
+        expect(parseErrors[1].line).toBe(8);
+        expect(parseErrors[1].column).toBe(17);
+        expect(parseErrors[1].msg).toBe("no viable alternative at input 'fibonacci n'");
     });
 });

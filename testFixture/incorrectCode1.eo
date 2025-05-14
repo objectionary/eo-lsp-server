@@ -1,10 +1,5 @@
-+package sandbox
-+alias sandbox.fibonacci
-+alias org.eolang.io.stdout
-+alias org.eolang.txt.sscanf
-# +alias org.eolang.txt.sprintf
-
-[args...] > app
+# text!
+[args] > app
   stdout > @
     sprintf
       "%dth Fibonacci number is %d\n"
