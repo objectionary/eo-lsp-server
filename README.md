@@ -1,3 +1,7 @@
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/GeorgySabaev/eo-lsp-server/Build/master)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GeorgySabaev_eo-lsp-server&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=EOLangVSCode_eo-vscode)
+
+
 This is the LSP server for [EO](https://github.com/objectionary/eo). It provides semantic highlighting, and parsing error checking for your .eo files.
 
 ## Structure
