@@ -88,6 +88,8 @@ export function tokenize(input: string): AntlrToken[] {
 export function getParserErrors(input: string): ParserError[] {
     const processor = new Processor(input);
     const listener = new ErrorListener();
+    processor.lexer.removeErrorListeners();
+    processor.parser.removeErrorListeners();
     processor.parser.addErrorListener(listener);
     processor.parser.program();
     return listener.errors;

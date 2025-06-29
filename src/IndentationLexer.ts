@@ -119,6 +119,15 @@ export class IndentationLexer extends Lexer {
         return token;
     }
 
+    /**
+     * Removes all error listeners from both this lexer and the wrapped lexer
+     * @returns void
+     */
+    removeErrorListeners(): void {
+        super.removeErrorListeners();
+        this.wrapped.removeErrorListeners();
+    }
+
     get channelNames(): string[] {
         return this.wrapped.channelNames;
     }
