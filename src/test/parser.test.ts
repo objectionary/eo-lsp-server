@@ -19,7 +19,9 @@ describe("Parser module", () => {
     });
 
     test("parses valid code", () => {
-        const parseErrors = getParserErrors("# test.\n[] > test\n  42 > @\n");
+        const parseErrors = getParserErrors(
+            "# test.\n[] > test\n  42 > @\n  xyz > t\n    'hello, world'\n"
+        );
         expect(parseErrors.length).toBe(0);
     });
 
