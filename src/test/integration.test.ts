@@ -57,7 +57,7 @@ function sendNotification(method: string, params: any): void {
         jsonrpc: "2.0",
         method,
         params
-    }
+    };
     const content = JSON.stringify(notification);
     const header = `Content-Length: ${Buffer.byteLength(content)}\r\n\r\n`;
     const message = header + content;
@@ -204,13 +204,13 @@ describe("LSP Server Integration", () => {
         const uri = "file:///invalid.eo";
         const content = "-- invalid syntax --";
         const diagnosticsPromise = new Promise(resolve => {
-            const handler = (message: any) => {
+            function handler(message: any) {
                 if (message.method === "textDocument/publishDiagnostics" &&
                     message.params.uri === uri) {
                     notifications = notifications.filter(h => h !== handler);
                     resolve(message.params.diagnostics);
-                };
-            };
+                }
+            }
             notifications.push(handler);
         });
         sendNotification("textDocument/didOpen", {
@@ -252,14 +252,14 @@ describe("LSP Server Integration", () => {
         });
         await new Promise(resolve => setTimeout(resolve, 500));
         const diagnosticsPromise = new Promise(resolve => {
-            const handler = (message: any) => {
+            function handler(message: any) {
                 if (message.method === "textDocument/publishDiagnostics" &&
                     message.params.uri === uri &&
                     message.params.diagnostics.length > 0) {
                     notifications = notifications.filter(h => h !== handler);
                     resolve(message.params.diagnostics);
                 }
-            };
+            }
             notifications.push(handler);
         });
         sendNotification("textDocument/didChange", {
@@ -296,13 +296,13 @@ describe("LSP Server Integration", () => {
         const uri = "file:///nullsettings.eo";
         const content = "-- invalid syntax to trigger validation --\n".repeat(1100);
         const diagnosticsPromise = new Promise(resolve => {
-            const handler = (message: any) => {
+            function handler(message: any) {
                 if (message.method === "textDocument/publishDiagnostics" &&
                     message.params.uri === uri) {
                     notifications = notifications.filter(h => h !== handler);
                     resolve(message.params.diagnostics);
                 }
-            };
+            }
             notifications.push(handler);
         });
         sendNotification("textDocument/didOpen", {
@@ -342,17 +342,18 @@ describe("LSP Server Integration", () => {
         const uri = "file:///malformed.eo";
         const content = "-- invalid syntax --";
         const diagnosticsPromise = new Promise(resolve => {
+            let handler: ((message: any) => void) | null = null;
             const timeout = setTimeout(() => {
                 notifications = notifications.filter(h => h !== handler);
                 resolve([]);
             }, 5000);
-            const handler = (message: any) => {
+            handler = (message: any) => {
                 if (message.method === "textDocument/publishDiagnostics" &&
                     message.params.uri === uri) {
                     clearTimeout(timeout);
                     notifications = notifications.filter(h => h !== handler);
                     resolve(message.params.diagnostics);
-                };
+                }
             };
             notifications.push(handler);
         });
