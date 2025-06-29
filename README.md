@@ -11,7 +11,7 @@ It provides semantic highlighting, and parsing error checking for `.eo` files
 
 To use this [LSP] server with [Sublime Text], you'll need to install
 the [LSP package]. Then, open Sublime Text preferences for LSP
-(`Preferences → Package Settings → LSP → Settings`) and
+(`Settings → Package Settings → LSP → Settings`) and
 add the following configuration to the user settings:
 
 ```json
