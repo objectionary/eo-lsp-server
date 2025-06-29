@@ -352,7 +352,7 @@ describe("LSP Server Integration", () => {
                 notifications = notifications.filter(h => h !== handler);
                 resolve([]);
             }, 5000);
-            
+
             const handler = (message: any) => {
                 if (message.method === "textDocument/publishDiagnostics" &&
                     message.params.uri === uri) {

@@ -2,6 +2,8 @@
 
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/objectionary/eo-lsp-server/make.yml?branch=master)
 ![GitHub](https://img.shields.io/github/license/objectionary/eo-lsp-server)
+[![codecov](https://codecov.io/gh/objectionary/eo-lsp-server/branch/master/graph/badge.svg)](https://codecov.io/gh/objectionary/eo-lsp-server)
+[![Hits-of-Code](https://hitsofcode.com/github/objectionary/eo-lsp-server)](https://hitsofcode.com/view/github/objectionary/eo-lsp-server)
 
 This is the [LSP] server for [EO](https://github.com/objectionary/eo).
 It provides semantic highlighting and parsing error checking for `.eo` files
