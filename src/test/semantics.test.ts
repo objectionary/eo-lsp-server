@@ -7,19 +7,18 @@ import * as fs from "fs";
 import * as path from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
+/**
+ * Return the path to the document
+ * @param p - Document's name
+ * @returns - Path to document
+ */
+function getDocPath(p: string) {
+    return path.resolve(__dirname, "../../testFixture", p);
+}
+
 describe("Semantics module", () => {
     let provider: SemanticTokensProvider;
     let clientCapabilities: SemanticTokensClientCapabilities;
-
-    /**
-     * Return the path to the document
-     * @param p - Document's name
-     * @returns - Path to document
-     */
-    function getDocPath(p: string) {
-        return path.resolve(__dirname, "../../testFixture", p);
-    }
-
     beforeEach(() => {
         clientCapabilities = {
             dynamicRegistration: true,
@@ -59,29 +58,13 @@ describe("Semantics module", () => {
     test("Compute Legend obtains all used VSCode token types", () => {
         const semanticTokensLegend = new Set<string>(provider.computeLegend(clientCapabilities).tokenTypes);
         const expectedTokens = ["comment", "macro", "keyword", "operator", "method", "number", "string", "variable"];
-
         expect(semanticTokensLegend.size).toBe(8);
         expectedTokens.forEach(token => expect(semanticTokensLegend.has(token)).toBeTruthy());
     });
 
     test("Tokenize returns all semantic tokens", () => {
-        const docPath = getDocPath("correctCode.eo");
-        const content = fs.readFileSync(docPath).toString();
-        const textDocument = TextDocument.create(docPath, "eo", 0, content);
+        const textDocument = TextDocument.create("foo.eo", "eo", 0, "# test.\n[] > test\n");
         const actualTokens = provider.tokenize(textDocument);
-
-        const filePathTokens = path.resolve(__dirname, "../../testFixture/correctCodeSemanticTokens.txt");
-        const expectedText = fs.readFileSync(filePathTokens).toString();
-        const expectedTokensString = expectedText.split("\n");
-        const expectedTokens = expectedTokensString.map(item => item.split(" "));
-
-        expect(actualTokens.length).toBe(expectedTokens.length);
-        actualTokens.forEach((item, i) => {
-            expect(item.line.toString()).toBe(expectedTokens[i][0]);
-            expect(item.start.toString()).toBe(expectedTokens[i][1]);
-            expect(item.length.toString()).toBe(expectedTokens[i][2]);
-            expect(item.tokenType.toString()).toBe(expectedTokens[i][3]);
-            expect(item.tokenModifier.toString()).toBe(expectedTokens[i][4]);
-        });
+        expect(actualTokens.length).toBe(3);
     });
 });

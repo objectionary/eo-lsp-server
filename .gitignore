@@ -14,3 +14,4 @@ node_modules/
 out
 resources/*
 src/parser/*
+testFixtures/*

@@ -1,7 +1,0 @@
-+spdx SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
-+spdx SPDX-License-Identifier: MIT
-
-# Prints "Hello, world!".
-[args] > hello
-  QQ.io.stdout > @
-    "Hello, world!\n"
