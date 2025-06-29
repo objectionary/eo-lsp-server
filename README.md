@@ -56,13 +56,6 @@ Should work. If it doesn't, [file an issue], we'll help.
 
 ## How to Contribute
 
-Inside `src/` you can find all the Typescript source code, along with tests
-in `src/test/` and code parser files in `src/parser/` once they are generated.
-
-The code parser is generated with ANTLR4 using a version of the EO grammar
-file located in [this ANTLR g4 file][g4].
-The specific commit to take the file from is specified in `package.json` under `.config.grammar.commit.`
-
 Fist, install Node modules with:
 
 ```bash
