@@ -24,7 +24,7 @@ RESOURCES_DIR := resources
 TS_FILES := $(shell find $(SRC_DIR) -name '*.ts' -o -name '*.tsx' 2>/dev/null || true)
 
 .PHONY: all
-all: build package
+all: build test package
 
 .PHONY: build
 build: get-grammar build-parser compile
