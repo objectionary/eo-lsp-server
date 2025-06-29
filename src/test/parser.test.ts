@@ -24,7 +24,7 @@ describe("Parser module", () => {
     });
 
     test("can detect parsing errors", () => {
-        const parseErrors = getParserErrors('-- broken syntax --');
+        const parseErrors = getParserErrors("-- broken syntax --");
         expect(parseErrors.length).toBe(1);
     });
 });

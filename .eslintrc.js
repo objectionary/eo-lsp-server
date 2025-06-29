@@ -21,6 +21,7 @@ module.exports = {
         "no-process-exit": "off",
         "@typescript-eslint/no-unused-vars": 0,
         "@typescript-eslint/no-explicit-any": 0,
+        'padding-line-between-statements': 'off',
         "@typescript-eslint/explicit-module-boundary-types": 0,
         "@typescript-eslint/no-non-null-assertion": 0,
         "node/no-unsupported-features/es-syntax": ["error", { "ignores": ["modules"] }],
