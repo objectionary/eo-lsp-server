@@ -44,6 +44,11 @@
   "engines": {
     "node": ">=14.0.0"
   },
+  "keywords": [
+    "lsp",
+    "lsp-server",
+    "eolang"
+  ],
   "license": "MIT",
   "name": "eo-lsp-server",
   "pkg": {

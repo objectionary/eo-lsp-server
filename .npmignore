@@ -9,3 +9,7 @@ Makefile
 renovate.json
 REUSE.toml
 src/test/
+bin/
+out/
+resources/
+LICENSES/
