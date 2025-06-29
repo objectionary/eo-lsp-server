@@ -42,7 +42,7 @@ This will create standalone executables in the `bin/` directory:
 1. Open Sublime Text preferences for LSP:
    - `Preferences → Package Settings → LSP → Settings`
 
-2. Add the following configuration to the user settings:
+1. Add the following configuration to the user settings:
 
 ```json
 {
@@ -69,10 +69,11 @@ For basic syntax highlighting, you'll need to create an EO syntax definition fil
 
 1. Create a new file in Sublime Text
 
-2. Save it as `EO.sublime-syntax` in your Sublime Text `Packages/User` directory:
-   - On macOS: `~/Library/Application Support/Sublime Text/Packages/User/`
-   - On Linux: `~/.config/sublime-text/Packages/User/`
-   - On Windows: `%APPDATA%\Sublime Text\Packages\User\`
+1. Save it as `EO.sublime-syntax` in your Sublime Text `Packages/User` directory:
+
+* On macOS: `~/Library/Application Support/Sublime Text/Packages/User/`
+* On Linux: `~/.config/sublime-text/Packages/User/`
+* On Windows: `%APPDATA%\Sublime Text\Packages\User\`
 
 3. Add the following basic syntax definition in YAML:
 
@@ -112,20 +113,20 @@ npm run fetch-and-build-grammar
 ```
 
 Make changes on a new branch.
-You can run an instance of VS Code with the extension running by hitting `F5` in the code editor.
+You can run an instance of VS Code with the extension running by hitting `F5`
+in the code editor.
 After modifications, test your code with:
 
 ```bash
 npm run unit-test
 ```
 
-Create a pull request. To avoid frustration, run this before commiting:
+Create a pull request. To avoid frustration, run this before committing:
 
 ```bash
 npm run lint
 npm run build
 ```
-
 
 [g4]: https://raw.githubusercontent.com/objectionary/eo/master/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4
 [LSP package]: https://packagecontrol.io/packages/LSP

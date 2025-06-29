@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
+// SPDX-License-Identifier: MIT
+
 /** @type {import('eslint').Linter.Config} */
 // eslint-disable-next-line no-undef
 module.exports = {
