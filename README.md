@@ -1,9 +1,7 @@
 # LSP Server for EOLANG
 
-![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/GeorgySabaev/eo-lsp-server/build.yml?branch=master)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GeorgySabaev_eo-lsp-server&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=GeorgySabaev_eo-lsp-server)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GeorgySabaev_eo-lsp-server&metric=coverage)](https://sonarcloud.io/summary/new_code?id=GeorgySabaev_eo-lsp-server)
-![GitHub](https://img.shields.io/github/license/GeorgySabaev/eo-lsp-server)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/objectionary/eo-lsp-server/make.yml?branch=master)
+![GitHub](https://img.shields.io/github/license/objectionary/eo-lsp-server)
 
 This is the [LSP] server for [EO](https://github.com/objectionary/eo).
 It provides semantic highlighting, and parsing error checking for `.eo` files
