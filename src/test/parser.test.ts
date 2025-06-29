@@ -19,7 +19,7 @@ describe("Parser module", () => {
     });
 
     test("parses valid code", () => {
-        const parseErrors = getParserErrors("# test.\n[] > test\n");
+        const parseErrors = getParserErrors("# test.\n[] > test\n  42 > @\n");
         expect(parseErrors.length).toBe(0);
     });
 
