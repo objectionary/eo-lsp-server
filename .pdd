@@ -1,5 +1,6 @@
 --source=.
 --verbose
+--exclude node_modules/**
 --exclude dist/**
 --exclude bin/**
 --rule min-words:20
