@@ -51,4 +51,4 @@ lint:
 	$(ESLINT) $(SRC_DIR) --ext .ts,.tsx
 
 clean:
-	rm -rf $(DIST_DIR) $(OUT_DIR) src/parser
+	rm -rf $(DIST_DIR) $(OUT_DIR) src/parser bin coverage
