@@ -17,9 +17,9 @@ import { EoParser } from "./parser/EoParser";
 export class Processor {
 
     /**
-     * Text to be lexed and persed
+     * Text to be lexed and parsed
      */
-    inputStream: CodePointCharStream;
+    stream: CodePointCharStream;
 
     /**
      * EO grammar lexer
@@ -29,7 +29,7 @@ export class Processor {
     /**
      * Stream of tokens provided by lexer
      */
-    tokenStream: CommonTokenStream;
+    tokens: CommonTokenStream;
 
     /**
      * EO grammar parser
@@ -41,9 +41,9 @@ export class Processor {
      * @param input - Text on which to perform lexing and parsing
      */
     constructor(input: string) {
-        this.inputStream = CharStreams.fromString(input);
-        this.lexer = new EoLexer(this.inputStream);
-        this.tokenStream = new CommonTokenStream(this.lexer);
-        this.parser = new EoParser(this.tokenStream);
+        this.stream = CharStreams.fromString(input);
+        this.lexer = new EoLexer(this.stream);
+        this.tokens = new CommonTokenStream(this.lexer);
+        this.parser = new EoParser(this.tokens);
     }
 }

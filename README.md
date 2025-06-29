@@ -4,7 +4,7 @@
 ![GitHub](https://img.shields.io/github/license/objectionary/eo-lsp-server)
 
 This is the [LSP] server for [EO](https://github.com/objectionary/eo).
-It provides semantic highlighting, and parsing error checking for `.eo` files
+It provides semantic highlighting and parsing error checking for `.eo` files
 (written in [EOLANG]).
 
 ## Using with Sublime Text
@@ -20,10 +20,7 @@ add the following configuration to the user settings:
     "eo-lsp": {
       "enabled": true,
       "command": ["npx", "-y", "eo-lsp-server@0.0.1", "--stdio"],
-      "selector": "source.eo",
-      "settings": {
-        "maxNumberOfProblems": 1000
-      }
+      "selector": "source.eo"
     }
   }
 }
@@ -56,7 +53,7 @@ Should work. If it doesn't, [file an issue], we'll help.
 
 ## How to Contribute
 
-Fist, install Node modules with:
+First, install Node modules with:
 
 ```bash
 npm install

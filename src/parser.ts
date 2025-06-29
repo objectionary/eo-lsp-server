@@ -16,13 +16,13 @@ import { ErrorListener } from "./errorListener";
 /**
  * Set of the token types present in the EO's grammar file
  */
-let tokenTypes: Set<string> | undefined;
+let types: Set<string> | undefined;
 
 /**
  * Maps the token numbers returned by the parser to the token type names
  * present in the EO's grammar file
  */
-let tokenNumToString: Map<number, string> | undefined;
+let mapper: Map<number, string> | undefined;
 
 /**
  * Builds the token type set and token number to token type map using the ANTLR4
@@ -30,21 +30,21 @@ let tokenNumToString: Map<number, string> | undefined;
  * @returns {void}
  */
 function buildTokenSetAndMap() {
-    if (!tokenTypes || !tokenNumToString) {
-        tokenTypes = new Set<string>();
-        tokenNumToString = new Map<number, string>();
-        const tokensPath = path.join(__dirname, "../resources/EoLexer.tokens");
+    if (!types || !mapper) {
+        types = new Set<string>();
+        mapper = new Map<number, string>();
+        const location = path.join(__dirname, "../resources/EoLexer.tokens");
 
         try {
-            const text = fs.readFileSync(tokensPath, { encoding: "utf-8" });
+            const text = fs.readFileSync(location, { encoding: "utf-8" });
 
             text.split("\n").forEach(elem => {
                 if (elem[0] !== "'") {
                     const pair = elem.split("=");
 
                     if (pair.length === 2) {
-                        tokenTypes!.add(pair[0]);
-                        tokenNumToString!.set(Number(pair[1]), pair[0]);
+                        types!.add(pair[0]);
+                        mapper!.set(Number(pair[1]), pair[0]);
                     }
                 }
             });
@@ -62,7 +62,7 @@ function buildTokenSetAndMap() {
  */
 export function antlrTypeNumToString(num: number): string {
     buildTokenSetAndMap();
-    return tokenNumToString!.get(num)!;
+    return mapper!.get(num)!;
 }
 
 /**
@@ -71,7 +71,7 @@ export function antlrTypeNumToString(num: number): string {
  */
 export function getTokenTypes(): Set<string> {
     buildTokenSetAndMap();
-    return tokenTypes!;
+    return types!;
 }
 
 /**
@@ -82,8 +82,8 @@ export function getTokenTypes(): Set<string> {
 export function tokenize(input: string): AntlrToken[] {
     const processor = new Processor(input);
 
-    processor.tokenStream.fill();
-    return processor.tokenStream.getTokens();
+    processor.tokens.fill();
+    return processor.tokens.getTokens();
 }
 
 /**
@@ -97,6 +97,6 @@ export function getParserErrors(input: string): ParserError[] {
 
     processor.parser.addErrorListener(errorListener);
     processor.parser.program();
-    return errorListener.errorList;
+    return errorListener.errors;
 
 }

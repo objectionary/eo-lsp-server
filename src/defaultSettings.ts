@@ -6,5 +6,5 @@
  * @module DefaultSettings
  */
 export interface DefaultSettings {
-    maxNumberOfProblems: number;
+    limit: number;
 }

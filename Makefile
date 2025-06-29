@@ -57,6 +57,10 @@ lint:
 
 .PHONY: package
 package: compile
+	@if [ ! -f ./$(OUT_DIR)/server.js ]; then \
+		echo "Build failed: server.js not found. Run 'make build' first"; \
+		exit 1; \
+	fi
 	$(NCC) build ./$(OUT_DIR)/server.js
 	$(PKG) package.json
 

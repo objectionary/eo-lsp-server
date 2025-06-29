@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 /**
- * Performs the semantic highlighting if the documents.
+ * Performs the semantic highlighting of the documents.
  * @module SemanticTokensProvider
  */
 
@@ -137,10 +137,10 @@ export class SemanticTokensProvider {
     /**
      * Obtains the semantic tokens for a given text document.
      *
-     * Firstly, the document is tokenized through the EO's parser. Secondly,
+     * Firstly, the document is tokenized through the EO parser. Secondly,
      * each token receives a VSCode token type depending on which grammar token
      * it is. If no VSCode token is a match, then its token code is set to -1.
-     * @param document - Text Document to be semanticaly tokenized
+     * @param document - Text Document to be semantically tokenized
      * @returns - Array of VSCode tokens present in the document
      */
     tokenize(document: TextDocument): VSCodeToken[] {
@@ -187,7 +187,7 @@ export class SemanticTokensProvider {
      * Pushes into a SemanticTokensBuilder the semantic tokens obtained from a text document
      * @param builder - SemanticTokensBuilder to be populated with the semantic tokens of the
      *                  given document
-     * @param document - TextDocument to be semanticaly highlighted
+     * @param document - TextDocument to be semantically highlighted
      * @returns {void}
      */
     populateBuilder(builder: SemanticTokensBuilder, document: TextDocument) {
@@ -204,7 +204,7 @@ export class SemanticTokensProvider {
 
     /**
      * Returns a SemanticTokensBuilder for a new text document
-     * @param document - TextDocument to be semanticaly highlighted
+     * @param document - TextDocument to be semantically highlighted
      * @returns - SemanticTokensBuilder containing the semantic
      *            token of the given document
      */
@@ -218,7 +218,7 @@ export class SemanticTokensProvider {
 
     /**
      * Returns a SemanticTokensBuilder for a modified text document
-     * @param document - TextDocument to be semanticaly highlighted
+     * @param document - TextDocument to be semantically highlighted
      * @returns - SemanticTokensBuilder containing the semantic
      *            token of the given document
      */

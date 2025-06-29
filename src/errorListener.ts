@@ -19,10 +19,10 @@ export class ErrorListener implements ANTLRErrorListener<AntlrToken> {
     /**
      * Array of errors detected during the parsing
      */
-    errorList: ParserError[] = [];
+    errors: ParserError[] = [];
 
-    syntaxError(recognizer: Recognizer<AntlrToken, any>, offendingSymbol: AntlrToken | undefined, line: number,
-        charPositionInLine: number, msg: string, e: RecognitionException | undefined) {
-        this.errorList.push(new ParserError(line, charPositionInLine, msg));
+    syntaxError(recognizer: Recognizer<AntlrToken, any>, symbol: AntlrToken | undefined, line: number,
+        position: number, msg: string, e: RecognitionException | undefined) {
+        this.errors.push(new ParserError(line, position, msg));
     }
 }

@@ -64,7 +64,7 @@ connection.onInitialize((params: InitializeParams) => {
             textDocumentSync: TextDocumentSyncKind.Incremental
         }
     };
-    if (clientCapabilities.hasWorkspaceFolderCapability) {
+    if (clientCapabilities.workspace) {
         result.capabilities.workspace = {
             workspaceFolders: {
                 supported: true
@@ -82,15 +82,15 @@ connection.onInitialize((params: InitializeParams) => {
  * Configuration, Workspace Folder and Document Semantic Tokens
  */
 connection.onInitialized(() => {
-    if (clientCapabilities.hasConfigurationCapability) {
+    if (clientCapabilities.configuration) {
         connection.client.register(DidChangeConfigurationNotification.type, void 0);
     }
-    if (clientCapabilities.hasWorkspaceFolderCapability) {
+    if (clientCapabilities.workspace) {
         connection.workspace.onDidChangeWorkspaceFolders(_event => {
-            connection.console.log("Workspace folder change event received.");
+            connection.console.log("Workspace folder change event received");
         });
     }
-    if (clientCapabilities.hasDocumentSemanticTokensCapability) {
+    if (clientCapabilities.tokens) {
         const registrationOptions: SemanticTokensRegistrationOptions = {
             documentSelector: null,
             legend: semanticTokensProvider.legend,
@@ -106,7 +106,7 @@ connection.onInitialized(() => {
 /**
  * Settings of the Language Server
  */
-const defaultSettings: DefaultSettings = { maxNumberOfProblems: 1000 };
+const defaultSettings: DefaultSettings = { limit: 1000 };
 
 /**
  * The global settings, used when the `workspace/configuration` request is not supported by the client.
@@ -124,7 +124,7 @@ const documentSettings: Map<string, Thenable<DefaultSettings>> = new Map();
  * @returns - A Promise for the settings of the document requested
  */
 function getDocumentSettings(resource: string): Thenable<DefaultSettings> {
-    if (!clientCapabilities.hasConfigurationCapability) {
+    if (!clientCapabilities.configuration) {
         return Promise.resolve(globalSettings);
     }
     let result = documentSettings.get(resource);
@@ -151,7 +151,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     const diagnostics: Diagnostic[] = [];
     const errors = getParserErrors(text);
     errors.forEach((error, index) => {
-        if (settings?.maxNumberOfProblems !== null && index >= settings.maxNumberOfProblems) {
+        if (settings?.limit !== null && index >= settings.limit) {
             return;
         }
         const diagnostic: Diagnostic = {
@@ -173,7 +173,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
  * documents with there is a change in the configuration of the client.
  */
 connection.onDidChangeConfiguration(change => {
-    if (clientCapabilities.hasConfigurationCapability) {
+    if (clientCapabilities.configuration) {
         documentSettings.clear();
     } else {
         globalSettings = <DefaultSettings>(
@@ -202,11 +202,11 @@ documents.onDidChangeContent(change => {
  * Logs if a change in a watched document is detected
  */
 connection.onDidChangeWatchedFiles(_change => {
-    connection.console.log("We received an file change event");
+    connection.console.log("We received a file change event");
 });
 
 /**
- * Performs semmantic highlighting for the document defined in the
+ * Performs semantic highlighting for the document defined in the
  * callback parameter once the document is first opened.
  */
 connection.languages.semanticTokens.on(params => {
@@ -218,7 +218,7 @@ connection.languages.semanticTokens.on(params => {
 });
 
 /**
- * Performs semmantic highlighting for the document defined in the
+ * Performs semantic highlighting for the document defined in the
  * callback parameter once the document is changed.
  */
 connection.languages.semanticTokens.onDelta(params => {
