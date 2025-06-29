@@ -204,6 +204,12 @@ describe("LSP Server Integration", () => {
         const uri = "file:///invalid.eo";
         const content = "-- invalid syntax --";
         const diagnosticsPromise = new Promise(resolve => {
+
+            /**
+             * Handles diagnostics messages from the server.
+             * @param message - The message to handle
+             * @returns void
+             */
             function handler(message: any) {
                 if (message.method === "textDocument/publishDiagnostics" &&
                     message.params.uri === uri) {
@@ -252,6 +258,12 @@ describe("LSP Server Integration", () => {
         });
         await new Promise(resolve => setTimeout(resolve, 500));
         const diagnosticsPromise = new Promise(resolve => {
+
+            /**
+             * Handles diagnostics messages after document change.
+             * @param message - The message to handle
+             * @returns void
+             */
             function handler(message: any) {
                 if (message.method === "textDocument/publishDiagnostics" &&
                     message.params.uri === uri &&
@@ -296,6 +308,12 @@ describe("LSP Server Integration", () => {
         const uri = "file:///nullsettings.eo";
         const content = "-- invalid syntax to trigger validation --\n".repeat(1100);
         const diagnosticsPromise = new Promise(resolve => {
+
+            /**
+             * Handles diagnostics messages for large content validation.
+             * @param message - The message to handle
+             * @returns void
+             */
             function handler(message: any) {
                 if (message.method === "textDocument/publishDiagnostics" &&
                     message.params.uri === uri) {
