@@ -2,22 +2,14 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-name: Build
+name: codecov
 'on':
   push:
     branches:
       - master
       - development
-  pull_request:
-    types: [opened, reopened, edited, synchronize]
-    branches:
-      - master
-      - development
 jobs:
-  build:
-    strategy:
-      matrix:
-        node-version: [20.x]
+  codecov:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -27,17 +19,13 @@ jobs:
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          restore-keys: ${{ runner.os }}-node-
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20.x
       - run: npm i
       - run: npm run lint
       - run: npm run unit-test
-      - run: npm run build
-      - run: npm run package
-      - uses: SonarSource/sonarqube-scan-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
