@@ -21,8 +21,7 @@ export class Capabilities {
     }
 
     initialize(capabilities: ClientCapabilities) {
-        // Does the client support the `workspace/configuration` request?
-        // If not, we will fall back using global settings
+
         this.configuration = !!(capabilities.workspace?.configuration);
         this.workspace = !!(capabilities.workspace?.workspaceFolders);
         this.diagnostics = !!(capabilities.textDocument?.publishDiagnostics?.relatedInformation);

@@ -1,6 +1,11 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 # SPDX-License-Identifier: MIT
 
+.PHONY: all build compile test lint package clean
+.SHELLFLAGS := -e -o pipefail -c
+.ONESHELL:
+SHELL := bash
+
 NODE := node
 NPM := npm
 TSC := npx tsc
@@ -21,43 +26,29 @@ RESOURCES_DIR := resources
 
 TS_FILES := $(shell find $(SRC_DIR) -name '*.ts' -o -name '*.tsx' 2>/dev/null || true)
 
-.PHONY: all
-all: build test package
+all: build test package lint
 
-.PHONY: build
-build: get-grammar build-parser compile
+build: $(SRC_DIR)/parser compile
+	$(NCC) build $(OUT_DIR)/server.js
+	sed -i "1i\#!/usr/bin/env node\n" $(DIST_DIR)/index.js
 
-.PHONY: compile
 compile: $(SRC_DIR)/parser
 	$(TSC) -b
 
-.PHONY: get-grammar
 resources/Eo.g4:
 	@mkdir -p $(RESOURCES_DIR)
 	$(CURL) -s $(GRAMMAR_URL) > $@
 
-.PHONY: build-parser
 $(SRC_DIR)/parser: resources/Eo.g4
 	$(ANTLR4TS) -visitor $<
 	@mkdir -p $(PARSER_DIR)
 	mv $(RESOURCES_DIR)/*.ts $(PARSER_DIR)/
 
-.PHONY: test
-test: $(SRC_DIR)/parser
+test: build
 	$(JEST)
 
-.PHONY: lint
 lint:
 	$(ESLINT) $(SRC_DIR) --ext .ts,.tsx
 
-.PHONY: package
-package: $(SRC_DIR)/parser
-	$(NCC) build $(OUT_DIR)/server.js
-	sed -i "1i\#!/usr/bin/env node\n" $(DIST_DIR)/index.js
-
-.PHONY: clean
 clean:
 	rm -rf $(DIST_DIR) $(OUT_DIR) src/parser
-
-.PHONY: ci
-ci: install lint test build

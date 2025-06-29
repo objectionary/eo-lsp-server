@@ -132,7 +132,7 @@ function getDocumentSettings(resource: string): Thenable<DefaultSettings> {
         result = connection.workspace.getConfiguration({
             scopeUri: resource,
             section: "languageServerExample"
-        }).then(config => (config && typeof config === "object") ? config : defaultSettings);
+        }).then(config => ((config && typeof config === "object") ? config : defaultSettings));
         cache.set(resource, result);
     }
     return result;
@@ -142,7 +142,7 @@ function getDocumentSettings(resource: string): Thenable<DefaultSettings> {
  * Performs error checking for the given document through its parsing. Sends to VSCode
  * each problem returned by the parser up until the maximum number of problems defined
  * in the given document's settings.
- * @param textDocument - Document for which to perform the validation procedure
+ * @param document - Document for which to perform the validation procedure
  * @returns {Promise<void>}
  */
 async function validateTextDocument(document: TextDocument): Promise<void> {
