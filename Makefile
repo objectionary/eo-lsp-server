@@ -30,7 +30,7 @@ all: build test package
 build: get-grammar build-parser compile
 
 .PHONY: compile
-compile:
+compile: get-grammar build-parser
 	$(TSC) -b
 
 .PHONY: get-grammar
@@ -48,7 +48,7 @@ build-parser: $(GRAMMAR_FILE)
 fetch-and-build-grammar: get-grammar build-parser
 
 .PHONY: test
-test:
+test: get-grammar build-parser
 	$(JEST)
 
 .PHONY: lint
@@ -62,15 +62,7 @@ package: compile
 
 .PHONY: clean
 clean:
-	rm -rf $(DIST_DIR) $(OUT_DIR) $(BIN_DIR)
-
-.PHONY: clean-parser
-clean-parser:
-	rm -f $(PARSER_DIR)/*.ts
-
-.PHONY: clean-all
-clean-all: clean clean-parser
-	rm -f $(GRAMMAR_FILE)
+	rm -rf $(DIST_DIR) $(OUT_DIR) $(BIN_DIR) src/parser
 
 .PHONY: ci
 ci: install lint test build
