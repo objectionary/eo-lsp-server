@@ -1,12 +1,8 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-/**
- * Defines the capabilities of the Language Server
- * @module Capabilities
- */
-
 import { ClientCapabilities } from "vscode-languageserver";
+
 export class Capabilities {
     configuration: boolean;
     workspace: boolean;
@@ -21,7 +17,6 @@ export class Capabilities {
     }
 
     initialize(capabilities: ClientCapabilities) {
-
         this.configuration = !!(capabilities.workspace?.configuration);
         this.workspace = !!(capabilities.workspace?.workspaceFolders);
         this.diagnostics = !!(capabilities.textDocument?.publishDiagnostics?.relatedInformation);

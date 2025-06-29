@@ -1,11 +1,6 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-/**
- * Runs the EO lexer and parser on a given text
- * @module Processor
- */
-
 import {
     CharStreams,
     CommonTokenStream,

@@ -1,11 +1,6 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-/**
- * Performs the parsing of the text document and reports on errors found.
- * @module Parser
- */
-
 import * as fs from "fs";
 import * as path from "path";
 import { Token as AntlrToken } from "antlr4ts";
@@ -81,7 +76,6 @@ export function getTokenTypes(): Set<string> {
  */
 export function tokenize(input: string): AntlrToken[] {
     const processor = new Processor(input);
-
     processor.tokens.fill();
     return processor.tokens.getTokens();
 }
@@ -93,9 +87,8 @@ export function tokenize(input: string): AntlrToken[] {
  */
 export function getParserErrors(input: string): ParserError[] {
     const processor = new Processor(input);
-    const errorListener = new ErrorListener();
-
-    processor.parser.addErrorListener(errorListener);
+    const listener = new ErrorListener();
+    processor.parser.addErrorListener(listener);
     processor.parser.program();
-    return errorListener.errors;
+    return listener.errors;
 }

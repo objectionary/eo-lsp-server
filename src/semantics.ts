@@ -1,11 +1,6 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-/**
- * Performs the semantic highlighting of the documents.
- * @module SemanticTokensProvider
- */
-
 import {
     SemanticTokensBuilder,
     SemanticTokensLegend,
@@ -65,7 +60,6 @@ export class SemanticTokensProvider {
      * @returns {void}
      */
     setMap() {
-
         this.tokenTypeMap.set("COMMENTARY", "comment");
         this.tokenTypeMap.set("META", "macro");
         this.tokenTypeMap.set("ROOT", "keyword");
@@ -105,14 +99,12 @@ export class SemanticTokensProvider {
     computeLegend(capability: SemanticTokensClientCapabilities): SemanticTokensLegend {
         const clientTokenTypes = new Set<string>(capability.tokenTypes);
         const tokenTypes: string[] = [];
-
         getTokenTypes().forEach(el => {
             const type = this.tokenTypeMap.get(el) || "";
             if (clientTokenTypes.has(type)) {
                 tokenTypes.push(type);
             }
         });
-
         return { tokenTypes, tokenModifiers: [] };
     }
 
@@ -128,19 +120,17 @@ export class SemanticTokensProvider {
     tokenize(document: TextDocument): VSCodeToken[] {
         const tokens: VSCodeToken[] = [];
         const antlrTokens = tokenize(document.getText());
-
         antlrTokens.forEach(tk => {
             const vscodeTokenType = this.tokenTypeMap.get(antlrTypeNumToString(tk.type));
-            const legendNum = vscodeTokenType ? this.legend.tokenTypes.indexOf(vscodeTokenType) : -1;
-
-            if (legendNum === -1) {
+            const legend = vscodeTokenType ? this.legend.tokenTypes.indexOf(vscodeTokenType) : -1;
+            if (legend === -1) {
                 return;
             }
             tokens.push({
                 line: tk.line - 1,
                 start: tk.charPositionInLine,
                 length: tk.stopIndex - tk.startIndex + 1,
-                tokenType: legendNum,
+                tokenType: legend,
                 tokenModifier: 0
             });
         });
@@ -161,7 +151,6 @@ export class SemanticTokensProvider {
         }
         return result;
     }
-
 
     /**
      * Pushes into a SemanticTokensBuilder the semantic tokens obtained from a text document

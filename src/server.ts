@@ -1,11 +1,6 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-/**
- * The Server Module for the extension.
- * @module ServerModule
- */
-
 import {
     createConnection,
     TextDocuments,
@@ -19,11 +14,9 @@ import {
     SemanticTokensRegistrationOptions,
     SemanticTokensRegistrationType
 } from "vscode-languageserver/node.js";
-
 import {
     TextDocument
 } from "vscode-languageserver-textdocument";
-
 import { Capabilities } from "./capabilities";
 import { SemanticTokensProvider } from "./semantics";
 import { getParserErrors } from "./parser";

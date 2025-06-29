@@ -12,9 +12,8 @@ It provides semantic highlighting and parsing error checking for `.eo` files
 ## Using with Sublime Text
 
 To use this [LSP] server with [Sublime Text], you'll need to install
-the [LSP package]. Then, open Sublime Text preferences for LSP
-(`Settings → Package Settings → LSP → Settings`) and
-add the following configuration to the user settings:
+the [LSP package] and configure it
+in `Settings → Package Settings → LSP → Settings`:
 
 ```json
 {
@@ -28,7 +27,7 @@ add the following configuration to the user settings:
 }
 ```
 
-Then, create an EO syntax definition file in `Packages/User/EO.sublime-syntax`:
+Then, create a syntax definition file in `Packages/User/EO.sublime-syntax`:
 
 ```yaml
 %YAML 1.2
