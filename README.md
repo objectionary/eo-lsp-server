@@ -1,3 +1,5 @@
+# LSP Server for EOLANG
+
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/GeorgySabaev/eo-lsp-server/build.yml?branch=master)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=GeorgySabaev_eo-lsp-server&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=GeorgySabaev_eo-lsp-server)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GeorgySabaev_eo-lsp-server&metric=coverage)](https://sonarcloud.io/summary/new_code?id=GeorgySabaev_eo-lsp-server)
@@ -40,7 +42,7 @@ This will create standalone executables in the `bin/` directory:
 ### Configuring Sublime Text
 
 1. Open Sublime Text preferences for LSP:
-   - `Preferences → Package Settings → LSP → Settings`
+`Preferences → Package Settings → LSP → Settings`
 
 1. Add the following configuration to the user settings:
 
@@ -75,7 +77,7 @@ For basic syntax highlighting, you'll need to create an EO syntax definition fil
 * On Linux: `~/.config/sublime-text/Packages/User/`
 * On Windows: `%APPDATA%\Sublime Text\Packages\User\`
 
-3. Add the following basic syntax definition in YAML:
+1. Add the following basic syntax definition in YAML:
 
 ```yaml
 name: EO
