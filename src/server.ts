@@ -27,9 +27,7 @@ import {
 import { Capabilities } from "./capabilities";
 import { SemanticTokensProvider } from "./semantics";
 import { getParserErrors } from "./parser";
-
 import { ParserError } from "./parserError";
-
 import { DefaultSettings } from "./defaultSettings";
 
 /**
@@ -59,16 +57,13 @@ let semanticTokensProvider: SemanticTokensProvider;
  */
 connection.onInitialize((params: InitializeParams) => {
     const capabilities = params.capabilities;
-
     clientCapabilities.initialize(capabilities);
     semanticTokensProvider = new SemanticTokensProvider(params.capabilities.textDocument!.semanticTokens!);
-
     const result: InitializeResult = {
         capabilities: {
             textDocumentSync: TextDocumentSyncKind.Incremental
         }
     };
-
     if (clientCapabilities.hasWorkspaceFolderCapability) {
         result.capabilities.workspace = {
             workspaceFolders: {
@@ -88,7 +83,6 @@ connection.onInitialize((params: InitializeParams) => {
  */
 connection.onInitialized(() => {
     if (clientCapabilities.hasConfigurationCapability) {
-
         // Register for all configuration changes.
         connection.client.register(DidChangeConfigurationNotification.type, void 0);
     }
@@ -106,11 +100,9 @@ connection.onInitialized(() => {
                 delta: true
             }
         };
-
         connection.client.register(SemanticTokensRegistrationType.type, registrationOptions);
     }
 });
-
 
 /**
  * Settings of the Language Server
@@ -137,7 +129,6 @@ function getDocumentSettings(resource: string): Thenable<DefaultSettings> {
         return Promise.resolve(globalSettings);
     }
     let result = documentSettings.get(resource);
-
     if (!result) {
         result = connection.workspace.getConfiguration({
             scopeUri: resource,
@@ -160,7 +151,6 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     const text = textDocument.getText();
     const diagnostics: Diagnostic[] = [];
     const errors = getParserErrors(text);
-
     errors.forEach((error, index) => {
         if (settings?.maxNumberOfProblems !== null && index >= settings.maxNumberOfProblems) {
             return;
@@ -174,7 +164,6 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
             message: error.msg,
             source: "ex"
         };
-
         diagnostics.push(diagnostic);
     });
     connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
@@ -223,7 +212,6 @@ connection.onDidChangeWatchedFiles(_change => {
  */
 connection.languages.semanticTokens.on(params => {
     const document = documents.get(params.textDocument.uri);
-
     if (!document) {
         return { data: [] };
     }
@@ -236,7 +224,6 @@ connection.languages.semanticTokens.on(params => {
  */
 connection.languages.semanticTokens.onDelta(params => {
     const document = documents.get(params.textDocument.uri);
-
     if (!document) {
         return { data: [] };
     }

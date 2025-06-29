@@ -2,7 +2,7 @@
   "author": "Eduardo Fernandes, Anatoliy Baskakov, Roman Nabiullin",
   "pkg": {
     "targets": [ "node20-linux-x64","node20-macos-x64","node20-win-x64" ],
-    "assets": "EoLexer.tokens",
+    "assets": "dist/EoLexer.tokens",
     "outputPath": "bin"
   },
   "bin": {
@@ -64,7 +64,7 @@
     "get-grammar": "curl https://raw.githubusercontent.com/objectionary/eo/$npm_package_config_grammar_commit/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4 > resources/Eo.g4",
     "lint": "eslint ./src --ext .ts,.tsx",
     "package": "ncc build ./out/server.js && pkg package.json",
-    "unit-test": "bash scripts/setTestFixture.sh && jest"
+    "test": "jest"
   },
   "version": "0.0.0"
 }

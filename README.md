@@ -102,7 +102,7 @@ in the code editor.
 After modifications, test your code with:
 
 ```bash
-npm run unit-test
+npm run test
 ```
 
 Create a pull request. To avoid frustration, run this before committing:

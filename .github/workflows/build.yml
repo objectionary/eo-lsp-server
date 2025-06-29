@@ -35,7 +35,7 @@ jobs:
       - run: npm i
       - run: npm run lint
       - run: npm run fetch-and-build-grammar
-      - run: npm run unit-test
+      - run: npm run test
       - run: npm run build
       - run: npm run package
       - uses: SonarSource/sonarqube-scan-action@master
