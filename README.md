@@ -5,27 +5,17 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=GeorgySabaev_eo-lsp-server&metric=coverage)](https://sonarcloud.io/summary/new_code?id=GeorgySabaev_eo-lsp-server)
 ![GitHub](https://img.shields.io/github/license/GeorgySabaev/eo-lsp-server)
 
-This is the LSP server for [EO](https://github.com/objectionary/eo).
-It provides semantic highlighting, and parsing error checking for `.eo` files.
-
-This plugin is written in **TypeScript**, and was developed with **Node 20**.
-
-Inside `src/` you can find all the Typescript source code, along with tests
-in `src/test/` and code parser files in `src/parser/` once they are generated.
-
-The code parser is generated with ANTLR4 using a version of the EO grammar
-file located in [this ANTLR g4 file][g4].
-The specific commit to take the file from is specified in `package.json` under `.config.grammar.commit.`
+This is the [LSP] server for [EO](https://github.com/objectionary/eo).
+It provides semantic highlighting, and parsing error checking for `.eo` files
+(written in [EOLANG]).
 
 ## Using with Sublime Text
 
-To use this EO LSP server with Sublime Text, you'll need to install
-the [LSP package] and configure it to work with the EO language server.
-
-First, build the EO LSP server:
+To use this [LSP] server with [Sublime Text], you'll need to install
+the [LSP package]. Then, build this server:
 
 ```bash
-git clone https://github.com/GeorgySabaev/eo-lsp-server.git
+git clone https://github.com/objectionary/eo-lsp-server.git
 cd eo-lsp-server
 npm install
 npm run fetch-and-build-grammar
@@ -33,18 +23,13 @@ npm run build
 npm run package
 ```
 
-This will create standalone executables in the `bin/` directory:
+This will create standalone executables in the `bin/` directory
+(`server-linux` for Linux, `server-macos` for macOS,
+`server-win.exe` for Windows).
 
-* `server-linux` for Linux
-* `server-macos` for macOS
-* `server-win.exe` for Windows
-
-### Configuring Sublime Text
-
-1. Open Sublime Text preferences for LSP:
-`Preferences → Package Settings → LSP → Settings`
-
-1. Add the following configuration to the user settings:
+The, open Sublime Text preferences for LSP
+(`Preferences → Package Settings → LSP → Settings`) and
+add the following configuration to the user settings:
 
 ```json
 {
@@ -65,19 +50,7 @@ Replace `/path/to/eo-lsp-server/bin/server-macos` with the actual path
 to your built server executable
 (use `server-linux` on Linux or `server-win.exe` on Windows).
 
-### EO Syntax Highlighting
-
-For basic syntax highlighting, you'll need to create an EO syntax definition file:
-
-1. Create a new file in Sublime Text
-
-1. Save it as `EO.sublime-syntax` in your Sublime Text `Packages/User` directory:
-
-* On macOS: `~/Library/Application Support/Sublime Text/Packages/User/`
-* On Linux: `~/.config/sublime-text/Packages/User/`
-* On Windows: `%APPDATA%\Sublime Text\Packages\User\`
-
-1. Add the following basic syntax definition in YAML:
+Then, create an EO syntax definition file in `Packages/User/EO.sublime-syntax`:
 
 ```yaml
 name: EO
@@ -98,17 +71,24 @@ contexts:
       scope: keyword.operator.eo
 ```
 
+Should work. If it doesn't, [file an issue], we'll help.
+
 ## How to Contribute
 
-Clone the repository.
+Inside `src/` you can find all the Typescript source code, along with tests
+in `src/test/` and code parser files in `src/parser/` once they are generated.
 
-Install node modules with:
+The code parser is generated with ANTLR4 using a version of the EO grammar
+file located in [this ANTLR g4 file][g4].
+The specific commit to take the file from is specified in `package.json` under `.config.grammar.commit.`
+
+Fist, install Node modules with:
 
 ```bash
 npm install
 ```
 
-Download grammar file and generate ANTLR4 parser automatically with:
+Then, download grammar file and generate [ANTLR4] parser automatically with:
 
 ```bash
 npm run fetch-and-build-grammar
@@ -132,3 +112,8 @@ npm run build
 
 [g4]: https://raw.githubusercontent.com/objectionary/eo/master/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4
 [LSP package]: https://packagecontrol.io/packages/LSP
+[LSP]: https://en.wikipedia.org/wiki/Language_Server_Protocol
+[EOLANG]: https://www.eolang.org
+[ANTLR4]: https://github.com/antlr/antlr4
+[Sublime Text]: https://www.sublimetext.com/
+[file an issue]: https://github.com/objectionary/eo-lsp-server/issues
