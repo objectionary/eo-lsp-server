@@ -7,7 +7,7 @@ docker:
 assets:
   npmrc: yegor256/objectionary-secrets#npmrc
 install: |
-  /usr/bin/install-node.sh
+  sudo /usr/bin/install-node.sh
   npm install --no-color
   pdd -f /dev/null -v
 release:
