@@ -44,27 +44,27 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 /**
  * Client capabilities manager, to define what is and is not able to do.
  */
-const clientCapabilities = new Capabilities();
+const capabilities = new Capabilities();
 
 /**
  * Provider of the semantic highlighting capability of the language server.
  */
-let semanticTokensProvider: SemanticTokensProvider;
+let provider: SemanticTokensProvider;
 
 /**
  * Defines procedures to be executed on the initialization process
  * of the connection with the client
  */
 connection.onInitialize((params: InitializeParams) => {
-    const capabilities = params.capabilities;
-    clientCapabilities.initialize(capabilities);
-    semanticTokensProvider = new SemanticTokensProvider(params.capabilities.textDocument!.semanticTokens!);
+    const caps = params.capabilities;
+    capabilities.initialize(caps);
+    provider = new SemanticTokensProvider(params.capabilities.textDocument!.semanticTokens!);
     const result: InitializeResult = {
         capabilities: {
             textDocumentSync: TextDocumentSyncKind.Incremental
         }
     };
-    if (clientCapabilities.workspace) {
+    if (capabilities.workspace) {
         result.capabilities.workspace = {
             workspaceFolders: {
                 supported: true
@@ -82,24 +82,24 @@ connection.onInitialize((params: InitializeParams) => {
  * Configuration, Workspace Folder and Document Semantic Tokens
  */
 connection.onInitialized(() => {
-    if (clientCapabilities.configuration) {
+    if (capabilities.configuration) {
         connection.client.register(DidChangeConfigurationNotification.type, void 0);
     }
-    if (clientCapabilities.workspace) {
+    if (capabilities.workspace) {
         connection.workspace.onDidChangeWorkspaceFolders(_event => {
             connection.console.log("Workspace folder change event received");
         });
     }
-    if (clientCapabilities.tokens) {
-        const registrationOptions: SemanticTokensRegistrationOptions = {
+    if (capabilities.tokens) {
+        const options: SemanticTokensRegistrationOptions = {
             documentSelector: null,
-            legend: semanticTokensProvider.legend,
+            legend: provider.legend,
             range: false,
             full: {
                 delta: true
             }
         };
-        connection.client.register(SemanticTokensRegistrationType.type, registrationOptions);
+        connection.client.register(SemanticTokensRegistrationType.type, options);
     }
 });
 
@@ -111,12 +111,12 @@ const defaultSettings: DefaultSettings = { limit: 1000 };
 /**
  * The global settings, used when the `workspace/configuration` request is not supported by the client.
  */
-let globalSettings: DefaultSettings = defaultSettings;
+let settings: DefaultSettings = defaultSettings;
 
 /**
  * Cache for the settings of all open documents
  */
-const documentSettings: Map<string, Thenable<DefaultSettings>> = new Map();
+const cache: Map<string, Thenable<DefaultSettings>> = new Map();
 
 /**
  * Retrieves the settings for a document
@@ -124,16 +124,16 @@ const documentSettings: Map<string, Thenable<DefaultSettings>> = new Map();
  * @returns - A Promise for the settings of the document requested
  */
 function getDocumentSettings(resource: string): Thenable<DefaultSettings> {
-    if (!clientCapabilities.configuration) {
-        return Promise.resolve(globalSettings);
+    if (!capabilities.configuration) {
+        return Promise.resolve(settings);
     }
-    let result = documentSettings.get(resource);
+    let result = cache.get(resource);
     if (!result) {
         result = connection.workspace.getConfiguration({
             scopeUri: resource,
             section: "languageServerExample"
-        });
-        documentSettings.set(resource, result);
+        }).then(config => (config && typeof config === "object") ? config : defaultSettings);
+        cache.set(resource, result);
     }
     return result;
 }
@@ -145,13 +145,15 @@ function getDocumentSettings(resource: string): Thenable<DefaultSettings> {
  * @param textDocument - Document for which to perform the validation procedure
  * @returns {Promise<void>}
  */
-async function validateTextDocument(textDocument: TextDocument): Promise<void> {
-    const settings = await getDocumentSettings(textDocument.uri);
-    const text = textDocument.getText();
+async function validateTextDocument(document: TextDocument): Promise<void> {
+    const config = await getDocumentSettings(document.uri);
+    const text = document.getText();
     const diagnostics: Diagnostic[] = [];
     const errors = getParserErrors(text);
+    const effective = config || defaultSettings;
+    const limit = effective.limit;
     errors.forEach((error, index) => {
-        if (settings?.limit !== null && index >= settings.limit) {
+        if (limit !== null && index >= limit) {
             return;
         }
         const diagnostic: Diagnostic = {
@@ -165,7 +167,7 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
         };
         diagnostics.push(diagnostic);
     });
-    connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
+    connection.sendDiagnostics({ uri: document.uri, diagnostics });
 }
 
 /**
@@ -173,12 +175,11 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
  * documents with there is a change in the configuration of the client.
  */
 connection.onDidChangeConfiguration(change => {
-    if (clientCapabilities.configuration) {
-        documentSettings.clear();
+    if (capabilities.configuration) {
+        cache.clear();
     } else {
-        globalSettings = <DefaultSettings>(
-            (change.settings.languageServerExample || defaultSettings)
-        );
+        const config = change.settings.languageServerExample;
+        settings = (config && typeof config === "object") ? config : defaultSettings;
     }
     documents.all().forEach(validateTextDocument);
 });
@@ -187,7 +188,7 @@ connection.onDidChangeConfiguration(change => {
  * Clears the settings cache for a closed document, once it is closed
  */
 documents.onDidClose(e => {
-    documentSettings.delete(e.document.uri);
+    cache.delete(e.document.uri);
 });
 
 /**
@@ -214,7 +215,7 @@ connection.languages.semanticTokens.on(params => {
     if (!document) {
         return { data: [] };
     }
-    return semanticTokensProvider.provideSemanticTokens(document);
+    return provider.provideSemanticTokens(document);
 });
 
 /**
@@ -226,7 +227,7 @@ connection.languages.semanticTokens.onDelta(params => {
     if (!document) {
         return { data: [] };
     }
-    return semanticTokensProvider.provideDeltas(document);
+    return provider.provideDeltas(document);
 });
 
 /**

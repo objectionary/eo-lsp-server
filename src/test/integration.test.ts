@@ -10,9 +10,9 @@ import * as fs from "fs";
  */
 describe("LSP Server Integration", () => {
     let server: ChildProcess;
-    let messageHandlers: Map<number, (response: any) => void> = new Map();
-    let notificationHandlers: ((notification: any) => void)[] = [];
-    let messageId = 0;
+    let handlers: Map<number, (response: any) => void> = new Map();
+    let notifications: ((notification: any) => void)[] = [];
+    let id = 0;
     let buffer = Buffer.alloc(0);
 
     /**
@@ -20,10 +20,10 @@ describe("LSP Server Integration", () => {
      */
     function sendRequest(method: string, params: any): Promise<any> {
         return new Promise((resolve, reject) => {
-            const id = ++messageId;
+            const current = ++id;
             const request = {
                 jsonrpc: "2.0",
-                id: id,
+                id: current,
                 method: method,
                 params: params
             };
@@ -31,12 +31,12 @@ describe("LSP Server Integration", () => {
             const header = `Content-Length: ${Buffer.byteLength(content)}\r\n\r\n`;
             const message = header + content;
             const timeout = setTimeout(() => {
-                messageHandlers.delete(id);
+                handlers.delete(current);
                 reject(new Error(`Request ${method} timed out`));
             }, 10000);
-            messageHandlers.set(id, (response) => {
+            handlers.set(current, (response) => {
                 clearTimeout(timeout);
-                messageHandlers.delete(id);
+                handlers.delete(current);
                 if (response.error) {
                     reject(new Error(response.error.message));
                 } else {
@@ -85,10 +85,10 @@ describe("LSP Server Integration", () => {
 
             try {
                 const message = JSON.parse(content);
-                if (message.id !== undefined && messageHandlers.has(message.id)) {
-                    messageHandlers.get(message.id)!(message);
+                if (message.id !== undefined && handlers.has(message.id)) {
+                    handlers.get(message.id)!(message);
                 } else if (message.method) {
-                    notificationHandlers.forEach(handler => handler(message));
+                    notifications.forEach(handler => handler(message));
                 }
             } catch (e) {
                 console.error("Failed to parse message:", e);
@@ -97,8 +97,8 @@ describe("LSP Server Integration", () => {
     }
 
     beforeEach((done) => {
-        messageHandlers.clear();
-        notificationHandlers = [];
+        handlers.clear();
+        notifications = [];
         buffer = Buffer.alloc(0);
         const serverPath = path.join(__dirname, "..", "..", "out", "server.js");
 
@@ -204,11 +204,11 @@ describe("LSP Server Integration", () => {
             const handler = (message: any) => {
                 if (message.method === "textDocument/publishDiagnostics" &&
                     message.params.uri === uri) {
-                    notificationHandlers = notificationHandlers.filter(h => h !== handler);
+                    notifications = notifications.filter(h => h !== handler);
                     resolve(message.params.diagnostics);
                 }
             };
-            notificationHandlers.push(handler);
+            notifications.push(handler);
         });
         sendNotification("textDocument/didOpen", {
             textDocument: {
@@ -254,11 +254,11 @@ describe("LSP Server Integration", () => {
                 if (message.method === "textDocument/publishDiagnostics" &&
                     message.params.uri === uri &&
                     message.params.diagnostics.length > 0) {
-                    notificationHandlers = notificationHandlers.filter(h => h !== handler);
+                    notifications = notifications.filter(h => h !== handler);
                     resolve(message.params.diagnostics);
                 }
             };
-            notificationHandlers.push(handler);
+            notifications.push(handler);
         });
 
         sendNotification("textDocument/didChange", {
@@ -274,5 +274,106 @@ describe("LSP Server Integration", () => {
         const diagnostics = await diagnosticsPromise;
         expect(Array.isArray(diagnostics)).toBeTruthy();
         expect((diagnostics as any[]).length).toBeGreaterThan(0);
+    }, 15000);
+
+    test("Server handles null settings during validation without crashing", async () => {
+        await sendRequest("initialize", {
+            processId: process.pid,
+            rootUri: null,
+            capabilities: {
+                workspace: {
+                    configuration: false
+                },
+                textDocument: {
+                    semanticTokens: {
+                        tokenTypes: [],
+                        tokenModifiers: []
+                    }
+                }
+            }
+        });
+        sendNotification("initialized", {});
+        const uri = "file:///nullsettings.eo";
+        const content = "-- invalid syntax to trigger validation --\n".repeat(1100);
+
+        const diagnosticsPromise = new Promise((resolve) => {
+            const handler = (message: any) => {
+                if (message.method === "textDocument/publishDiagnostics" &&
+                    message.params.uri === uri) {
+                    notifications = notifications.filter(h => h !== handler);
+                    resolve(message.params.diagnostics);
+                }
+            };
+            notifications.push(handler);
+        });
+
+        sendNotification("textDocument/didOpen", {
+            textDocument: {
+                uri: uri,
+                languageId: "eo",
+                version: 1,
+                text: content
+            }
+        });
+
+        const diagnostics = await diagnosticsPromise;
+        expect(Array.isArray(diagnostics)).toBeTruthy();
+    }, 15000);
+
+    test("Server handles malformed workspace configuration without crashing", async () => {
+        await sendRequest("initialize", {
+            processId: process.pid,
+            rootUri: null,
+            capabilities: {
+                workspace: {
+                    configuration: true
+                },
+                textDocument: {
+                    semanticTokens: {
+                        tokenTypes: [],
+                        tokenModifiers: []
+                    }
+                }
+            }
+        });
+        sendNotification("initialized", {});
+
+        sendNotification("workspace/didChangeConfiguration", {
+            settings: {
+                languageServerExample: null
+            }
+        });
+
+        const uri = "file:///malformed.eo";
+        const content = "-- invalid syntax --";
+
+        const diagnosticsPromise = new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+                notifications = notifications.filter(h => h !== handler);
+                resolve([]);
+            }, 5000);
+            
+            const handler = (message: any) => {
+                if (message.method === "textDocument/publishDiagnostics" &&
+                    message.params.uri === uri) {
+                    clearTimeout(timeout);
+                    notifications = notifications.filter(h => h !== handler);
+                    resolve(message.params.diagnostics);
+                }
+            };
+            notifications.push(handler);
+        });
+
+        sendNotification("textDocument/didOpen", {
+            textDocument: {
+                uri: uri,
+                languageId: "eo",
+                version: 1,
+                text: content
+            }
+        });
+
+        const diagnostics = await diagnosticsPromise;
+        expect(Array.isArray(diagnostics)).toBeTruthy();
     }, 15000);
 });
