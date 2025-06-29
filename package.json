@@ -42,7 +42,7 @@
     "vsce": "^2.13.0"
   },
   "engines": {
-    "node": "^20.0.0",
+    "node": "^20.0.1",
     "vscode": "^1.63.0"
   },
   "license": "MIT",
@@ -65,5 +65,5 @@
     "lint": "make lint",
     "test": "make test"
   },
-  "version": "0.0.0"
+  "version": "0.0.1"
 }
