@@ -16,46 +16,46 @@ public class EoParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		COMMENTARY=1, META=2, ROOT=3, HOME=4, STAR=5, CONST=6, COLON=7, ARROW=8, 
-		XI=9, PLUS=10, MINUS=11, QUESTION=12, SPACE=13, DOT=14, LSQ=15, RSQ=16, 
-		LB=17, RB=18, PHI=19, RHO=20, HASH=21, TILDE=22, EOL=23, BYTES=24, STRING=25, 
+		COMMENTARY=1, META=2, ROOT=3, HOME=4, STAR=5, CONST=6, COLON=7, ARROW=8,
+		XI=9, PLUS=10, MINUS=11, QUESTION=12, SPACE=13, DOT=14, LSQ=15, RSQ=16,
+		LB=17, RB=18, PHI=19, RHO=20, HASH=21, TILDE=22, EOL=23, BYTES=24, STRING=25,
 		INT=26, FLOAT=27, HEX=28, NAME=29, TEXT=30, TAB=31, UNTAB=32;
 	public static final int
-		RULE_program = 0, RULE_eop = 1, RULE_metas = 2, RULE_objects = 3, RULE_comment = 4, 
-		RULE_commentOptional = 5, RULE_commentMandatory = 6, RULE_object = 7, 
-		RULE_bound = 8, RULE_subMaster = 9, RULE_masterBody = 10, RULE_just = 11, 
-		RULE_justNamed = 12, RULE_atom = 13, RULE_formation = 14, RULE_innersOrEol = 15, 
-		RULE_inners = 16, RULE_voids = 17, RULE_void = 18, RULE_application = 19, 
-		RULE_happlication = 20, RULE_happlicationExtended = 21, RULE_happlicationReversed = 22, 
-		RULE_happlicationHead = 23, RULE_happlicationHeadExtended = 24, RULE_applicable = 25, 
-		RULE_happlicationTail = 26, RULE_happlicationTailReversedFirst = 27, RULE_happlicationArg = 28, 
-		RULE_vapplication = 29, RULE_vapplicationHead = 30, RULE_compactArray = 31, 
-		RULE_vapplicationHeadNamed = 32, RULE_vapplicationArgs = 33, RULE_vapplicationArgsReversed = 34, 
-		RULE_vapplicationArgsSpecific = 35, RULE_vapplicationArgBound = 36, RULE_vapplicationArgBoundCurrent = 37, 
-		RULE_vapplicationArgBoundNext = 38, RULE_vapplicationArgUnbound = 39, 
-		RULE_vapplicationArgUnboundCurrent = 40, RULE_vapplicationArgUnboundNext = 41, 
-		RULE_formationNamed = 42, RULE_hformation = 43, RULE_hanonym = 44, RULE_onlyphi = 45, 
-		RULE_onlyphiTail = 46, RULE_hanonymInner = 47, RULE_method = 48, RULE_methodNamed = 49, 
-		RULE_hmethod = 50, RULE_vmethod = 51, RULE_vmethodHead = 52, RULE_vmethodHeadApplicationTail = 53, 
-		RULE_vmethodHeadVapplication = 54, RULE_methodTail = 55, RULE_beginner = 56, 
-		RULE_finisher = 57, RULE_reversed = 58, RULE_fname = 59, RULE_oname = 60, 
-		RULE_suffix = 61, RULE_spacedArrow = 62, RULE_scope = 63, RULE_as = 64, 
+		RULE_program = 0, RULE_eop = 1, RULE_metas = 2, RULE_objects = 3, RULE_comment = 4,
+		RULE_commentOptional = 5, RULE_commentMandatory = 6, RULE_object = 7,
+		RULE_bound = 8, RULE_subMaster = 9, RULE_masterBody = 10, RULE_just = 11,
+		RULE_justNamed = 12, RULE_atom = 13, RULE_formation = 14, RULE_innersOrEol = 15,
+		RULE_inners = 16, RULE_voids = 17, RULE_void = 18, RULE_application = 19,
+		RULE_happlication = 20, RULE_happlicationExtended = 21, RULE_happlicationReversed = 22,
+		RULE_happlicationHead = 23, RULE_happlicationHeadExtended = 24, RULE_applicable = 25,
+		RULE_happlicationTail = 26, RULE_happlicationTailReversedFirst = 27, RULE_happlicationArg = 28,
+		RULE_vapplication = 29, RULE_vapplicationHead = 30, RULE_compactArray = 31,
+		RULE_vapplicationHeadNamed = 32, RULE_vapplicationArgs = 33, RULE_vapplicationArgsReversed = 34,
+		RULE_vapplicationArgsSpecific = 35, RULE_vapplicationArgBound = 36, RULE_vapplicationArgBoundCurrent = 37,
+		RULE_vapplicationArgBoundNext = 38, RULE_vapplicationArgUnbound = 39,
+		RULE_vapplicationArgUnboundCurrent = 40, RULE_vapplicationArgUnboundNext = 41,
+		RULE_formationNamed = 42, RULE_hformation = 43, RULE_hanonym = 44, RULE_onlyphi = 45,
+		RULE_onlyphiTail = 46, RULE_hanonymInner = 47, RULE_method = 48, RULE_methodNamed = 49,
+		RULE_hmethod = 50, RULE_vmethod = 51, RULE_vmethodHead = 52, RULE_vmethodHeadApplicationTail = 53,
+		RULE_vmethodHeadVapplication = 54, RULE_methodTail = 55, RULE_beginner = 56,
+		RULE_finisher = 57, RULE_reversed = 58, RULE_fname = 59, RULE_oname = 60,
+		RULE_suffix = 61, RULE_spacedArrow = 62, RULE_scope = 63, RULE_as = 64,
 		RULE_data = 65;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"program", "eop", "metas", "objects", "comment", "commentOptional", "commentMandatory", 
-			"object", "bound", "subMaster", "masterBody", "just", "justNamed", "atom", 
-			"formation", "innersOrEol", "inners", "voids", "void", "application", 
-			"happlication", "happlicationExtended", "happlicationReversed", "happlicationHead", 
-			"happlicationHeadExtended", "applicable", "happlicationTail", "happlicationTailReversedFirst", 
-			"happlicationArg", "vapplication", "vapplicationHead", "compactArray", 
-			"vapplicationHeadNamed", "vapplicationArgs", "vapplicationArgsReversed", 
-			"vapplicationArgsSpecific", "vapplicationArgBound", "vapplicationArgBoundCurrent", 
-			"vapplicationArgBoundNext", "vapplicationArgUnbound", "vapplicationArgUnboundCurrent", 
-			"vapplicationArgUnboundNext", "formationNamed", "hformation", "hanonym", 
-			"onlyphi", "onlyphiTail", "hanonymInner", "method", "methodNamed", "hmethod", 
-			"vmethod", "vmethodHead", "vmethodHeadApplicationTail", "vmethodHeadVapplication", 
-			"methodTail", "beginner", "finisher", "reversed", "fname", "oname", "suffix", 
+			"program", "eop", "metas", "objects", "comment", "commentOptional", "commentMandatory",
+			"object", "bound", "subMaster", "masterBody", "just", "justNamed", "atom",
+			"formation", "innersOrEol", "inners", "voids", "void", "application",
+			"happlication", "happlicationExtended", "happlicationReversed", "happlicationHead",
+			"happlicationHeadExtended", "applicable", "happlicationTail", "happlicationTailReversedFirst",
+			"happlicationArg", "vapplication", "vapplicationHead", "compactArray",
+			"vapplicationHeadNamed", "vapplicationArgs", "vapplicationArgsReversed",
+			"vapplicationArgsSpecific", "vapplicationArgBound", "vapplicationArgBoundCurrent",
+			"vapplicationArgBoundNext", "vapplicationArgUnbound", "vapplicationArgUnboundCurrent",
+			"vapplicationArgUnboundNext", "formationNamed", "hformation", "hanonym",
+			"onlyphi", "onlyphiTail", "hanonymInner", "method", "methodNamed", "hmethod",
+			"vmethod", "vmethodHead", "vmethodHeadApplicationTail", "vmethodHeadVapplication",
+			"methodTail", "beginner", "finisher", "reversed", "fname", "oname", "suffix",
 			"spacedArrow", "scope", "as", "data"
 		};
 	}
@@ -63,17 +63,17 @@ public class EoParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, null, null, "'Q'", "'QQ'", "'*'", "'!'", "':'", "'>'", "'$'", "'+'", 
-			"'-'", "'?'", "' '", "'.'", "'['", "']'", "'('", "')'", "'@'", "'^'", 
+			null, null, null, "'Q'", "'QQ'", "'*'", "'!'", "':'", "'>'", "'$'", "'+'",
+			"'-'", "'?'", "' '", "'.'", "'['", "']'", "'('", "')'", "'@'", "'^'",
 			"'#'", "'~'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "COMMENTARY", "META", "ROOT", "HOME", "STAR", "CONST", "COLON", 
-			"ARROW", "XI", "PLUS", "MINUS", "QUESTION", "SPACE", "DOT", "LSQ", "RSQ", 
-			"LB", "RB", "PHI", "RHO", "HASH", "TILDE", "EOL", "BYTES", "STRING", 
+			null, "COMMENTARY", "META", "ROOT", "HOME", "STAR", "CONST", "COLON",
+			"ARROW", "XI", "PLUS", "MINUS", "QUESTION", "SPACE", "DOT", "LSQ", "RSQ",
+			"LB", "RB", "PHI", "RHO", "HASH", "TILDE", "EOL", "BYTES", "STRING",
 			"INT", "FLOAT", "HEX", "NAME", "TEXT", "TAB", "UNTAB"
 		};
 	}
@@ -250,7 +250,7 @@ public class EoParser extends Parser {
 					setState(142);
 					match(EOL);
 					}
-					} 
+					}
 				}
 				setState(147);
 				_errHandler.sync(this);
@@ -298,7 +298,7 @@ public class EoParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(155); 
+			setState(155);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -318,7 +318,7 @@ public class EoParser extends Parser {
 
 				}
 				}
-				setState(157); 
+				setState(157);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 2136638010L) != 0) );
@@ -399,7 +399,7 @@ public class EoParser extends Parser {
 					setState(162);
 					comment();
 					}
-					} 
+					}
 				}
 				setState(167);
 				_errHandler.sync(this);
@@ -439,7 +439,7 @@ public class EoParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(169); 
+			setState(169);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -449,7 +449,7 @@ public class EoParser extends Parser {
 				comment();
 				}
 				}
-				setState(171); 
+				setState(171);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==COMMENTARY );
@@ -1551,7 +1551,7 @@ public class EoParser extends Parser {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(298); 
+				setState(298);
 				_errHandler.sync(this);
 				_alt = 1;
 				do {
@@ -1571,7 +1571,7 @@ public class EoParser extends Parser {
 					default:
 						throw new NoViableAltException(this);
 					}
-					setState(300); 
+					setState(300);
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,27,_ctx);
 				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -1580,7 +1580,7 @@ public class EoParser extends Parser {
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(304); 
+				setState(304);
 				_errHandler.sync(this);
 				_alt = 1;
 				do {
@@ -1598,7 +1598,7 @@ public class EoParser extends Parser {
 					default:
 						throw new NoViableAltException(this);
 					}
-					setState(306); 
+					setState(306);
 					_errHandler.sync(this);
 					_alt = getInterpreter().adaptivePredict(_input,28,_ctx);
 				} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -2068,7 +2068,7 @@ public class EoParser extends Parser {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(358); 
+				setState(358);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
@@ -2078,7 +2078,7 @@ public class EoParser extends Parser {
 					vapplicationArgBound();
 					}
 					}
-					setState(360); 
+					setState(360);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 2136638010L) != 0) );
@@ -2087,7 +2087,7 @@ public class EoParser extends Parser {
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(363); 
+				setState(363);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 				do {
@@ -2097,7 +2097,7 @@ public class EoParser extends Parser {
 					vapplicationArgUnbound();
 					}
 					}
-					setState(365); 
+					setState(365);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 2136638010L) != 0) );
@@ -2742,7 +2742,7 @@ public class EoParser extends Parser {
 			{
 			setState(462);
 			voids();
-			setState(464); 
+			setState(464);
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -2758,7 +2758,7 @@ public class EoParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(466); 
+				setState(466);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,57,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -2913,7 +2913,7 @@ public class EoParser extends Parser {
 					setState(482);
 					onlyphiTail();
 					}
-					} 
+					}
 				}
 				setState(487);
 				_errHandler.sync(this);
@@ -3201,7 +3201,7 @@ public class EoParser extends Parser {
 			default:
 				throw new NoViableAltException(this);
 			}
-			setState(515); 
+			setState(515);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -3211,7 +3211,7 @@ public class EoParser extends Parser {
 				methodTail();
 				}
 				}
-				setState(517); 
+				setState(517);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==DOT );
@@ -3381,7 +3381,7 @@ public class EoParser extends Parser {
 					setState(538);
 					vmethodHeadApplicationTail();
 					}
-					} 
+					}
 				}
 				setState(544);
 				_errHandler.sync(this);

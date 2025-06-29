@@ -16,10 +16,10 @@ public class ProgramLexer extends Lexer {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		COMMENT=1, META=2, ROOT=3, HOME=4, STAR=5, DOTS=6, CONST=7, SLASH=8, COLON=9, 
-		COPY=10, ARROW=11, VERTEX=12, SIGMA=13, XI=14, PLUS=15, MINUS=16, QUESTION=17, 
-		SPACE=18, DOT=19, LSQ=20, RSQ=21, LB=22, RB=23, AT=24, RHO=25, HASH=26, 
-		EOL=27, BYTES=28, BOOL=29, STRING=30, INT=31, FLOAT=32, HEX=33, NAME=34, 
+		COMMENT=1, META=2, ROOT=3, HOME=4, STAR=5, DOTS=6, CONST=7, SLASH=8, COLON=9,
+		COPY=10, ARROW=11, VERTEX=12, SIGMA=13, XI=14, PLUS=15, MINUS=16, QUESTION=17,
+		SPACE=18, DOT=19, LSQ=20, RSQ=21, LB=22, RB=23, AT=24, RHO=25, HASH=26,
+		EOL=27, BYTES=28, BOOL=29, STRING=30, INT=31, FLOAT=32, HEX=33, NAME=34,
 		TEXT=35;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
@@ -31,11 +31,11 @@ public class ProgramLexer extends Lexer {
 
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"COMMENT", "META", "ROOT", "HOME", "STAR", "DOTS", "CONST", "SLASH", 
-			"COLON", "COPY", "ARROW", "VERTEX", "SIGMA", "XI", "PLUS", "MINUS", "QUESTION", 
-			"SPACE", "DOT", "LSQ", "RSQ", "LB", "RB", "AT", "RHO", "HASH", "INDENT", 
-			"LINEBREAK", "EOL", "BYTE", "EMPTY_BYTES", "LINE_BYTES", "BYTES", "BOOL", 
-			"STRING", "ESCAPE_SEQUENCE", "ZERO", "INT", "EXPONENT", "FLOAT", "HEX", 
+			"COMMENT", "META", "ROOT", "HOME", "STAR", "DOTS", "CONST", "SLASH",
+			"COLON", "COPY", "ARROW", "VERTEX", "SIGMA", "XI", "PLUS", "MINUS", "QUESTION",
+			"SPACE", "DOT", "LSQ", "RSQ", "LB", "RB", "AT", "RHO", "HASH", "INDENT",
+			"LINEBREAK", "EOL", "BYTE", "EMPTY_BYTES", "LINE_BYTES", "BYTES", "BOOL",
+			"STRING", "ESCAPE_SEQUENCE", "ZERO", "INT", "EXPONENT", "FLOAT", "HEX",
 			"NAME", "TEXT_MARK", "TEXT"
 		};
 	}
@@ -43,17 +43,17 @@ public class ProgramLexer extends Lexer {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, null, null, "'Q'", "'QQ'", "'*'", "'...'", "'!'", "'/'", "':'", 
-			"'''", "'>'", "'<'", "'&'", "'$'", "'+'", "'-'", "'?'", "' '", "'.'", 
+			null, null, null, "'Q'", "'QQ'", "'*'", "'...'", "'!'", "'/'", "':'",
+			"'''", "'>'", "'<'", "'&'", "'$'", "'+'", "'-'", "'?'", "' '", "'.'",
 			"'['", "']'", "'('", "')'", "'@'", "'^'", "'#'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "COMMENT", "META", "ROOT", "HOME", "STAR", "DOTS", "CONST", "SLASH", 
-			"COLON", "COPY", "ARROW", "VERTEX", "SIGMA", "XI", "PLUS", "MINUS", "QUESTION", 
-			"SPACE", "DOT", "LSQ", "RSQ", "LB", "RB", "AT", "RHO", "HASH", "EOL", 
+			null, "COMMENT", "META", "ROOT", "HOME", "STAR", "DOTS", "CONST", "SLASH",
+			"COLON", "COPY", "ARROW", "VERTEX", "SIGMA", "XI", "PLUS", "MINUS", "QUESTION",
+			"SPACE", "DOT", "LSQ", "RSQ", "LB", "RB", "AT", "RHO", "HASH", "EOL",
 			"BYTES", "BOOL", "STRING", "INT", "FLOAT", "HEX", "NAME", "TEXT"
 		};
 	}

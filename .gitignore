@@ -10,3 +10,4 @@ resources/*
 src/parser/*
 !src/parser/docs.txt
 coverage
+dist/

@@ -1,62 +1,62 @@
 {
-    "name": "eo-vscode-server",
-    "description": "Language Server for a syntax highlighter for the EO Language",
-    "version": "1.0.0",
-    "author": "Eduardo Fernandes, Anatoliy Baskakov, Roman Nabiullin",
-    "license": "MIT",
-    "engines": {
-        "node": "^20.0.0",
-        "vscode": "^1.63.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/objectionary/eo-vscode"
-    },
-    "dependencies": {
-        "antlr4": "^4.11.0",
-        "antlr4ts": "^0.5.0-alpha.4",
-        "vscode-languageserver": "^8.0.0",
-        "vscode-languageserver-textdocument": "^1.0.4"
-    },
-    "scripts": {
-        "get-grammar": "curl https://raw.githubusercontent.com/objectionary/eo/$npm_package_config_grammar_commit/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4 > resources/Eo.g4",
-        "build-parser": "antlr4ts -visitor resources/Eo.g4 && mv resources/*.ts src/parser",
-        "fetch-and-build-grammar": "npm run get-grammar && npm run build-parser",
-        "unit-test": "bash scripts/setTestFixture.sh && jest",
-        "compile": "tsc -b",
-        "build": "npm run get-grammar && npm run build-parser && tsc -b",
-        "package": "ncc build ./out/server.js && pkg dist/package.json",
-        "lint": "eslint ./src --ext .ts,.tsx"
-    },
-    "devDependencies": {
-        "@babel/core": "^7.20.5",
-        "@babel/preset-env": "^7.20.2",
-        "@babel/preset-typescript": "^7.27.1",
-        "@types/eslint": "^8.28.0",
-        "@types/jest": "^29.2.3",
-        "@types/mocha": "^10.0.1",
-        "@types/node": "^16.11.7",
-        "@types/vscode": "^1.63.0",
-        "@typescript-eslint/eslint-plugin": "^5.30.0",
-        "@typescript-eslint/parser": "^5.30.0",
-        "@vercel/ncc": "^0.38.3",
-        "@yao-pkg/pkg": "^6.4.0",
-        "antlr4ts-cli": "^0.5.0-alpha.4",
-        "babel-jest": "^29.3.1",
-        "eslint": "^8.28.0",
-        "eslint-config-eslint": "^7.0.0",
-        "eslint-plugin-import": "^2.26.0",
-        "jest": "^29.3.1",
-        "js-yaml": "^4.1.0",
-        "mocha": "^9.2.1",
-        "ts-node": "^10.9.1",
-        "typedoc": "^0.23.21",
-        "typescript": "^4.8.4",
-        "vsce": "^2.13.0"
-    },
-    "config": {
-        "grammar": {
-            "commit": "c6d149991f1dcfd131cbf5c100a2ad936f1a8af4"
-        }
+  "author": "Eduardo Fernandes, Anatoliy Baskakov, Roman Nabiullin",
+  "config": {
+    "grammar": {
+      "commit": "c6d149991f1dcfd131cbf5c100a2ad936f1a8af4"
     }
+  },
+  "dependencies": {
+    "antlr4": "^4.11.0",
+    "antlr4ts": "^0.5.0-alpha.4",
+    "vscode-languageserver": "^8.0.0",
+    "vscode-languageserver-textdocument": "^1.0.4"
+  },
+  "description": "Language Server for a syntax highlighter for the EO Language",
+  "devDependencies": {
+    "@babel/core": "^7.20.5",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-typescript": "^7.27.1",
+    "@types/eslint": "^8.28.0",
+    "@types/jest": "^29.2.3",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^16.11.7",
+    "@types/vscode": "^1.63.0",
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/parser": "^5.30.0",
+    "@vercel/ncc": "^0.38.3",
+    "@yao-pkg/pkg": "^6.4.0",
+    "antlr4ts-cli": "^0.5.0-alpha.4",
+    "babel-jest": "^29.3.1",
+    "eslint": "^8.28.0",
+    "eslint-config-eslint": "^7.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "jest": "^29.3.1",
+    "js-yaml": "^4.1.0",
+    "mocha": "^9.2.1",
+    "ts-node": "^10.9.1",
+    "typedoc": "^0.23.21",
+    "typescript": "^4.8.4",
+    "vsce": "^2.13.0"
+  },
+  "engines": {
+    "node": "^20.0.0",
+    "vscode": "^1.63.0"
+  },
+  "license": "MIT",
+  "name": "eo-vscode-server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/objectionary/eo-vscode"
+  },
+  "scripts": {
+    "build": "npm run get-grammar && npm run build-parser && tsc -b",
+    "build-parser": "antlr4ts -visitor resources/Eo.g4 && mv resources/*.ts src/parser",
+    "compile": "tsc -b",
+    "fetch-and-build-grammar": "npm run get-grammar && npm run build-parser",
+    "get-grammar": "curl https://raw.githubusercontent.com/objectionary/eo/$npm_package_config_grammar_commit/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4 > resources/Eo.g4",
+    "lint": "eslint ./src --ext .ts,.tsx",
+    "package": "ncc build ./out/server.js && pkg dist/package.json",
+    "unit-test": "bash scripts/setTestFixture.sh && jest"
+  },
+  "version": "1.0.0"
 }

@@ -48,7 +48,7 @@ jobs:
       - name: Unit testing
         run: |
           npm run unit-test
-        
+
       - name: Building
         run: |
           npm run build
@@ -61,7 +61,7 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-      
+
       - name: SonarCloud Scan
         uses:  SonarSource/sonarqube-scan-action@master
         env:
@@ -84,7 +84,7 @@ jobs:
             "description": "Staging checks passed",
             "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           }'
-          
+
       - name: Staging Checks 🚨
         if: ${{ failure() }}
         # set the merge commit status check

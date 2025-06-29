@@ -16,21 +16,21 @@ public class ProgramParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		COMMENT=1, META=2, ROOT=3, HOME=4, STAR=5, DOTS=6, CONST=7, SLASH=8, COLON=9, 
-		COPY=10, ARROW=11, VERTEX=12, SIGMA=13, XI=14, PLUS=15, MINUS=16, QUESTION=17, 
-		SPACE=18, DOT=19, LSQ=20, RSQ=21, LB=22, RB=23, AT=24, RHO=25, HASH=26, 
-		EOL=27, BYTES=28, BOOL=29, STRING=30, INT=31, FLOAT=32, HEX=33, NAME=34, 
+		COMMENT=1, META=2, ROOT=3, HOME=4, STAR=5, DOTS=6, CONST=7, SLASH=8, COLON=9,
+		COPY=10, ARROW=11, VERTEX=12, SIGMA=13, XI=14, PLUS=15, MINUS=16, QUESTION=17,
+		SPACE=18, DOT=19, LSQ=20, RSQ=21, LB=22, RB=23, AT=24, RHO=25, HASH=26,
+		EOL=27, BYTES=28, BOOL=29, STRING=30, INT=31, FLOAT=32, HEX=33, NAME=34,
 		TEXT=35, TAB=36, UNTAB=37;
 	public static final int
-		RULE_program = 0, RULE_license = 1, RULE_metas = 2, RULE_objects = 3, 
-		RULE_object = 4, RULE_abstraction = 5, RULE_attributes = 6, RULE_attribute = 7, 
-		RULE_label = 8, RULE_tail = 9, RULE_suffix = 10, RULE_method = 11, RULE_scope = 12, 
-		RULE_application = 13, RULE_htail = 14, RULE_head = 15, RULE_has = 16, 
+		RULE_program = 0, RULE_license = 1, RULE_metas = 2, RULE_objects = 3,
+		RULE_object = 4, RULE_abstraction = 5, RULE_attributes = 6, RULE_attribute = 7,
+		RULE_label = 8, RULE_tail = 9, RULE_suffix = 10, RULE_method = 11, RULE_scope = 12,
+		RULE_application = 13, RULE_htail = 14, RULE_head = 15, RULE_has = 16,
 		RULE_data = 17;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"program", "license", "metas", "objects", "object", "abstraction", "attributes", 
-			"attribute", "label", "tail", "suffix", "method", "scope", "application", 
+			"program", "license", "metas", "objects", "object", "abstraction", "attributes",
+			"attribute", "label", "tail", "suffix", "method", "scope", "application",
 			"htail", "head", "has", "data"
 		};
 	}
@@ -38,18 +38,18 @@ public class ProgramParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, null, null, "'Q'", "'QQ'", "'*'", "'...'", "'!'", "'/'", "':'", 
-			"'''", "'>'", "'<'", "'&'", "'$'", "'+'", "'-'", "'?'", "' '", "'.'", 
+			null, null, null, "'Q'", "'QQ'", "'*'", "'...'", "'!'", "'/'", "':'",
+			"'''", "'>'", "'<'", "'&'", "'$'", "'+'", "'-'", "'?'", "' '", "'.'",
 			"'['", "']'", "'('", "')'", "'@'", "'^'", "'#'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "COMMENT", "META", "ROOT", "HOME", "STAR", "DOTS", "CONST", "SLASH", 
-			"COLON", "COPY", "ARROW", "VERTEX", "SIGMA", "XI", "PLUS", "MINUS", "QUESTION", 
-			"SPACE", "DOT", "LSQ", "RSQ", "LB", "RB", "AT", "RHO", "HASH", "EOL", 
-			"BYTES", "BOOL", "STRING", "INT", "FLOAT", "HEX", "NAME", "TEXT", "TAB", 
+			null, "COMMENT", "META", "ROOT", "HOME", "STAR", "DOTS", "CONST", "SLASH",
+			"COLON", "COPY", "ARROW", "VERTEX", "SIGMA", "XI", "PLUS", "MINUS", "QUESTION",
+			"SPACE", "DOT", "LSQ", "RSQ", "LB", "RB", "AT", "RHO", "HASH", "EOL",
+			"BYTES", "BOOL", "STRING", "INT", "FLOAT", "HEX", "NAME", "TEXT", "TAB",
 			"UNTAB"
 		};
 	}
@@ -205,7 +205,7 @@ public class ProgramParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(47); 
+			setState(47);
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -223,7 +223,7 @@ public class ProgramParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(49); 
+				setState(49);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );
@@ -271,7 +271,7 @@ public class ProgramParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(53); 
+			setState(53);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -283,7 +283,7 @@ public class ProgramParser extends Parser {
 				match(EOL);
 				}
 				}
-				setState(55); 
+				setState(55);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==META );
@@ -338,7 +338,7 @@ public class ProgramParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(67); 
+			setState(67);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -356,7 +356,7 @@ public class ProgramParser extends Parser {
 						setState(58);
 						match(EOL);
 						}
-						} 
+						}
 					}
 					setState(63);
 					_errHandler.sync(this);
@@ -368,7 +368,7 @@ public class ProgramParser extends Parser {
 				match(EOL);
 				}
 				}
-				setState(69); 
+				setState(69);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 68506640506L) != 0) );
@@ -511,7 +511,7 @@ public class ProgramParser extends Parser {
 						break;
 					}
 					}
-					} 
+					}
 				}
 				setState(93);
 				_errHandler.sync(this);
@@ -867,7 +867,7 @@ public class ProgramParser extends Parser {
 			match(EOL);
 			setState(134);
 			match(TAB);
-			setState(138); 
+			setState(138);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
@@ -879,7 +879,7 @@ public class ProgramParser extends Parser {
 				match(EOL);
 				}
 				}
-				setState(140); 
+				setState(140);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 68506640506L) != 0) );
@@ -1253,7 +1253,7 @@ public class ProgramParser extends Parser {
 						}
 						break;
 					}
-					} 
+					}
 				}
 				setState(190);
 				_errHandler.sync(this);
@@ -1341,7 +1341,7 @@ public class ProgramParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(209); 
+			setState(209);
 			_errHandler.sync(this);
 			_alt = 1;
 			do {
@@ -1411,7 +1411,7 @@ public class ProgramParser extends Parser {
 				default:
 					throw new NoViableAltException(this);
 				}
-				setState(211); 
+				setState(211);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,31,_ctx);
 			} while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER );

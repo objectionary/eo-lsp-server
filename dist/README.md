@@ -1,2 +1,0 @@
-This is the intermediate directory where a compact single-file zero-dependencies version of the server is produced via `ncc`.
-The `package.json` file included in this directory governs the way `pkg` will further process the server into standalone executables for various target platforms.

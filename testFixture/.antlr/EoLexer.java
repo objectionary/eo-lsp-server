@@ -16,9 +16,9 @@ public class EoLexer extends Lexer {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		COMMENTARY=1, META=2, ROOT=3, HOME=4, STAR=5, CONST=6, COLON=7, ARROW=8, 
-		XI=9, PLUS=10, MINUS=11, QUESTION=12, SPACE=13, DOT=14, LSQ=15, RSQ=16, 
-		LB=17, RB=18, PHI=19, RHO=20, HASH=21, TILDE=22, EOL=23, BYTES=24, STRING=25, 
+		COMMENTARY=1, META=2, ROOT=3, HOME=4, STAR=5, CONST=6, COLON=7, ARROW=8,
+		XI=9, PLUS=10, MINUS=11, QUESTION=12, SPACE=13, DOT=14, LSQ=15, RSQ=16,
+		LB=17, RB=18, PHI=19, RHO=20, HASH=21, TILDE=22, EOL=23, BYTES=24, STRING=25,
 		INT=26, FLOAT=27, HEX=28, NAME=29, TEXT=30;
 	public static String[] channelNames = {
 		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
@@ -30,10 +30,10 @@ public class EoLexer extends Lexer {
 
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"COMMENTARY", "META", "ROOT", "HOME", "STAR", "CONST", "COLON", "ARROW", 
-			"XI", "PLUS", "MINUS", "QUESTION", "SPACE", "DOT", "LSQ", "RSQ", "LB", 
-			"RB", "PHI", "RHO", "HASH", "TILDE", "INDENT", "LINEBREAK", "EOL", "BYTE", 
-			"EMPTY_BYTES", "LINE_BYTES", "BYTES", "ESCAPE_SEQUENCE", "STRING", "ZERO", 
+			"COMMENTARY", "META", "ROOT", "HOME", "STAR", "CONST", "COLON", "ARROW",
+			"XI", "PLUS", "MINUS", "QUESTION", "SPACE", "DOT", "LSQ", "RSQ", "LB",
+			"RB", "PHI", "RHO", "HASH", "TILDE", "INDENT", "LINEBREAK", "EOL", "BYTE",
+			"EMPTY_BYTES", "LINE_BYTES", "BYTES", "ESCAPE_SEQUENCE", "STRING", "ZERO",
 			"INT", "EXPONENT", "FLOAT", "HEX", "NAME", "TEXT_MARK", "TEXT"
 		};
 	}
@@ -41,17 +41,17 @@ public class EoLexer extends Lexer {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, null, null, "'Q'", "'QQ'", "'*'", "'!'", "':'", "'>'", "'$'", "'+'", 
-			"'-'", "'?'", "' '", "'.'", "'['", "']'", "'('", "')'", "'@'", "'^'", 
+			null, null, null, "'Q'", "'QQ'", "'*'", "'!'", "':'", "'>'", "'$'", "'+'",
+			"'-'", "'?'", "' '", "'.'", "'['", "']'", "'('", "')'", "'@'", "'^'",
 			"'#'", "'~'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
-			null, "COMMENTARY", "META", "ROOT", "HOME", "STAR", "CONST", "COLON", 
-			"ARROW", "XI", "PLUS", "MINUS", "QUESTION", "SPACE", "DOT", "LSQ", "RSQ", 
-			"LB", "RB", "PHI", "RHO", "HASH", "TILDE", "EOL", "BYTES", "STRING", 
+			null, "COMMENTARY", "META", "ROOT", "HOME", "STAR", "CONST", "COLON",
+			"ARROW", "XI", "PLUS", "MINUS", "QUESTION", "SPACE", "DOT", "LSQ", "RSQ",
+			"LB", "RB", "PHI", "RHO", "HASH", "TILDE", "EOL", "BYTES", "STRING",
 			"INT", "FLOAT", "HEX", "NAME", "TEXT"
 		};
 	}
