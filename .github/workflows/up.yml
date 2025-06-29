@@ -22,7 +22,7 @@ jobs:
           git fetch --tags --force && \
           latest=$(git tag --sort=creatordate | tail -1) && \
           export latest && \
-          sed -E -i "s/eo-lsp-server@[0-9\.]+/eo-lsp-server@${latest}/g" eo-maven-plugin/README.md
+          sed -E -i "s/eo-lsp-server@[0-9\.]+/eo-lsp-server@${latest}/g" README.md
       - uses: peter-evans/create-pull-request@v7
         with:
           sign-commits: true
