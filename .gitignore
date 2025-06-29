@@ -15,3 +15,4 @@ out/
 resources/*
 src/parser/*
 testFixtures/*
+.claude/

@@ -61,14 +61,9 @@
     "url": "https://github.com/objectionary/eo-lsp-server"
   },
   "scripts": {
-    "build": "npm run get-grammar && npm run build-parser && tsc -b",
-    "build-parser": "antlr4ts -visitor resources/Eo.g4 && mv resources/*.ts src/parser",
-    "compile": "tsc -b",
-    "fetch-and-build-grammar": "npm run get-grammar && npm run build-parser",
-    "get-grammar": "curl https://raw.githubusercontent.com/objectionary/eo/$npm_package_config_grammar_commit/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4 > resources/Eo.g4",
-    "lint": "eslint ./src --ext .ts,.tsx",
-    "package": "ncc build ./out/server.js && pkg package.json",
-    "test": "jest"
+    "build": "make build",
+    "test": "make test",
+    "lint": "make lint"
   },
   "version": "0.0.0"
 }
