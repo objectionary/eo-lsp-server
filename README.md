@@ -69,10 +69,10 @@ Fist, install Node modules with:
 npm install
 ```
 
-Then, download grammar file and generate [ANTLR4] parser automatically with:
+Then, build the project:
 
 ```bash
-npm run fetch-and-build-grammar
+make
 ```
 
 Make changes on a new branch.
@@ -81,15 +81,10 @@ in the code editor.
 After modifications, test your code with:
 
 ```bash
-npm run test
+make test
 ```
 
-Create a pull request. To avoid frustration, run this before committing:
-
-```bash
-npm run lint
-npm run build
-```
+Create a pull request, we'll be glad to review it and merge.
 
 [g4]: https://raw.githubusercontent.com/objectionary/eo/master/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4
 [LSP package]: https://packagecontrol.io/packages/LSP
