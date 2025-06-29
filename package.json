@@ -62,8 +62,8 @@
   },
   "scripts": {
     "build": "make build",
-    "test": "make test",
-    "lint": "make lint"
+    "lint": "make lint",
+    "test": "make test"
   },
   "version": "0.0.0"
 }

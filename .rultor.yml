@@ -15,13 +15,10 @@ release:
   script: |
     [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
     sed -i "s/0\.0\.0/${tag}/" package.json
-    npm run fetch-and-build-grammar
-    npm run test
-    npm run package
+    make
     git commit -am "set version to ${tag}"
     chmod 600 ../npmrc
     npm publish --no-color --userconfig=../npmrc
 merge:
   script: |-
-    npm run test
-    npm run package
+    make
