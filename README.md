@@ -10,22 +10,7 @@ It provides semantic highlighting, and parsing error checking for `.eo` files
 ## Using with Sublime Text
 
 To use this [LSP] server with [Sublime Text], you'll need to install
-the [LSP package]. Then, build this server:
-
-```bash
-git clone https://github.com/objectionary/eo-lsp-server.git
-cd eo-lsp-server
-npm install
-npm run fetch-and-build-grammar
-npm run build
-npm run package
-```
-
-This will create standalone executables in the `bin/` directory
-(`eo-lsp-server-linux` for Linux, `eo-lsp-server-macos` for macOS,
-`eo-lsp-server-win.exe` for Windows).
-
-The, open Sublime Text preferences for LSP
+the [LSP package]. Then, open Sublime Text preferences for LSP
 (`Preferences → Package Settings → LSP → Settings`) and
 add the following configuration to the user settings:
 
@@ -34,7 +19,7 @@ add the following configuration to the user settings:
   "clients": {
     "eo-lsp": {
       "enabled": true,
-      "command": ["/path/to/eo-lsp-server/bin/eo-lsp-server-macos", "--stdio"],
+      "command": ["npx", "eo-lsp-server", "--stdio"],
       "selector": "source.eo",
       "settings": {
         "maxNumberOfProblems": 1000
@@ -43,10 +28,6 @@ add the following configuration to the user settings:
   }
 }
 ```
-
-Replace `/path/to/eo-lsp-server/bin/eo-lsp-server-macos` with the actual path
-to your built server executable
-(use `eo-lsp-server-linux` on Linux or `eo-lsp-server-win.exe` on Windows).
 
 Then, create an EO syntax definition file in `Packages/User/EO.sublime-syntax`:
 
