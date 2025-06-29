@@ -1,0 +1,10 @@
+.eslintignore
+.eslintrc.js
+.github/
+.pdd
+.rultor.yml
+jest.config.ts
+Makefile
+renovate.json
+REUSE.toml
+src/test/
