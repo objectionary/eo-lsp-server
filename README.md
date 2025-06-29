@@ -19,7 +19,7 @@ add the following configuration to the user settings:
   "clients": {
     "eo-lsp": {
       "enabled": true,
-      "command": ["npx", "-y", "eo-lsp-server", "--stdio"],
+      "command": ["npx", "-y", "eo-lsp-server@0.0.0", "--stdio"],
       "selector": "source.eo",
       "settings": {
         "maxNumberOfProblems": 1000
