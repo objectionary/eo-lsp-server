@@ -20,7 +20,7 @@
     "@babel/preset-env": "^7.20.2",
     "@babel/preset-typescript": "^7.27.1",
     "@types/eslint": "^9.0.0",
-    "@types/jest": "^30.0.0",
+    "@types/jest": "^30.0.8",
     "@types/mocha": "^10.0.1",
     "@types/node": "^22.0.0",
     "@types/vscode": "^1.63.0",
@@ -29,11 +29,11 @@
     "@vercel/ncc": "^0.38.3",
     "@yao-pkg/pkg": "^6.4.0",
     "antlr4ts-cli": "^0.5.0-alpha.4",
-    "babel-jest": "^30.0.0",
+    "babel-jest": "^30.0.8",
     "eslint": "^8.28.0",
     "eslint-config-eslint": "^7.0.0",
     "eslint-plugin-import": "^2.32.0",
-    "jest": "^30.0.0",
+    "jest": "^30.0.8",
     "js-yaml": "^4.1.0",
     "mocha": "^11.0.0",
     "ts-node": "^10.9.1",
@@ -69,5 +69,5 @@
     "lint": "make lint",
     "test": "make test"
   },
-  "version": "0.0.0"
+  "version": "0.0.8"
 }
