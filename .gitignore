@@ -6,12 +6,12 @@
 .idea/
 .vscode-test
 bin/*
-coverage
+coverage/
 dist/
 dist/*
 node_modules
 node_modules/
-out
+out/
 resources/*
 src/parser/*
 testFixtures/*
