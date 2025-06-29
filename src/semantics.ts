@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
+// SPDX-License-Identifier: MIT
+
 /**
  * Performs the semantic highlighting if the documents.
  * @module SemanticTokensProvider
