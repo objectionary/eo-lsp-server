@@ -65,7 +65,6 @@ export class SemanticTokensProvider {
      * @returns {void}
      */
     setMap() {
-
         /*
             List of VS Code's token types:
               [
@@ -120,12 +119,10 @@ export class SemanticTokensProvider {
      */
     computeLegend(capability: SemanticTokensClientCapabilities): SemanticTokensLegend {
         const clientTokenTypes = new Set<string>(capability.tokenTypes);
-
         const tokenTypes: string[] = [];
 
         getTokenTypes().forEach(el => {
             const type = this.tokenTypeMap.get(el) || "";
-
             if (clientTokenTypes.has(type)) {
                 tokenTypes.push(type);
             }
@@ -173,12 +170,10 @@ export class SemanticTokensProvider {
      */
     getTokenBuilder(document: TextDocument): SemanticTokensBuilder {
         let result = this.tokenBuilders.get(document.uri);
-
         if (!result) {
             result = new SemanticTokensBuilder();
             this.tokenBuilders.set(document.uri, result);
         }
-
         return result;
     }
 
@@ -210,7 +205,6 @@ export class SemanticTokensProvider {
      */
     provideSemanticTokens(document: TextDocument) {
         const builder = this.getTokenBuilder(document);
-
         builder.previousResult("nonexistent id"); // clear the builder
         this.populateBuilder(builder, document);
         return builder.build();
@@ -224,7 +218,6 @@ export class SemanticTokensProvider {
      */
     provideDeltas(document: TextDocument) {
         const builder = this.getTokenBuilder(document);
-
         builder.previousResult(builder.id);
         this.populateBuilder(builder, document);
         return builder.buildEdits();
