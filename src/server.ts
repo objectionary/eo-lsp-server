@@ -83,7 +83,6 @@ connection.onInitialize((params: InitializeParams) => {
  */
 connection.onInitialized(() => {
     if (clientCapabilities.hasConfigurationCapability) {
-        // Register for all configuration changes.
         connection.client.register(DidChangeConfigurationNotification.type, void 0);
     }
     if (clientCapabilities.hasWorkspaceFolderCapability) {
