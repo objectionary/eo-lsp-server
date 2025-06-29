@@ -79,10 +79,8 @@ make test
 
 Create a pull request, we'll be glad to review it and merge.
 
-[g4]: https://raw.githubusercontent.com/objectionary/eo/master/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4
 [LSP package]: https://packagecontrol.io/packages/LSP
 [LSP]: https://en.wikipedia.org/wiki/Language_Server_Protocol
 [EOLANG]: https://www.eolang.org
-[ANTLR4]: https://github.com/antlr/antlr4
 [Sublime Text]: https://www.sublimetext.com/
 [file an issue]: https://github.com/objectionary/eo-lsp-server/issues
