@@ -15,6 +15,7 @@ release:
   script: |
     [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
     sed -i "s/0\.0\.0/${tag}/" package.json
+    npm run fetch-and-build-grammar
     npm run unit-test
     npm run package
     git commit -am "set version to ${tag}"

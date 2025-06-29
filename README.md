@@ -24,8 +24,8 @@ npm run package
 ```
 
 This will create standalone executables in the `bin/` directory
-(`server-linux` for Linux, `server-macos` for macOS,
-`server-win.exe` for Windows).
+(`eo-lsp-server-linux` for Linux, `eo-lsp-server-macos` for macOS,
+`eo-lsp-server-win.exe` for Windows).
 
 The, open Sublime Text preferences for LSP
 (`Preferences → Package Settings → LSP → Settings`) and
@@ -36,7 +36,7 @@ add the following configuration to the user settings:
   "clients": {
     "eo-lsp": {
       "enabled": true,
-      "command": ["/path/to/eo-lsp-server/bin/server-macos"],
+      "command": ["/path/to/eo-lsp-server/bin/eo-lsp-server-macos", "--stdio"],
       "selector": "source.eo",
       "settings": {
         "maxNumberOfProblems": 1000
@@ -46,13 +46,15 @@ add the following configuration to the user settings:
 }
 ```
 
-Replace `/path/to/eo-lsp-server/bin/server-macos` with the actual path
+Replace `/path/to/eo-lsp-server/bin/eo-lsp-server-macos` with the actual path
 to your built server executable
-(use `server-linux` on Linux or `server-win.exe` on Windows).
+(use `eo-lsp-server-linux` on Linux or `eo-lsp-server-win.exe` on Windows).
 
 Then, create an EO syntax definition file in `Packages/User/EO.sublime-syntax`:
 
 ```yaml
+%YAML 1.2
+---
 name: EO
 file_extensions:
   - eo
