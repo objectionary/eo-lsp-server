@@ -12,3 +12,5 @@ bin/
 out/
 resources/
 LICENSES/
+compiled/
+Eo.g4
