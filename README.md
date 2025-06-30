@@ -20,7 +20,7 @@ in `Settings → Package Settings → LSP → Settings`:
   "clients": {
     "eo-lsp": {
       "enabled": true,
-      "command": ["npx", "-y", "eo-lsp-server@0.0.1", "--stdio"],
+      "command": ["npx", "-y", "eo-lsp-server@0.0.9", "--stdio"],
       "selector": "source.eo"
     }
   }
