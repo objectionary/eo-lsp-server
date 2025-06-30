@@ -1,0 +1,12 @@
++home https://www.eolang.org
++spdx SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
++spdx SPDX-License-Identifier: MIT
+
+# Fibonacci number.
+[n] > fibonacci
+  if. > @
+    n.lte 1
+    n
+    plus.
+      fibonacci (n.minus 1)
+      fibonacci (n.minus 2)

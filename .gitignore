@@ -5,8 +5,8 @@ bin/
 coverage/
 dist/
 node_modules/
-out/
-resources/
+tsc-compiled/
 src/parser/
-testFixtures/
 .claude/
+Eo.g4
+compiled/

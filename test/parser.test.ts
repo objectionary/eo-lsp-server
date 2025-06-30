@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-import { antlrTypeNumToString, getTokenTypes, tokenize, getParserErrors } from "../parser";
+import { antlrTypeNumToString, getTokenTypes, tokenize, getParserErrors } from "../src/parser";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -28,5 +28,12 @@ describe("Parser module", () => {
     test("detects parsing errors", () => {
         const parseErrors = getParserErrors("-- broken syntax --");
         expect(parseErrors.length).toBe(1);
+    });
+
+    test("parses fibonacci program from file", () => {
+        const programPath = path.join(__dirname, "../fixtures", "fibonacci.eo");
+        const program = fs.readFileSync(programPath, "utf8");
+        const parseErrors = getParserErrors(program);
+        expect(parseErrors.length).toBe(0);
     });
 });

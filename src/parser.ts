@@ -28,11 +28,9 @@ function buildTokenSetAndMap() {
     if (!types || !mapper) {
         types = new Set<string>();
         mapper = new Map<number, string>();
-        const location = path.join(__dirname, "../resources/EoLexer.tokens");
-
+        const location = path.join(__dirname, "parser", "EoLexer.tokens");
         try {
             const text = fs.readFileSync(location, { encoding: "utf-8" });
-
             text.split("\n").forEach(elem => {
                 if (elem[0] !== "'") {
                     const pair = elem.split("=");
