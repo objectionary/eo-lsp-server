@@ -38,16 +38,18 @@ file_extensions:
 scope: source.eo
 contexts:
   main:
+    - match: '^\+[^\n]+$'
+      scope: meta.eo
     - match: '#.*$'
       scope: comment.line.eo
-    - match: '\b(package|import|alias|meta|self|@|true|false)\b'
+    - match: '[@]'
       scope: keyword.eo
+    - match: '[\[\]+\*\\>!^?:\.\)\(]'
+      scope: keyword.operator.eo
     - match: '"[^"]*"'
       scope: string.quoted.double.eo
     - match: '\b\d+(\.\d+)?\b'
       scope: constant.numeric.eo
-    - match: '[+\-*/=<>!&|^~?:]'
-      scope: keyword.operator.eo
 ```
 
 Should work. If it doesn't, [file an issue], we'll help.
