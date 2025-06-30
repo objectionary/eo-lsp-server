@@ -154,7 +154,7 @@ async function validateTextDocument(document: TextDocument): Promise<void> {
                 start: { line: error.line - 1, character: error.column },
                 end: { line: error.line - 1, character: error.column }
             },
-            message: `${error.msg} (${EoVersion})`,
+            message: `${error.msg} (EO ${EoVersion})`,
             source: "ex"
         };
         diagnostics.push(diagnostic);
