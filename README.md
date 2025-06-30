@@ -48,7 +48,7 @@ contexts:
       scope: keyword.operator.eo
     - match: '"[^"]*"'
       scope: string.quoted.double.eo
-    - match: '\b\d+(\.\d+)?\b'
+    - match: '\b(\+|-)?\d+(\.\d+(e(\+|-)?\d)?)?\b'
       scope: constant.numeric.eo
 ```
 
