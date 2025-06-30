@@ -42,9 +42,9 @@ contexts:
       scope: meta.eo
     - match: '#.*$'
       scope: comment.line.eo
-    - match: '[@]'
+    - match: '[@^*?]'
       scope: keyword.eo
-    - match: '[\[\]+\*\\>!^?:\.\)\(]'
+    - match: '[\[\]\\>!:\.\)\(]|\+>'
       scope: keyword.operator.eo
     - match: '"[^"]*"'
       scope: string.quoted.double.eo
