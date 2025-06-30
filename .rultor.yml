@@ -17,6 +17,7 @@ release:
     sed -i "s/0\.0\.0/${tag}/" package.json
     make
     test -e dist/index.js
+    test -e dist/EoLexer.tokens
     git commit -am "set version to ${tag}"
     chmod 600 ../npmrc
     npm publish --no-color --userconfig=../npmrc

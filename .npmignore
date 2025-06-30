@@ -7,6 +7,7 @@ bin/
 compiled/
 coverage/
 Eo.g4
+fixtures/
 jest.config.ts
 LICENSES/
 Makefile
@@ -14,5 +15,6 @@ out/
 renovate.json
 resources/
 REUSE.toml
-src/test/
+test/
+tsc-compiled/
 tsconfig.json
