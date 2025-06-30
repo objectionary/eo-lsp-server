@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 .PHONY: all build test lint clean
-.SHELLFLAGS := -ex -o pipefail -c
+.SHELLFLAGS := -e -o pipefail -c
 .ONESHELL:
 SHELL := bash
 
@@ -28,7 +28,6 @@ tsc-compiled: $(TSS) Makefile
 	npx tsc -b
 
 Eo.g4: Makefile
-	mkdir -p "$$(dirname $@)"
 	curl --silent $(GRAMMAR_URL) > $@
 
 src/parser: Eo.g4 Makefile

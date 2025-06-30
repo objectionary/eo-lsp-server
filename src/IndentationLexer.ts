@@ -6,12 +6,14 @@ import { EoLexer } from "./parser/EoLexer";
 
 /**
  * Custom lexer that wraps EoLexer to handle indentation-based TAB/UNTAB tokens
+ * Modeled after the Java EoIndentLexer implementation
  */
 export class IndentationLexer extends Lexer {
     private wrapped: EoLexer;
-    private pendingTokens: Token[] = [];
+    private tokens: Token[] = [];
+    private indent: number[] = [];
+    private spaces: string[] = [];
     private lastPosition = 0;
-    private indentStack: number[] = [0];
 
     public static readonly TAB = 31;
     public static readonly UNTAB = 32;
@@ -19,20 +21,12 @@ export class IndentationLexer extends Lexer {
     constructor(input: CharStream) {
         super(input);
         this.wrapped = new EoLexer(input);
-    }
-
-    /**
-     * Checks if a token is an EOL token
-     * @param token - Token to check
-     * @returns true if token is EOL
-     */
-    private static isEOL(token: Token): boolean {
-        return token.type === EoLexer.EOL;
+        this.indent.push(0);
     }
 
     /**
      * Creates a new token
-     * @param type - Token type
+     * @param type - Token type  
      * @param text - Token text
      * @param line - Line number
      * @param column - Column position
@@ -48,75 +42,128 @@ export class IndentationLexer extends Lexer {
     }
 
     /**
-     * Calculates the indentation level from EOL token text
+     * Extracts spaces from EOL token text
      * @param text - EOL token text
-     * @returns Indentation level (number of double spaces)
+     * @returns Spaces after newline
      */
-    private static getIndentLevel(text: string): number {
+    private static textSpaces(text: string): string {
         const afterNewline = text.slice(text.indexOf("\n") + 1);
-        return Math.floor(afterNewline.length / 2);
+        return afterNewline;
     }
 
     /**
-     * Overrides nextToken to inject TAB/UNTAB tokens based on indentation
+     * Emits TAB tokens for indentation
+     * @param shift - Number of indentation levels to add
+     */
+    private emitIndent(shift: number): void {
+        for (let i = 0; i < shift; i++) {
+            const tab = this.createToken(
+                IndentationLexer.TAB,
+                "TAB",
+                this.wrapped.line,
+                0
+            );
+            this.tokens.push(tab);
+        }
+    }
+
+    /**
+     * Emits UNTAB tokens for dedentation
+     * @param shift - Number of indentation levels to remove
+     */
+    private emitDedent(shift: number): void {
+        for (let i = 0; i < shift; i++) {
+            const untab = this.createToken(
+                IndentationLexer.UNTAB,
+                "UNTAB",
+                this.wrapped.line,
+                0
+            );
+            this.tokens.push(untab);
+        }
+    }
+
+    /**
+     * Handles TAB/UNTAB token generation based on indentation changes
+     * @param tabs - Current indentation level
+     * @param next - Next token to process
+     */
+    private handleTabs(tabs: number, next: Token): void {
+        const last = this.indent[this.indent.length - 1];
+        const shift = tabs - last;
+        if (shift < 0) {
+            let dedentCount = 0;
+            while (this.indent.length > 1 && this.indent[this.indent.length - 1] > tabs) {
+                this.indent.pop();
+                dedentCount++;
+            }
+            this.emitDedent(dedentCount);
+            if (this.indent[this.indent.length - 1] < tabs) {
+                this.indent.push(tabs);
+                this.emitIndent(1);
+            }
+        } else if (shift > 0) {
+            this.emitIndent(shift);
+            this.indent.push(tabs);
+        }
+        this.tokens.push(next);
+    }
+
+    /**
+     * Looks ahead to process indentation
+     */
+    private lookAhead(): void {
+        let current: Token | null = null;
+        let next = this.wrapped.nextToken();
+        
+        while (next.type !== Token.EOF) {
+            if (current !== null && current.type === EoLexer.EOL && next.type !== EoLexer.EOL) {
+                const spaceText = this.spaces.length > 0 ? this.spaces.pop()! : "";
+                this.handleTabs(Math.floor(spaceText.length / 2), next);
+                current = null;
+                next = this.wrapped.nextToken();
+                continue;
+            }
+            
+            if (current !== null && current.type !== EoLexer.EOL) {
+                this.tokens.push(current);
+            }
+            
+            if (next.type === EoLexer.EOL) {
+                this.spaces.push(IndentationLexer.textSpaces(next.text || ""));
+                this.tokens.push(next);
+            }
+            
+            current = next;
+            next = this.wrapped.nextToken();
+        }
+        
+        if (current !== null) {
+            if (current.type === EoLexer.EOL) {
+                const spaceText = this.spaces.length > 0 ? this.spaces.pop()! : "";
+                this.handleTabs(Math.floor(spaceText.length / 2), next);
+            } else {
+                this.tokens.push(current);
+            }
+        }
+        
+        while (this.indent.length > 1) {
+            this.indent.pop();
+            this.emitDedent(1);
+        }
+        
+        this.tokens.push(next);
+    }
+
+    /**
+     * Overrides nextToken to provide indentation-aware tokens
      * @returns Next token
      */
     public nextToken(): Token {
-        if (this.pendingTokens.length > 0) {
-            return this.pendingTokens.shift()!;
+        if (this.tokens.length === 0) {
+            this.lookAhead();
         }
-
-        const token = this.wrapped.nextToken();
-
-        if (IndentationLexer.isEOL(token) && token.type !== Token.EOF) {
-            const currentIndent = IndentationLexer.getIndentLevel(token.text || "");
-            const previousIndent = this.indentStack[this.indentStack.length - 1];
-
-            this.pendingTokens.push(token);
-
-            if (currentIndent > previousIndent) {
-                this.indentStack.push(currentIndent);
-                const tabToken = this.createToken(
-                    IndentationLexer.TAB,
-                    "TAB",
-                    token.line + 1,
-                    currentIndent * 2
-                );
-                this.pendingTokens.push(tabToken);
-            } else if (currentIndent < previousIndent) {
-                while (this.indentStack.length > 1 &&
-                       this.indentStack[this.indentStack.length - 1] > currentIndent) {
-                    this.indentStack.pop();
-                    const untabToken = this.createToken(
-                        IndentationLexer.UNTAB,
-                        "UNTAB",
-                        token.line + 1,
-                        currentIndent * 2
-                    );
-                    this.pendingTokens.push(untabToken);
-                }
-            }
-
-            this.lastPosition = token.stopIndex + 1;
-            return this.pendingTokens.shift()!;
-        }
-
-        if (token.type === Token.EOF && this.indentStack.length > 1) {
-            while (this.indentStack.length > 1) {
-                this.indentStack.pop();
-                const untabToken = this.createToken(
-                    IndentationLexer.UNTAB,
-                    "UNTAB",
-                    token.line,
-                    0
-                );
-                this.pendingTokens.push(untabToken);
-            }
-            this.pendingTokens.push(token);
-            return this.pendingTokens.shift()!;
-        }
-
-        return token;
+        return this.tokens.shift()!;
     }
 
     /**

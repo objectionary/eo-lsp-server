@@ -10,3 +10,8 @@
     plus.
       fibonacci (n.minus 1)
       fibonacci (n.minus 2)
+  # Test.
+  [] +> eight-fibonacci-number
+    eq. > @
+      13
+      fibonacci 8
