@@ -14,10 +14,9 @@ import {
     SemanticTokensRegistrationOptions,
     SemanticTokensRegistrationType
 } from "vscode-languageserver/node.js";
-import {
-    TextDocument
-} from "vscode-languageserver-textdocument";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import { Capabilities } from "./capabilities";
+import { EoVersion } from "./eo-version";
 import { SemanticTokensProvider } from "./semantics";
 import { getParserErrors } from "./parser";
 import { ParserError } from "./parserError";
@@ -155,7 +154,7 @@ async function validateTextDocument(document: TextDocument): Promise<void> {
                 start: { line: error.line - 1, character: error.column },
                 end: { line: error.line - 1, character: error.column }
             },
-            message: error.msg,
+            message: `${error.msg} (${EoVersion})`,
             source: "ex"
         };
         diagnostics.push(diagnostic);
