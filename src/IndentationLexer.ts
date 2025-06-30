@@ -26,7 +26,7 @@ export class IndentationLexer extends Lexer {
 
     /**
      * Creates a new token
-     * @param type - Token type  
+     * @param type - Token type
      * @param text - Token text
      * @param line - Line number
      * @param column - Column position
@@ -54,6 +54,7 @@ export class IndentationLexer extends Lexer {
     /**
      * Emits TAB tokens for indentation
      * @param shift - Number of indentation levels to add
+     * @returns Void
      */
     private emitIndent(shift: number): void {
         for (let i = 0; i < shift; i++) {
@@ -70,6 +71,7 @@ export class IndentationLexer extends Lexer {
     /**
      * Emits UNTAB tokens for dedentation
      * @param shift - Number of indentation levels to remove
+     * @returns Void
      */
     private emitDedent(shift: number): void {
         for (let i = 0; i < shift; i++) {
@@ -87,6 +89,7 @@ export class IndentationLexer extends Lexer {
      * Handles TAB/UNTAB token generation based on indentation changes
      * @param tabs - Current indentation level
      * @param next - Next token to process
+     * @returns Void
      */
     private handleTabs(tabs: number, next: Token): void {
         const last = this.indent[this.indent.length - 1];
@@ -111,11 +114,11 @@ export class IndentationLexer extends Lexer {
 
     /**
      * Looks ahead to process indentation
+     * @returns Void
      */
     private lookAhead(): void {
         let current: Token | null = null;
         let next = this.wrapped.nextToken();
-        
         while (next.type !== Token.EOF) {
             if (current !== null && current.type === EoLexer.EOL && next.type !== EoLexer.EOL) {
                 const spaceText = this.spaces.length > 0 ? this.spaces.pop()! : "";
@@ -124,20 +127,16 @@ export class IndentationLexer extends Lexer {
                 next = this.wrapped.nextToken();
                 continue;
             }
-            
             if (current !== null && current.type !== EoLexer.EOL) {
                 this.tokens.push(current);
             }
-            
             if (next.type === EoLexer.EOL) {
                 this.spaces.push(IndentationLexer.textSpaces(next.text || ""));
                 this.tokens.push(next);
             }
-            
             current = next;
             next = this.wrapped.nextToken();
         }
-        
         if (current !== null) {
             if (current.type === EoLexer.EOL) {
                 const spaceText = this.spaces.length > 0 ? this.spaces.pop()! : "";
@@ -146,12 +145,10 @@ export class IndentationLexer extends Lexer {
                 this.tokens.push(current);
             }
         }
-        
         while (this.indent.length > 1) {
             this.indent.pop();
             this.emitDedent(1);
         }
-        
         this.tokens.push(next);
     }
 
