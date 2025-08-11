@@ -58,13 +58,7 @@ export class IndentationLexer extends Lexer {
      */
     private emitIndent(shift: number): void {
         for (let i = 0; i < shift; i++) {
-            const tab = this.createToken(
-                IndentationLexer.TAB,
-                "TAB",
-                this.wrapped.line,
-                0
-            );
-            this.tokens.push(tab);
+            this.emitToken(IndentationLexer.TAB);
         }
     }
 
@@ -75,14 +69,21 @@ export class IndentationLexer extends Lexer {
      */
     private emitDedent(shift: number): void {
         for (let i = 0; i < shift; i++) {
-            const untab = this.createToken(
-                IndentationLexer.UNTAB,
-                "UNTAB",
-                this.wrapped.line,
-                0
-            );
-            this.tokens.push(untab);
+            this.emitToken(IndentationLexer.UNTAB);
         }
+    }
+
+    /**
+     * Emit token at the next line.
+     *
+     * @param type Type.
+     * @returns Void
+     */
+    private emitToken(type: number) {
+        const tkn = new CommonToken(type, type === IndentationLexer.TAB ? "TAB" : "UNTAB");
+        tkn.line = this.wrapped.line;
+        tkn.charPositionInLine = 0;
+        this.tokens.push(tkn);
     }
 
     /**
@@ -120,31 +121,30 @@ export class IndentationLexer extends Lexer {
         let current: Token | null = null;
         let next = this.wrapped.nextToken();
         while (next.type !== Token.EOF) {
+            if (current !== null && current.type === EoLexer.EOL && next.type !== EoLexer.EOL) {
+                const spaceText = this.spaces.length > 0 ? this.spaces.pop()! : "";
+                this.handleTabs(Math.floor(spaceText.length / 2), next);
+                current = null;
+                next = this.wrapped.nextToken();
+                continue;
+            }
+            if (current !== null && current.type !== EoLexer.EOL) {
+                this.tokens.push(current);
+            }
             if (next.type === EoLexer.EOL) {
                 this.spaces.push(IndentationLexer.textSpaces(next.text || ""));
                 this.tokens.push(next);
-                current = next;
-                next = this.wrapped.nextToken();
-                while (next.type === EoLexer.EOL) {
-                    this.spaces.push(IndentationLexer.textSpaces(next.text || ""));
-                    this.tokens.push(next);
-                    current = next;
-                    next = this.wrapped.nextToken();
-                }
-                if (next.type !== Token.EOF) {
-                    const spaceText = this.spaces.length > 0 ? this.spaces.pop()! : "";
-                    this.handleTabs(Math.floor(spaceText.length / 2), next);
-                }
-                continue;
-            }
-            if (current !== null) {
-                this.tokens.push(current);
             }
             current = next;
             next = this.wrapped.nextToken();
         }
-        if (current !== null && current.type !== EoLexer.EOL) {
-            this.tokens.push(current);
+        if (current !== null) {
+            if (current.type === EoLexer.EOL) {
+                const spaceText = this.spaces.length > 0 ? this.spaces.pop()! : "";
+                this.handleTabs(Math.floor(spaceText.length / 2), next);
+            } else {
+                this.tokens.push(current);
+            }
         }
         while (this.indent.length > 1) {
             this.indent.pop();
