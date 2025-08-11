@@ -121,26 +121,23 @@ export class IndentationLexer extends Lexer {
         let next = this.wrapped.nextToken();
         while (next.type !== Token.EOF) {
             if (next.type === EoLexer.EOL) {
-                if (current !== null && current.type !== EoLexer.EOL) {
-                    this.tokens.push(current);
-                }
-                const spaces = IndentationLexer.textSpaces(next.text || "");
-                this.spaces.push(spaces);
+                this.spaces.push(IndentationLexer.textSpaces(next.text || ""));
                 this.tokens.push(next);
                 current = next;
                 next = this.wrapped.nextToken();
                 while (next.type === EoLexer.EOL) {
+                    this.spaces.push(IndentationLexer.textSpaces(next.text || ""));
                     this.tokens.push(next);
                     current = next;
                     next = this.wrapped.nextToken();
                 }
                 if (next.type !== Token.EOF) {
-                    const spaceText = this.spaces.pop() || "";
+                    const spaceText = this.spaces.length > 0 ? this.spaces.pop()! : "";
                     this.handleTabs(Math.floor(spaceText.length / 2), next);
                 }
                 continue;
             }
-            if (current !== null && current.type !== EoLexer.EOL) {
+            if (current !== null) {
                 this.tokens.push(current);
             }
             current = next;
