@@ -13,7 +13,6 @@ export class IndentationLexer extends Lexer {
     private tokens: Token[] = [];
     private indent: number[] = [];
     private spaces: string[] = [];
-    private lastPosition = 0;
 
     public static readonly TAB = 31;
     public static readonly UNTAB = 32;
@@ -22,23 +21,6 @@ export class IndentationLexer extends Lexer {
         super(input);
         this.wrapped = new EoLexer(input);
         this.indent.push(0);
-    }
-
-    /**
-     * Creates a new token
-     * @param type - Token type
-     * @param text - Token text
-     * @param line - Line number
-     * @param column - Column position
-     * @returns New CommonToken
-     */
-    private createToken(type: number, text: string, line: number, column: number): Token {
-        const token = new CommonToken(type, text);
-        token.line = line;
-        token.charPositionInLine = column;
-        token.startIndex = this.lastPosition;
-        token.stopIndex = this.lastPosition - 1;
-        return token;
     }
 
     /**
@@ -58,13 +40,7 @@ export class IndentationLexer extends Lexer {
      */
     private emitIndent(shift: number): void {
         for (let i = 0; i < shift; i++) {
-            const tab = this.createToken(
-                IndentationLexer.TAB,
-                "TAB",
-                this.wrapped.line,
-                0
-            );
-            this.tokens.push(tab);
+            this.emitToken(IndentationLexer.TAB);
         }
     }
 
@@ -75,14 +51,21 @@ export class IndentationLexer extends Lexer {
      */
     private emitDedent(shift: number): void {
         for (let i = 0; i < shift; i++) {
-            const untab = this.createToken(
-                IndentationLexer.UNTAB,
-                "UNTAB",
-                this.wrapped.line,
-                0
-            );
-            this.tokens.push(untab);
+            this.emitToken(IndentationLexer.UNTAB);
         }
+    }
+
+    /**
+     * Emit token at the next line.
+     *
+     * @param type Type.
+     * @returns Void
+     */
+    private emitToken(type: number) {
+        const tkn = new CommonToken(type, type === IndentationLexer.TAB ? "TAB" : "UNTAB");
+        tkn.line = this.wrapped.line;
+        tkn.charPositionInLine = 0;
+        this.tokens.push(tkn);
     }
 
     /**
@@ -120,18 +103,16 @@ export class IndentationLexer extends Lexer {
         let current: Token | null = null;
         let next = this.wrapped.nextToken();
         while (next.type !== Token.EOF) {
-            if (current !== null && current.type === EoLexer.EOL && next.type !== EoLexer.EOL) {
-                const spaceText = this.spaces.length > 0 ? this.spaces.pop()! : "";
-                this.handleTabs(Math.floor(spaceText.length / 2), next);
-                current = null;
-                next = this.wrapped.nextToken();
-                continue;
-            }
-            if (current !== null && current.type !== EoLexer.EOL) {
-                this.tokens.push(current);
-            }
-            if (next.type === EoLexer.EOL) {
+            if (next.type === EoLexer.EOL && (current === null || current.type !== EoLexer.EOL)) {
                 this.spaces.push(IndentationLexer.textSpaces(next.text || ""));
+                this.tokens.push(next);
+            } else if (current !== null && current.type === EoLexer.EOL && next.type === EoLexer.EOL) {
+                this.spaces.push(IndentationLexer.textSpaces(next.text || ""));
+                this.handleTabs(Math.floor(this.spaces[this.spaces.length - 1].length / 2), next);
+            } else if (current !== null && current.type === EoLexer.EOL && next.type !== EoLexer.EOL) {
+                const spaceText = this.spaces.pop() || "";
+                this.handleTabs(Math.floor(spaceText.length / 2), next);
+            } else {
                 this.tokens.push(next);
             }
             current = next;
@@ -139,7 +120,7 @@ export class IndentationLexer extends Lexer {
         }
         if (current !== null) {
             if (current.type === EoLexer.EOL) {
-                const spaceText = this.spaces.length > 0 ? this.spaces.pop()! : "";
+                const spaceText = this.spaces.pop() || "";
                 this.handleTabs(Math.floor(spaceText.length / 2), next);
             } else {
                 this.tokens.push(current);
