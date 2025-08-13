@@ -218,16 +218,3 @@ We welcome contributions!
 * [LSP Protocol Specification](https://microsoft.github.io/language-server-protocol/)
 
 ```
-
----
-
-  
-✅ All `*` list bullets → `-`  
-✅ All lines wrapped ≤ 80 chars  
-✅ Blank lines before/after fenced code blocks  
-✅ Language tag added to all code fences  
-
-
-
-Do you want me to also prepare the **exact git commit & PR description** so you can push it without more CI failures?
-```
