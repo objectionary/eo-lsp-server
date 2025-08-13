@@ -8,6 +8,7 @@
 This is the [LSP] server for [EO](https://github.com/objectionary/eo).
 It provides semantic highlighting and parsing error checking for `.eo` files
 (written in [EOLANG]).
+In order to use it, you need to have [Node] installed.
 
 ## Using with Sublime Text
 
@@ -84,3 +85,4 @@ Create a pull request, we'll be glad to review it and merge.
 [EOLANG]: https://www.eolang.org
 [Sublime Text]: https://www.sublimetext.com/
 [file an issue]: https://github.com/objectionary/eo-lsp-server/issues
+[Node]: https://nodejs.org/en
