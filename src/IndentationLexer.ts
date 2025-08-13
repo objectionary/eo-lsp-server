@@ -24,9 +24,10 @@ export class IndentationLexer extends Lexer {
     }
 
     /**
-     * Extracts spaces from EOL token text
-     * @param text - EOL token text
-     * @returns Spaces after newline
+     * Returns the part of the string that comes after the first newline character.
+     * If no newline is found, returns the entire string.
+     * @param text - Input string (typically an EOL token)
+     * @returns The substring after the first '\n', or the original string if '\n' is absent.
      */
     private static textSpaces(text: string): string {
         const afterNewline = text.slice(text.indexOf("\n") + 1);
@@ -34,7 +35,7 @@ export class IndentationLexer extends Lexer {
     }
 
     /**
-     * Emits TAB tokens for indentation
+     * Emits TAB tokens to increase indentation by the specified number of levels.
      * @param shift - Number of indentation levels to add
      * @returns Void
      */
@@ -45,7 +46,7 @@ export class IndentationLexer extends Lexer {
     }
 
     /**
-     * Emits UNTAB tokens for dedentation
+     * Emits UNTAB tokens to decrease indentation by the specified number of levels.
      * @param shift - Number of indentation levels to remove
      * @returns Void
      */
@@ -56,9 +57,9 @@ export class IndentationLexer extends Lexer {
     }
 
     /**
-     * Emit token at the next line.
-     *
-     * @param type Type.
+     * Creates and emits a new TAB or UNTAB token at the start of the next line.
+     * The token's text is set to "TAB" or "UNTAB" based on its type.
+     * @param type - Token type (must be IndentationLexer.TAB or IndentationLexer.UNTAB)
      * @returns Void
      */
     private emitToken(type: number) {
@@ -69,9 +70,10 @@ export class IndentationLexer extends Lexer {
     }
 
     /**
-     * Handles TAB/UNTAB token generation based on indentation changes
-     * @param tabs - Current indentation level
-     * @param next - Next token to process
+     * Adjusts indentation levels and emits TAB/UNTAB tokens based on the difference between
+     * the current and previous indentation. Also appends the next token to the token stream.
+     * @param tabs - Current indentation level (e.g., number of leading spaces in the new line).
+     * @param next - The next token to be processed (e.g., the first token after indentation).
      * @returns Void
      */
     private handleTabs(tabs: number, next: Token): void {
@@ -96,7 +98,15 @@ export class IndentationLexer extends Lexer {
     }
 
     /**
-     * Looks ahead to process indentation
+     * Processes indentation by analyzing line breaks (`EOL`) and leading whitespace.
+     * - Tracks spaces after each `EOL` to determine indentation levels.
+     * - Emits `TAB`/`UNTAB` tokens when indentation increases/decreases.
+     * - Closes all open indents at the end (e.g., for unclosed blocks).
+     *
+     * Logic:
+     * 1. For consecutive `EOL` tokens, stores their leading spaces but doesn't change indentation.
+     * 2. When a non-`EOL` token follows `EOL`, calculates indentation shift and emits tokens.
+     * 3. Finalizes by dedenting remaining levels and appending the last token (usually EOF).
      * @returns Void
      */
     private lookAhead(): void {
