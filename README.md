@@ -57,7 +57,7 @@ Should work. If it doesn't, [file an issue], we'll help.
 
 ## How to Contribute
 
-First, install Node modules with:
+First, install [Node] modules with:
 
 ```bash
 npm install
@@ -70,7 +70,7 @@ make
 ```
 
 Make changes on a new branch.
-You can run an instance of VS Code with the extension running by hitting `F5`
+You can run an instance of [VS Code] with the extension running by hitting `F5`
 in the code editor.
 After modifications, test your code with:
 
@@ -86,3 +86,4 @@ Create a pull request, we'll be glad to review it and merge.
 [Sublime Text]: https://www.sublimetext.com/
 [file an issue]: https://github.com/objectionary/eo-lsp-server/issues
 [Node]: https://nodejs.org/en
+[VS Code]: https://code.visualstudio.com/
