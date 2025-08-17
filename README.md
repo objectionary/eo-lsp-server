@@ -12,7 +12,8 @@ In order to use it, you need to have [Node] installed.
 
 ## Using with VS Code
 
-As long as [VS Code] extensions are tightly integrated with the editor, so they handle LSP setup automatically. All you need is to open `Extensions Marketplace` (CTRL+SHIFT+X), type `eo` and install `EO` language extension for the EO Programming Language that provides syntax highlighting and parsing error checking out of the box. Now you're all set!
+As long as [VS Code] extensions are tightly integrated with the editor, so they handle LSP setup automatically. 
+Open `Extensions Marketplace` (CTRL+SHIFT+X), type `eo` and install `EO` language extension. Now you're all set!
 
 ## Using with Sublime Text
 
