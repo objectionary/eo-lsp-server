@@ -10,6 +10,14 @@ It provides semantic highlighting and parsing error checking for `.eo` files
 (written in [EOLANG]).
 In order to use it, you need to have [Node] installed.
 
+## Using with VS Code
+
+As long as [VS Code] extensions are tightly integrated with the editor, so
+they handle LSP setup automatically. All you need is to open
+`Extensions Marketplace` tab, type `eo` and install `EO` language
+extension for the EO Programming Language that provides syntax highlighting
+and parsing error checking out of the box. Now you're all set!
+
 ## Using with Sublime Text
 
 To use this [LSP] server with [Sublime Text], you'll need to install
