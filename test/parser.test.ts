@@ -22,7 +22,10 @@ describe("Parser module", () => {
         const errors = getParserErrors(
             "# test.\n[] > test\n  42 > @\n  xyz > t\n    'hello, world'\n  bar > foo\n"
         );
-        expect(errors.length).toBe(0, `First error: ${errors[0]}`);
+        if (errors.length > 0) {
+            console.error("First error:", errors[0]);
+        }
+        expect(errors.length).toBe(0);
     });
 
     test("detects parsing errors", () => {
@@ -34,6 +37,9 @@ describe("Parser module", () => {
         const programPath = path.join(__dirname, "../fixtures", "fibonacci.eo");
         const program = fs.readFileSync(programPath, "utf8");
         const errors = getParserErrors(program);
-        expect(errors.length).toBe(0, `First error: ${errors[0]}`);
+        if (errors.length > 0) {
+            console.error("First error:", errors[0]);
+        }
+        expect(errors.length).toBe(0);
     });
 });
