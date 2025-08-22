@@ -3,6 +3,7 @@
 
 import { Token, CommonToken, Lexer, CharStream } from "antlr4ts";
 import { EoLexer } from "./parser/EoLexer";
+import { EoParser } from "./parser/EoParser";
 
 /**
  * Custom lexer that wraps EoLexer to handle indentation-based TAB/UNTAB tokens
@@ -14,8 +15,8 @@ export class IndentationLexer extends Lexer {
     private indent: number[] = [];
     private spaces: string[] = [];
 
-    public static readonly TAB = 31;
-    public static readonly UNTAB = 32;
+    public static readonly TAB = EoParser.TAB;
+    public static readonly UNTAB = EoParser.UNTAB;
 
     constructor(input: CharStream) {
         super(input);

@@ -12,7 +12,7 @@ describe("Parser module", () => {
 
     test("Retrieves all token type names as defined in EO grammar", () => {
         const types = getTokenTypes();
-        expect(types.size).toBe(30);
+        expect(types.size).toBe(31);
         expect(types.has("COMMENTARY")).toBeTruthy();
         expect(types.has("TEXT")).toBeTruthy();
         expect(types.has("Q")).toBeFalsy();
