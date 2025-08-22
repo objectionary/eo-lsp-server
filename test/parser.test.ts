@@ -15,12 +15,14 @@ describe("Parser module", () => {
         expect(types.size).toBe(31);
         expect(types.has("COMMENTARY")).toBeTruthy();
         expect(types.has("TEXT")).toBeTruthy();
+        expect(types.has("TAB")).toBeFalsy();
+        expect(types.has("UNTAB")).toBeFalsy();
         expect(types.has("Q")).toBeFalsy();
     });
 
     test("parses valid code", () => {
         const errors = getParserErrors(
-            "# test.\n[] > test\n  42 > @\n"
+            "# test.\n[] > test\n  42 > @\n  xyz > t\n    'hello, world'\n  bar > foo\n"
         );
         if (errors.length > 0) {
             console.error("First error:", errors[0]);
