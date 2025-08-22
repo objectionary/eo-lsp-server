@@ -28,7 +28,8 @@ in `Settings → Package Settings → LSP → Settings`:
 }
 ```
 
-Then, create a syntax definition file in `Packages/User/EO.sublime-syntax`:
+Then, create a syntax definition file in
+`~/Library/Application Support/Sublime Text/Packages/User/EO.sublime-syntax`:
 
 ```yaml
 %YAML 1.2
