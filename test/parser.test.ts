@@ -11,29 +11,29 @@ describe("Parser module", () => {
     });
 
     test("Retrieves all token type names as defined in EO grammar", () => {
-        const tokenTypes = getTokenTypes();
-        expect(tokenTypes.size).toBe(30);
-        expect(tokenTypes.has("COMMENTARY")).toBeTruthy();
-        expect(tokenTypes.has("TEXT")).toBeTruthy();
-        expect(tokenTypes.has("Q")).toBeFalsy();
+        const types = getTokenTypes();
+        expect(types.size).toBe(30);
+        expect(types.has("COMMENTARY")).toBeTruthy();
+        expect(types.has("TEXT")).toBeTruthy();
+        expect(types.has("Q")).toBeFalsy();
     });
 
     test("parses valid code", () => {
-        const parseErrors = getParserErrors(
+        const errors = getParserErrors(
             "# test.\n[] > test\n  42 > @\n  xyz > t\n    'hello, world'\n  bar > foo\n"
         );
-        expect(parseErrors.length).toBe(0);
+        expect(errors.length).toBe(0, `First error: ${errors[0]}`);
     });
 
     test("detects parsing errors", () => {
-        const parseErrors = getParserErrors("-- broken syntax --");
-        expect(parseErrors.length).toBe(1);
+        const errors = getParserErrors("-- broken syntax --");
+        expect(errors.length).toBe(1);
     });
 
     test("parses fibonacci program from file", () => {
         const programPath = path.join(__dirname, "../fixtures", "fibonacci.eo");
         const program = fs.readFileSync(programPath, "utf8");
-        const parseErrors = getParserErrors(program);
-        expect(parseErrors.length).toBe(0);
+        const errors = getParserErrors(program);
+        expect(errors.length).toBe(0, `First error: ${errors[0]}`);
     });
 });
