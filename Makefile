@@ -40,4 +40,4 @@ lint:
 	npx eslint src --ext .ts
 
 clean:
-	rm -rf Eo.g4 dist coverage tsc-compiled src/parser
+	rm -rf Eo.g4 dist coverage tsc-compiled src/parser compiled
