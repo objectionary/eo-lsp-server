@@ -28,7 +28,7 @@ in `Settings → Package Settings → LSP → Settings`:
 }
 ```
 
-Then, create a syntax definition file in
+Then, create a syntax definition file [in][packages]
 `~/Library/Application Support/Sublime Text/Packages/User/EO.sublime-syntax`:
 
 ```yaml
@@ -88,3 +88,4 @@ Create a pull request, we'll be glad to review it and merge.
 [file an issue]: https://github.com/objectionary/eo-lsp-server/issues
 [Node]: https://nodejs.org/en
 [VS Code]: https://code.visualstudio.com/
+[packages]: https://forum.sublimetext.com/t/sublimetext-3-where-are-the-packages/9484
