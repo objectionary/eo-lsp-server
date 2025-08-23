@@ -6,7 +6,7 @@
 .ONESHELL:
 SHELL := bash
 
-VERSION := 0.58.0
+VERSION := 0.58.2
 GRAMMAR_URL := https://raw.githubusercontent.com/objectionary/eo/refs/tags/$(VERSION)/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4
 
 TSS := $(shell find src -name '*.ts')
@@ -22,7 +22,7 @@ compiled: src/parser tsc-compiled Makefile
 	cp -R tsc-compiled/src/* $@
 	cp -R src/parser/Eo.tokens $@/parser
 	cp -R src/parser/EoLexer.tokens $@/parser
-	sed -i "s/0\.0\.0/$(VERSION)/" src/eo-version.ts
+	sed -i "s/[0-9]\+\.[0-9]\+\.[0-9]\+/$(VERSION)/" src/eo-version.ts
 
 tsc-compiled: $(TSS) Makefile
 	npx tsc -b
@@ -40,4 +40,4 @@ lint:
 	npx eslint src --ext .ts
 
 clean:
-	rm -rf Eo.g4 dist coverage tsc-compiled src/parser compiled
+	rm -rf Eo.g4 dist coverage tsc-compiled src/parser

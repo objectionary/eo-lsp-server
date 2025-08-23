@@ -6,4 +6,4 @@
  *
  * The value of this const is updated by the Makefile.
  */
-export const EoVersion = "0.56.9";
+export const EoVersion = "0.0.0";
