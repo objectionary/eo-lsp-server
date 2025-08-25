@@ -22,7 +22,7 @@ describe("Parser module", () => {
 
     test("parses valid code", () => {
         const errors = getParserErrors(
-            "# test.\n[] > test\n  42 > @\n  xyz > t\n    'hello, world'\n  bar > foo\n"
+            '# test.\n[] > test\n  42 > @\n  xyz > t\n    "hello, world"\n  bar > foo\n'
         );
         if (errors.length > 0) {
             console.error("First error:", errors[0]);
