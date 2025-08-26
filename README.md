@@ -10,6 +10,20 @@ It provides semantic highlighting and parsing error checking for `.eo` files
 (written in [EOLANG]).
 In order to use it, you need to have [Node] installed.
 
+## Using with IntelliJ (with LSP4IJ)
+
+[LSP4IJ](https://github.com/redhat-developer/lsp4ij), a free LSP support plugin
+for IntelliJ, provides an [EO LSP server template][lsp4ij-doc]
+to automatically install and run the `LSP Server for EOLANG`:
+
+* Install [LSP4IJ](https://plugins.jetbrains.com/plugin/23257-lsp4ij).
+* Open an `*.eo` file, a notification will appear with
+  `Install LSP Server for EOLANG`.
+* Click the link, confirm the server creation, then click `OK`.
+* The server will be installed (via npm).
+
+Once done, semantic tokens and diagnostics will be available.
+
 ## Using with Sublime Text
 
 To use this [LSP] server with [Sublime Text], you'll need to install
@@ -56,26 +70,6 @@ contexts:
 
 Should work. If it doesn't, [file an issue], we'll help.
 
-## Using with IntelliJ (with LSP4IJ)
-
-[LSP4IJ](https://github.com/redhat-developer/lsp4ij), a free LSP support plugin
-for IntelliJ, provides an
-[EO LSP server template](https://github.com/redhat-developer/lsp4ij/blob/main/docs/user-defined-ls/eo-lsp-server.md)
-to automatically install and run the `LSP Server for EOLANG`.
-
-Steps:
-
-* [Install LSP4IJ](https://plugins.jetbrains.com/plugin/23257-lsp4ij).
-* Open an `*.eo` file, a notification will appear with
-  `Install LSP Server for EOLANG`.
-* Click the link, confirm the server creation, then click `OK`.
-* The server will be installed (via npm). Once done, semantic tokens and
-  diagnostics will be available.
-
-Please
-[read this documentation](https://github.com/redhat-developer/lsp4ij/blob/main/docs/user-defined-ls/eo-lsp-server.md)
-for more details.
-
 ## How to Contribute
 
 First, install [Node] modules with:
@@ -109,3 +103,4 @@ Create a pull request, we'll be glad to review it and merge.
 [Node]: https://nodejs.org/en
 [VS Code]: https://code.visualstudio.com/
 [packages]: https://forum.sublimetext.com/t/sublimetext-3-where-are-the-packages/9484
+[lsp4ij-doc]: https://github.com/redhat-developer/lsp4ij/blob/main/docs/user-defined-ls/eo-lsp-server.md
