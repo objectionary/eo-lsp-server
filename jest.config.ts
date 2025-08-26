@@ -39,5 +39,8 @@ export default {
             lines: 95,
             statements: 95
         }
-    }
+    },
+
+    // to make Jest fail when coverage is below threshold
+    passWithNoTests: false
 };

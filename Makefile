@@ -34,7 +34,7 @@ src/parser: Eo.g4 Makefile
 	npx antlr4ts -visitor $< -o src/parser
 
 test: build
-	npx jest
+	npx jest --coverage --coverageThreshold='{"global":{"branches":95,"functions":95,"lines":95,"statements":95}}'
 
 lint:
 	npx eslint src --ext .ts
