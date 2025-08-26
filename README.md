@@ -18,7 +18,7 @@ to automatically install and run the `LSP Server for EOLANG`:
 
 * Install [LSP4IJ](https://plugins.jetbrains.com/plugin/23257-lsp4ij)
 into [IntelliJ]
-* Open an `*.eo` file, a notification will appear with
+* Open any `*.eo` file, a notification will appear with
 `Install LSP Server for EOLANG`
 * Click the link, confirm the server creation, then click `OK`
 * The server will be installed (via [npm])
