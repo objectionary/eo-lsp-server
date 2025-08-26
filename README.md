@@ -16,11 +16,11 @@ In order to use it, you need to have [Node] and [npm] installed.
 for [IntelliJ], provides an [EO LSP server template][lsp4ij-doc]
 to automatically install and run the `LSP Server for EOLANG`:
 
-* Install [LSP4IJ](https://plugins.jetbrains.com/plugin/23257-lsp4ij).
+* Install [LSP4IJ](https://plugins.jetbrains.com/plugin/23257-lsp4ij)
 * Open an `*.eo` file, a notification will appear with
-  `Install LSP Server for EOLANG`.
-* Click the link, confirm the server creation, then click `OK`.
-* The server will be installed (via [npm]).
+  `Install LSP Server for EOLANG`
+* Click the link, confirm the server creation, then click `OK`
+* The server will be installed (via [npm])
 
 Once done, semantic tokens and diagnostics will be available.
 
