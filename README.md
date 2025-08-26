@@ -56,6 +56,26 @@ contexts:
 
 Should work. If it doesn't, [file an issue], we'll help.
 
+## Using with IntelliJ (with LSP4IJ)
+
+[LSP4IJ](https://github.com/redhat-developer/lsp4ij), a free LSP support plugin
+for IntelliJ, provides an
+[EO LSP server template](https://github.com/redhat-developer/lsp4ij/blob/main/docs/user-defined-ls/eo-lsp-server.md)
+to automatically install and run the `LSP Server for EOLANG`.
+
+Steps:
+
+* [Install LSP4IJ](https://plugins.jetbrains.com/plugin/23257-lsp4ij).
+* Open an `*.eo` file, a notification will appear with
+  `Install LSP Server for EOLANG`.
+* Click the link, confirm the server creation, then click `OK`.
+* The server will be installed (via npm). Once done, semantic tokens and
+  diagnostics will be available.
+
+Please
+[read this documentation](https://github.com/redhat-developer/lsp4ij/blob/main/docs/user-defined-ls/eo-lsp-server.md)
+for more details.
+
 ## How to Contribute
 
 First, install [Node] modules with:
