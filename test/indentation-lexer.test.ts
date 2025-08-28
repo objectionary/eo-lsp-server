@@ -27,6 +27,7 @@ describe("IndentationLexer", () => {
         test("get all the values", () => {
             const lexer = new IndentationLexer(CharStreams.fromString(""));
             expect(lexer.channelNames).toEqual(["DEFAULT_TOKEN_CHANNEL", "HIDDEN"]);
+            expect(lexer.grammarFileName).toBe("Eo.g4");
         });
     });
 });
