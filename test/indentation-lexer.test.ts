@@ -188,9 +188,22 @@ describe("IndentationLexer", () => {
         });
     });
     describe("lookAhead", () => {
-        test("check if textSpaces method is called with correct values", () => {
-            const input = "\ntext1\n  text2\n";
-            const chrStream = CharStreams.fromString(input);
+        const testCases = [
+            {
+                name: "(current === null || current.type !== EoLexer.EOL) && next.type === EoLexer.EOL",
+                inputToChrStream: "t\ntext1\n  text2\n",
+                expectedCalls: ["", "  ", ""],
+                expectedCount: 3
+            },
+            {
+                name: "current !== null && current.type === EoLexer.EOL && next.type === EoLexer.EOL",
+                inputToChrStream: "\n\ntext1\n  text2\n",
+                expectedCalls: ["", "", "  ", ""],
+                expectedCount: 4
+            }
+        ];
+        test.each(testCases)("$name", ({ inputToChrStream, expectedCalls, expectedCount }) => {
+            const chrStream = CharStreams.fromString(inputToChrStream);
             const lexer = new IndentationLexer(chrStream);
             const spacesPushSpy = jest.spyOn((lexer as any).spaces, "push");
             const tokens: Token[] = [];
@@ -199,10 +212,10 @@ describe("IndentationLexer", () => {
                 tokens.push(token);
                 token = lexer.nextToken();
             }
-            expect(spacesPushSpy).toHaveBeenCalledWith("");
-            expect(spacesPushSpy).toHaveBeenCalledWith("  ");
-            expect(spacesPushSpy).toHaveBeenCalledWith("");
-            expect(spacesPushSpy).toHaveBeenCalledTimes(3);
+            expectedCalls.forEach((value, index) => {
+                expect(spacesPushSpy).toHaveBeenNthCalledWith(index + 1, value);
+            });
+            expect(spacesPushSpy).toHaveBeenCalledTimes(expectedCount);
             spacesPushSpy.mockRestore();
         });
     });
