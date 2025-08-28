@@ -187,4 +187,23 @@ describe("IndentationLexer", () => {
             expect(lexer.vocabulary).toBeInstanceOf(VocabularyImpl);
         });
     });
+    describe("lookAhead", () => {
+        test("check if textSpaces method is called with correct values", () => {
+            const input = "\ntext1\n  text2\n";
+            const chrStream = CharStreams.fromString(input);
+            const lexer = new IndentationLexer(chrStream);
+            const spacesPushSpy = jest.spyOn((lexer as any).spaces, "push");
+            const tokens: Token[] = [];
+            let token: Token = lexer.nextToken();
+            while (token.type !== Token.EOF) {
+                tokens.push(token);
+                token = lexer.nextToken();
+            }
+            expect(spacesPushSpy).toHaveBeenCalledWith("");
+            expect(spacesPushSpy).toHaveBeenCalledWith("  ");
+            expect(spacesPushSpy).toHaveBeenCalledWith("");
+            expect(spacesPushSpy).toHaveBeenCalledTimes(3);
+            spacesPushSpy.mockRestore();
+        });
+    });
 });
