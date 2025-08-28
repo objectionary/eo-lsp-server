@@ -3,6 +3,7 @@
 
 import { CharStreams, Token } from "antlr4ts";
 import { IndentationLexer } from "../src/IndentationLexer";
+import { EoLexer } from "../src/parser/EoLexer";
 
 describe("IndentationLexer", () => {
     describe("handleTabs", () => {
@@ -20,6 +21,12 @@ describe("IndentationLexer", () => {
             const untabTokens = tokens.filter(t => t.type === IndentationLexer.UNTAB);
             expect(tabTokens.length).toBeGreaterThan(0);
             expect(untabTokens.length).toBeGreaterThan(0);
+        });
+    });
+    describe("getters", () => {
+        test("get all the values", () => {
+            const lexer = new IndentationLexer(CharStreams.fromString(""));
+            expect(lexer.channelNames).toEqual(["DEFAULT_TOKEN_CHANNEL", "HIDDEN"]);
         });
     });
 });
