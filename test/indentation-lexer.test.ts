@@ -7,11 +7,11 @@ import { IndentationLexer } from "../src/IndentationLexer";
 describe("IndentationLexer", () => {
     describe("handleTabs", () => {
         test("emits TAB/UNTAB tokens based on the difference between the current and previous indentation.", () => {
-            const input = "  deeply indented\n    more indentation\n  medium indentation";
+            const input = "  2spaces\n      6spaces\n    4spaces";
             const chrStream = CharStreams.fromString(input);
             const lexer = new IndentationLexer(chrStream);
             const tokens: Token[] = [];
-            let token = lexer.nextToken();
+            let token: Token = lexer.nextToken();
             while (token.type !== Token.EOF) {
                 tokens.push(token);
                 token = lexer.nextToken();
