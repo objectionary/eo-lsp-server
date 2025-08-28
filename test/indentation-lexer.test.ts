@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-import { CharStreams, Token } from "antlr4ts";
+import { CharStreams, Token, VocabularyImpl } from "antlr4ts";
 import { IndentationLexer } from "../src/IndentationLexer";
 import { EoLexer } from "../src/parser/EoLexer";
 
@@ -184,6 +184,7 @@ describe("IndentationLexer", () => {
             "\u0133\x05O(\x02\u0133R\x03\x02\x02\x02!\x02X]ei\x9D\xA3\xB2\xBF\xC2\xC8" +
             "\xCB\xD2\xD7\xDC\xDE\xE7\xEB\xF1\xF4\xF9\xFE\u0102\u0107\u010D\u0110\u0118" +
             "\u011E\u0129\u012D\u012F\x02");
+            expect(lexer.vocabulary).toBeInstanceOf(VocabularyImpl);
         });
     });
 });
