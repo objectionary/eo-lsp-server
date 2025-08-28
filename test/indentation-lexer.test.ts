@@ -29,6 +29,14 @@ describe("IndentationLexer", () => {
             expect(lexer.channelNames).toEqual(["DEFAULT_TOKEN_CHANNEL", "HIDDEN"]);
             expect(lexer.grammarFileName).toBe("Eo.g4");
             expect(lexer.modeNames).toEqual(["DEFAULT_MODE"]);
+            expect(lexer.ruleNames).toEqual([
+                "COMMENTARY", "META", "ROOT", "HOME", "STAR", "CONST", "COLON", "ARROW",
+                "XI", "PLUS", "MINUS", "QUESTION", "SPACE", "DOT", "LSQ", "RSQ", "LB",
+                "RB", "PHI", "RHO", "HASH", "TILDE", "APOSTROPHE", "INDENT", "LINEBREAK",
+                "EOL", "BYTE", "EMPTY_BYTES", "LINE_BYTES", "BYTES", "ESCAPE_SEQUENCE",
+                "STRING", "ZERO", "INT", "EXPONENT", "FLOAT", "HEX", "NAME", "TEXT_MARK",
+                "TEXT"
+            ]);
         });
     });
 });
