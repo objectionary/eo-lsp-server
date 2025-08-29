@@ -223,5 +223,22 @@ describe("IndentationLexer", () => {
             expect(spacesPushSpy).toHaveBeenCalledTimes(expectedCount);
             spacesPushSpy.mockRestore();
         });
+        test("we expect textSpaces method is called with correct EOL text", () => {
+            const input = "\nbar > foo\n  42 > @\n";
+            const chrStream = CharStreams.fromString(input);
+            const lexer = new IndentationLexer(chrStream);
+            const textSpacesSpy = jest.spyOn(IndentationLexer as any, "textSpaces");
+            const tokens: Token[] = [];
+            let token: Token = lexer.nextToken();
+            while (token.type !== Token.EOF) {
+                tokens.push(token);
+                token = lexer.nextToken();
+            }
+            expect(textSpacesSpy).toHaveBeenCalledWith("\n");
+            expect(textSpacesSpy).toHaveBeenCalledWith("\n  ");
+            expect(textSpacesSpy).toHaveBeenCalledWith("\n");
+            expect(textSpacesSpy).toHaveBeenCalledTimes(3);
+            textSpacesSpy.mockRestore();
+        });
     });
 });
