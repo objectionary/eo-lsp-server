@@ -88,4 +88,19 @@ describe("Semantics module", () => {
         tokenizeSpy.mockRestore();
         builderSpy.mockRestore();
     });
+
+    test("we expect provideSemanticTokens to clear the builder, populateBuilder call,return build() call", () => {
+        const document = TextDocument.create("foo.eo", "eo", 0, "# test.\n[] > test\n");
+        const builder = provider.getTokenBuilder(document);
+        const buildCallSpy = jest.spyOn(builder, "build");
+        const populateBuilderSpy = jest.spyOn(provider, "populateBuilder");
+        const builderSpy = jest.spyOn(builder, "previousResult");
+        provider.provideSemanticTokens(document);
+        expect(builderSpy).toHaveBeenCalledWith("nonexistent id");
+        expect(populateBuilderSpy).toHaveBeenCalledWith(builder, document);
+        expect(buildCallSpy).toHaveBeenCalled();
+        builderSpy.mockRestore();
+        populateBuilderSpy.mockRestore();
+        buildCallSpy.mockRestore();
+    });
 });
