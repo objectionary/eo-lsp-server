@@ -7,8 +7,8 @@ import { EoLexer } from "../src/parser/EoLexer";
 
 describe("IndentationLexer", () => {
     describe("handleTabs", () => {
-        test("emits TAB/UNTAB tokens based on the difference between the current and previous indentation.", () => {
-            const input = "  2spaces\n      6spaces\n    4spaces";
+        test("we expect to emits TAB/UNTAB tokens based on the difference between the current and previous indentation.", () => {
+            const input = "  2\n      bar > foo\n    42 > @";
             const chrStream = CharStreams.fromString(input);
             const lexer = new IndentationLexer(chrStream);
             const tokens: Token[] = [];
@@ -24,7 +24,7 @@ describe("IndentationLexer", () => {
         });
     });
     describe("getters", () => {
-        test("get all the values", () => {
+        test("we expect to get all the values", () => {
             const lexer = new IndentationLexer(CharStreams.fromString(""));
             expect(lexer.channelNames).toEqual(["DEFAULT_TOKEN_CHANNEL", "HIDDEN"]);
             expect(lexer.grammarFileName).toBe("Eo.g4");
@@ -190,16 +190,16 @@ describe("IndentationLexer", () => {
     describe("lookAhead", () => {
         const testCases = [
             {
-                name: "(current === null || current.type !== EoLexer.EOL) && next.type === EoLexer.EOL",
-                inputToChrStream: "t\ntext1\n  text2\n",
-                expectedCalls: ["", "  ", ""],
-                expectedCount: 3
+                name: "we expect to get the correct calls of textSpaces method",
+                inputToChrStream: 't\n42 > @\n  bar > foo\n    "hello, world"\n  bar > foo\n',
+                expectedCalls: ["", "  ", "    ", "  ", ""],
+                expectedCount: 5
             },
             {
-                name: "current !== null && current.type === EoLexer.EOL && next.type === EoLexer.EOL",
-                inputToChrStream: "\n\ntext1\n  text2\n",
-                expectedCalls: ["", "", "  ", ""],
-                expectedCount: 4
+                name: "we expect to get the correct calls of textSpaces method",
+                inputToChrStream: '\n\n42 > @\n  bar > foo\n    "hello, world"\n  bar > foo\n',
+                expectedCalls: ["", "", "  ", "    ", "  ", ""],
+                expectedCount: 6
             }
         ];
         test.each(testCases)("$name", ({ inputToChrStream, expectedCalls, expectedCount }) => {
@@ -212,6 +212,11 @@ describe("IndentationLexer", () => {
                 tokens.push(token);
                 token = lexer.nextToken();
             }
+            const tabTokens = tokens.filter(t => t.type === IndentationLexer.TAB);
+            const untabTokens = tokens.filter(t => t.type === IndentationLexer.UNTAB);
+            expect(tabTokens.length).toBeGreaterThan(0);
+            expect(untabTokens.length).toBeGreaterThan(0);
+            expect(tokens.length).toBeGreaterThan(0);
             expectedCalls.forEach((value, index) => {
                 expect(spacesPushSpy).toHaveBeenNthCalledWith(index + 1, value);
             });
