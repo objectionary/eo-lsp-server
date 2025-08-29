@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import { SemanticTokensProvider } from "../src/semantics";
-import { SemanticTokensClientCapabilities } from "vscode-languageserver/node.js";
+import { SemanticTokensBuilder, SemanticTokensClientCapabilities } from "vscode-languageserver/node.js";
 import * as fs from "fs";
 import * as path from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
@@ -72,5 +72,20 @@ describe("Semantics module", () => {
         const document = TextDocument.create("this/is/the/uri", "eo", 0, "# test.\n[] > test\n");
         provider.getTokenBuilder(document);
         expect(provider.tokenBuilders.has("this/is/the/uri")).toBeTruthy();
+    });
+
+    test("we expect populateBuilder calls tokenize method and correctly populate the builder with fields", () => {
+        const document = TextDocument.create("foo.eo", "eo", 0, "# test.\n[] > test\n");
+        const builder = new SemanticTokensBuilder();
+        const builderSpy = jest.spyOn(builder, "push");
+        const tokenizeSpy = jest.spyOn(provider, "tokenize");
+        provider.populateBuilder(builder, document);
+        expect(tokenizeSpy).toHaveBeenCalledWith(document);
+        expect(builderSpy).toHaveBeenCalledTimes(3);
+        expect(builderSpy).toHaveBeenNthCalledWith(1, 0, 0, 7, 0, 0);
+        expect(builderSpy).toHaveBeenNthCalledWith(2, 1, 3, 1, 7, 0);
+        expect(builderSpy).toHaveBeenNthCalledWith(3, 1, 5, 4, 19, 0);
+        tokenizeSpy.mockRestore();
+        builderSpy.mockRestore();
     });
 });
