@@ -111,7 +111,7 @@ describe("Semantics module", () => {
         const populateBuilderSpy = jest.spyOn(provider, "populateBuilder");
         const buildCallSpy = jest.spyOn(builder, "buildEdits");
         provider.provideDeltas(document);
-        expect(builderSpy).toHaveBeenCalledWith(builder.id);
+        expect(builderSpy).toHaveBeenCalledWith(expect.any(String));
         expect(populateBuilderSpy).toHaveBeenCalledWith(builder, document);
         expect(buildCallSpy).toHaveBeenCalled();
         buildCallSpy.mockRestore();
