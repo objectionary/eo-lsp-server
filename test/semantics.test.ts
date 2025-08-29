@@ -99,8 +99,22 @@ describe("Semantics module", () => {
         expect(builderSpy).toHaveBeenCalledWith("nonexistent id");
         expect(populateBuilderSpy).toHaveBeenCalledWith(builder, document);
         expect(buildCallSpy).toHaveBeenCalled();
-        builderSpy.mockRestore();
-        populateBuilderSpy.mockRestore();
         buildCallSpy.mockRestore();
+        populateBuilderSpy.mockRestore();
+        builderSpy.mockRestore();
+    });
+    test("we expect provideDeltas to renew the id, populateBuilder call,return buildEdits() call", () => {
+        const document = TextDocument.create("test.eo", "eo", 0, "# test.\n[] > eo\n");
+        const builder = provider.getTokenBuilder(document);
+        const buildCallSpy = jest.spyOn(builder, "buildEdits");
+        const populateBuilderSpy = jest.spyOn(provider, "populateBuilder");
+        const builderSpy = jest.spyOn(builder, "previousResult");
+        provider.provideDeltas(document);
+        expect(builderSpy).toHaveBeenCalledWith(builder.id);
+        expect(populateBuilderSpy).toHaveBeenCalledWith(builder, document);
+        expect(buildCallSpy).toHaveBeenCalled();
+        buildCallSpy.mockRestore();
+        populateBuilderSpy.mockRestore();
+        builderSpy.mockRestore();
     });
 });

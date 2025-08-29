@@ -114,7 +114,7 @@ export class IndentationLexer extends Lexer {
         let current: Token | null = null;
         let next = this.wrapped.nextToken();
         while (next.type !== Token.EOF) {
-            if (next.type === EoLexer.EOL && (current === null || current.type !== EoLexer.EOL)) {
+            if ((current === null || current.type !== EoLexer.EOL) && next.type === EoLexer.EOL) {
                 this.spaces.push(IndentationLexer.textSpaces(next.text || ""));
                 this.tokens.push(next);
             } else if (current !== null && current.type === EoLexer.EOL && next.type === EoLexer.EOL) {
