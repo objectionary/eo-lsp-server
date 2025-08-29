@@ -103,12 +103,13 @@ describe("Semantics module", () => {
         populateBuilderSpy.mockRestore();
         builderSpy.mockRestore();
     });
+
     test("we expect provideDeltas to renew the id, populateBuilder call,return buildEdits() call", () => {
         const document = TextDocument.create("test.eo", "eo", 0, "# test.\n[] > eo\n");
         const builder = provider.getTokenBuilder(document);
-        const buildCallSpy = jest.spyOn(builder, "buildEdits");
-        const populateBuilderSpy = jest.spyOn(provider, "populateBuilder");
         const builderSpy = jest.spyOn(builder, "previousResult");
+        const populateBuilderSpy = jest.spyOn(provider, "populateBuilder");
+        const buildCallSpy = jest.spyOn(builder, "buildEdits");
         provider.provideDeltas(document);
         expect(builderSpy).toHaveBeenCalledWith(builder.id);
         expect(populateBuilderSpy).toHaveBeenCalledWith(builder, document);

@@ -6,7 +6,9 @@ import { IndentationLexer } from "../src/IndentationLexer";
 import { EoLexer } from "../src/parser/EoLexer";
 
 describe("IndentationLexer", () => {
+
     describe("handleTabs", () => {
+
         test("we expect to emits TAB/UNTAB tokens based on the difference between the current and previous indentation.", () => {
             const input = "  2\n      bar > foo\n    42 > @";
             const chrStream = CharStreams.fromString(input);
@@ -22,8 +24,11 @@ describe("IndentationLexer", () => {
             expect(tabTokens.length).toBeGreaterThan(0);
             expect(untabTokens.length).toBeGreaterThan(0);
         });
+
     });
+
     describe("getters", () => {
+
         test("we expect to get all the values", () => {
             const lexer = new IndentationLexer(CharStreams.fromString(""));
             expect(lexer.channelNames).toEqual(EoLexer.channelNames);
@@ -35,8 +40,11 @@ describe("IndentationLexer", () => {
             expect(lexer.vocabulary).toBeInstanceOf(VocabularyImpl);
             expect(lexer.vocabulary).toEqual(EoLexer.VOCABULARY);
         });
+
     });
+
     describe("lookAhead", () => {
+
         const testCases = [
             {
                 name: "we expect to get the correct calls of textSpaces method",
@@ -72,6 +80,7 @@ describe("IndentationLexer", () => {
             expect(spacesPushSpy).toHaveBeenCalledTimes(expectedCount);
             spacesPushSpy.mockRestore();
         });
+
         test("we expect textSpaces method is called with correct EOL text", () => {
             const input = "\nbar > foo\n  42 > @\n";
             const chrStream = CharStreams.fromString(input);
