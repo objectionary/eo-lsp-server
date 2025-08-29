@@ -67,4 +67,10 @@ describe("Semantics module", () => {
         const actualTokens = provider.tokenize(textDocument);
         expect(actualTokens.length).toBe(3);
     });
+
+    test("we expect to get uri from tokenBuilders Map by executing getTokenBuilder method", () => {
+        const document = TextDocument.create("this/is/the/uri", "eo", 0, "# test.\n[] > test\n");
+        provider.getTokenBuilder(document);
+        expect(provider.tokenBuilders.has("this/is/the/uri")).toBeTruthy();
+    });
 });
