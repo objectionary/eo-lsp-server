@@ -30,7 +30,7 @@ const location = path.join(__dirname, "parser", "EoLexer.tokens");
  * @param locationPath expect to see the path to EoLexer.tokens file
  * @returns {void}
  */
-export function buildTokenSetAndMap(locationPath: any) {
+export function buildTokenSetAndMap(locationPath: string) {
     if (!types || !mapper) {
         types = new Set<string>();
         mapper = new Map<number, string>();
