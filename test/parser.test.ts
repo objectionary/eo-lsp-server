@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-import { antlrTypeNumToString, getTokenTypes, tokenize, getParserErrors } from "../src/parser";
+import { antlrTypeNumToString, getTokenTypes, getParserErrors, buildTokenSetAndMap, resetTokenCache } from "../src/parser";
 import * as fs from "fs";
 import * as path from "path";
 
+/* eslint-disable no-console */
 describe("Parser module", () => {
     test("Gets an EO grammar token name from an ANTLR token number", () => {
         expect(antlrTypeNumToString(1)).toBe("COMMENTARY");
@@ -43,5 +44,11 @@ describe("Parser module", () => {
             console.error("First error:", errors[0]);
         }
         expect(errors.length).toBe(0);
+    });
+
+    test("we expect buildTokenSetAndMap to throw", () => {
+        resetTokenCache();
+        const location = path.join(__dirname, "none-existing-path", "pathTo.tokens");
+        expect(() => buildTokenSetAndMap(location)).toThrow();
     });
 });
