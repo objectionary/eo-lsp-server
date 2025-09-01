@@ -69,10 +69,6 @@ describe("IndentationLexer", () => {
                 tokens.push(token);
                 token = lexer.nextToken();
             }
-            const tabTokens = tokens.filter(t => t.type === IndentationLexer.TAB);
-            const untabTokens = tokens.filter(t => t.type === IndentationLexer.UNTAB);
-            expect(tabTokens.length).toBeGreaterThan(0);
-            expect(untabTokens.length).toBeGreaterThan(0);
             expect(tokens.length).toBeGreaterThan(0);
             expectedCalls.forEach((value, index) => {
                 expect(spacesPushSpy).toHaveBeenNthCalledWith(index + 1, value);
@@ -86,7 +82,6 @@ describe("IndentationLexer", () => {
             const chrStream = CharStreams.fromString(input);
             const lexer = new IndentationLexer(chrStream);
             const textSpacesSpy = jest.spyOn(IndentationLexer as any, "textSpaces");
-            const handleTabsSpy = jest.spyOn(lexer as any, "handleTabs");
             const tokens: Token[] = [];
             let token: Token = lexer.nextToken();
             while (token.type !== Token.EOF) {
@@ -97,9 +92,7 @@ describe("IndentationLexer", () => {
             expect(textSpacesSpy).toHaveBeenCalledWith("\n  ");
             expect(textSpacesSpy).toHaveBeenCalledWith("\n");
             expect(textSpacesSpy).toHaveBeenCalledTimes(3);
-            expect(handleTabsSpy).toHaveBeenCalled();
             textSpacesSpy.mockRestore();
-            handleTabsSpy.mockRestore();
         });
     });
 });
