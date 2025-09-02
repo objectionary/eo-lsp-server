@@ -94,5 +94,15 @@ describe("IndentationLexer", () => {
             expect(textSpacesSpy).toHaveBeenCalledTimes(3);
             textSpacesSpy.mockRestore();
         });
+
+        test("we expect token to be EOF in an empty CharStreams", () => {
+            const input = "";
+            const chrStream = CharStreams.fromString(input);
+            const lexer = new IndentationLexer(chrStream);
+            const tokens: Token[] = [];
+            const token = lexer.nextToken();
+            tokens.push(token);
+            expect(tokens[0].type).toBe(Token.EOF);
+        });
     });
 });
