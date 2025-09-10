@@ -21,6 +21,8 @@ import { SemanticTokensProvider } from "./semantics";
 import { getParserErrors } from "./parser";
 import { ParserError } from "./parserError";
 import { DefaultSettings } from "./defaultSettings";
+import { DocumentSymbol } from "vscode";
+import { DocumentSymbolVisitor } from "./document-symbol-visitor";
 
 /**
  * Connection with the server, using Node's IPC as a transport.
@@ -39,6 +41,11 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 const capabilities = new Capabilities();
 
 /**
+ * Symbol extraction manager.
+ */
+const symbolVisitor = new DocumentSymbolVisitor();
+
+/**
  * Provider of the semantic highlighting capability of the language server.
  */
 let provider: SemanticTokensProvider;
@@ -53,7 +60,8 @@ connection.onInitialize((params: InitializeParams) => {
     provider = new SemanticTokensProvider(params.capabilities.textDocument!.semanticTokens!);
     const result: InitializeResult = {
         capabilities: {
-            textDocumentSync: TextDocumentSyncKind.Incremental
+            textDocumentSync: TextDocumentSyncKind.Incremental,
+            documentSymbolProvider: true
         }
     };
     if (capabilities.workspace) {
@@ -64,6 +72,18 @@ connection.onInitialize((params: InitializeParams) => {
         };
     }
     return result;
+});
+
+/**
+ * Document symbol handler
+ */
+connection.onDocumentSymbol(params => {
+    const document = documents.get(params.textDocument.uri);
+    if (!document) {
+        return null;
+    }
+    const symbols = symbolVisitor.getSymbols();
+    return symbols;
 });
 
 /**
