@@ -6,13 +6,7 @@ import {
 } from "vscode-languageserver";
 import {
     ObjectContext,
-    MethodContext,
-    VoidContext,
-    FormationContext,
-    AtomContext,
-    MetasContext,
-    OnameContext,
-    TnameContext
+    MethodContext
 } from "./parser/EoParser";
 import { RuleNode } from "antlr4ts/tree/RuleNode";
 import { ParseTree } from "antlr4ts/tree/ParseTree";
@@ -26,6 +20,11 @@ export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
     private symbols: DocumentSymbol[] = [];
     private currentObject: DocumentSymbol | null = null;
 
+    constructor() {
+        this.symbols = [];
+        this.currentObject = null;
+    }
+
     /**
      * Get all extracted symbols
      * @returns symbols array
@@ -35,29 +34,11 @@ export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
     }
 
     /**
-     * Helper to extract object name
-     * @param ctx ObjectContext
-     * @returns string | null
-     */
-    private extractObjectName(ctx: ObjectContext): string | null {
-        return null;
-    }
-
-    /**
-     * Helper to extract method name
-     * @param ctx MethodContext
-     * @returns string
-     */
-    private extractMethodName(ctx: MethodContext): string {
-        return "method";
-    }
-
-    /**
      * Create LSP range from parser context
-     * @param ctx any
-     * @returns object Range
+     * @param ctx MethodContext | ObjectContext | VoidContext
+     * @returns Creates a new {@link Range} literal.
      */
-    private createRange(ctx: MethodContext | ObjectContext | VoidContext): Range {
+    private static createRange(ctx: ObjectContext | MethodContext): Range {
         const start = ctx.start;
         const stop = ctx.stop || ctx.start;
         return Range.create(
@@ -74,10 +55,10 @@ export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
      * @returns symbols array
      */
     visitObject(ctx: ObjectContext): DocumentSymbol[] {
-        const name = this.extractObjectName(ctx);
-        const range = this.createRange(ctx);
+        const name = "object";
+        const range = DocumentSymbolVisitor.createRange(ctx);
         const symbol: DocumentSymbol = {
-            name: name || "anonymus",
+            name,
             kind: SymbolKind.Class,
             range,
             selectionRange: range,
@@ -101,43 +82,19 @@ export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
      * @returns symbols array
      */
     visitMethod(ctx: MethodContext): DocumentSymbol[] {
-        const name = this.extractMethodName(ctx);
-        const range = this.createRange(ctx);
-        const symbol: DocumentSymbol = {
-            name: name || "anonymus",
+        if (!this.currentObject) {
+            return this.symbols;
+        }
+        const name = "method";
+        const range = DocumentSymbolVisitor.createRange(ctx);
+        const methodSymbol: DocumentSymbol = {
+            name,
             kind: SymbolKind.Method,
             range,
             selectionRange: range,
             children: []
         };
-        if (this.currentObject) {
-            this.currentObject.children?.push(symbol);
-        } else {
-            this.symbols.push(symbol);
-        }
-        this.visitChildren(ctx);
-        return this.symbols;
-    }
-
-    /**
-     * Visit method definitions
-     * @param ctx VoidContext
-     * @returns symbols array
-     */
-    visitVoid(ctx: VoidContext): DocumentSymbol[] {
-        /* eslint-disable-next-line new-cap */
-        const name = ctx.NAME()?.text || ctx.PHI()?.text;
-        const range = this.createRange(ctx);
-        const symbol: DocumentSymbol = {
-            name: name || "attribute",
-            kind: SymbolKind.Property,
-            range,
-            selectionRange: range,
-            children: []
-        };
-        if (this.currentObject) {
-            this.currentObject.children?.push(symbol);
-        }
+        this.currentObject.children?.push(methodSymbol);
         return this.symbols;
     }
 
@@ -148,7 +105,13 @@ export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
      * @returns The result of visiting the children of the node.
      */
     visitChildren(node: RuleNode): DocumentSymbol[] {
-        
+        for (let i = 0; i < node.childCount; i++) {
+            const child = node.getChild(i);
+            if (child) {
+                child.accept(this);
+            }
+        }
+        return this.symbols;
     }
 
     /**
@@ -158,7 +121,7 @@ export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
      * @returns The result of visiting the parse tree.
      */
     visit(tree: ParseTree): DocumentSymbol[] {
-        
+        return tree.accept(this);
     }
 
     /**
@@ -168,7 +131,7 @@ export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
      * @returns The result of visiting the node.
      */
     visitTerminal(node: TerminalNode): DocumentSymbol[] {
-        
+        return this.symbols;
     }
 
     /**
@@ -178,6 +141,6 @@ export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
      * @returns The result of visiting the node.
      */
     visitErrorNode(node: ErrorNode): DocumentSymbol[] {
-        
+        return this.symbols;
     }
 }
