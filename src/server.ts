@@ -19,10 +19,12 @@ import { Capabilities } from "./capabilities";
 import { EoVersion } from "./eo-version";
 import { SemanticTokensProvider } from "./semantics";
 import { getParserErrors } from "./parser";
+import { EoParser } from "./parser/EoParser";
 import { ParserError } from "./parserError";
 import { DefaultSettings } from "./defaultSettings";
 import { DocumentSymbol } from "vscode";
 import { DocumentSymbolVisitor } from "./document-symbol-visitor";
+import { Processor } from "./processor";
 
 /**
  * Connection with the server, using Node's IPC as a transport.
@@ -39,11 +41,6 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
  * Client capabilities manager, to define what is and is not able to do.
  */
 const capabilities = new Capabilities();
-
-/**
- * Symbol extraction manager.
- */
-const symbolVisitor = new DocumentSymbolVisitor();
 
 /**
  * Provider of the semantic highlighting capability of the language server.
@@ -82,8 +79,17 @@ connection.onDocumentSymbol(params => {
     if (!document) {
         return null;
     }
-    const symbols = symbolVisitor.getSymbols();
-    return symbols;
+    try {
+        const text = document.getText();
+        const processor = new Processor(text);
+        const abstractSyntaxTree = processor.parser.program();
+        const visitor = new DocumentSymbolVisitor();
+        abstractSyntaxTree.accept(visitor);
+        const symbols = visitor.getSymbols();
+        return symbols;
+    } catch (error) {
+        return [];
+    }
 });
 
 /**
