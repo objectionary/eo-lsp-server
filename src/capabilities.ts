@@ -8,14 +8,14 @@ export class Capabilities {
     workspace: boolean;
     diagnostics: boolean;
     tokens: boolean;
-    hierarchicalDocumentSymbolSupport: boolean;
+    documentSymbolCapability: boolean;
 
     constructor() {
         this.configuration = false;
         this.workspace = false;
         this.diagnostics = false;
         this.tokens = true;
-        this.hierarchicalDocumentSymbolSupport = true;
+        this.documentSymbolCapability = false;
     }
 
     initialize(capabilities: ClientCapabilities) {
@@ -23,10 +23,6 @@ export class Capabilities {
         this.workspace = !!(capabilities.workspace?.workspaceFolders);
         this.diagnostics = !!(capabilities.textDocument?.publishDiagnostics?.relatedInformation);
         this.tokens = !!(capabilities.textDocument?.semanticTokens);
-        this.initDocumentSymbols(capabilities.textDocument?.documentSymbol);
-    }
-
-    initDocumentSymbols(capabilities?: DocumentSymbolClientCapabilities) {
-        this.hierarchicalDocumentSymbolSupport = capabilities?.hierarchicalDocumentSymbolSupport ?? true;
+        this.documentSymbolCapability = !!(capabilities.textDocument?.documentSymbol);
     }
 }
