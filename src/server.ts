@@ -12,17 +12,15 @@ import {
     TextDocumentSyncKind,
     InitializeResult,
     SemanticTokensRegistrationOptions,
-    SemanticTokensRegistrationType
+    SemanticTokensRegistrationType,
+    DocumentSymbolParams
 } from "vscode-languageserver/node.js";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { Capabilities } from "./capabilities";
 import { EoVersion } from "./eo-version";
 import { SemanticTokensProvider } from "./semantics";
 import { getParserErrors } from "./parser";
-import { EoParser } from "./parser/EoParser";
-import { ParserError } from "./parserError";
 import { DefaultSettings } from "./defaultSettings";
-import { DocumentSymbol } from "vscode";
 import { DocumentSymbolVisitor } from "./document-symbol-visitor";
 import { Processor } from "./processor";
 
@@ -74,7 +72,7 @@ connection.onInitialize((params: InitializeParams) => {
 /**
  * Document symbol handler
  */
-connection.onDocumentSymbol(params => {
+connection.onDocumentSymbol((params: DocumentSymbolParams) => {
     const document = documents.get(params.textDocument.uri);
     if (!document) {
         return null;
