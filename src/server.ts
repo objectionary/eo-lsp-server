@@ -1,28 +1,28 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
+import { TextDocument } from "vscode-languageserver-textdocument";
 import {
     createConnection,
-    TextDocuments,
     Diagnostic,
     DiagnosticSeverity,
-    ProposedFeatures,
-    InitializeParams,
     DidChangeConfigurationNotification,
-    TextDocumentSyncKind,
+    DocumentSymbolParams,
+    InitializeParams,
     InitializeResult,
+    ProposedFeatures,
     SemanticTokensRegistrationOptions,
     SemanticTokensRegistrationType,
-    DocumentSymbolParams
+    TextDocuments,
+    TextDocumentSyncKind
 } from "vscode-languageserver/node.js";
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { Capabilities } from "./capabilities";
-import { EoVersion } from "./eo-version";
-import { SemanticTokensProvider } from "./semantics";
-import { getParserErrors } from "./parser";
+import { ClientCapabilitiesAnalyzer } from "./capabilities";
 import { DefaultSettings } from "./defaultSettings";
 import { DocumentSymbolVisitor } from "./document-symbol-visitor";
+import { EoVersion } from "./eo-version";
+import { getParserErrors } from "./parser";
 import { Processor } from "./processor";
+import { SemanticTokensProvider } from "./semantics";
 
 /**
  * Connection with the server, using Node's IPC as a transport.
@@ -38,7 +38,7 @@ const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 /**
  * Client capabilities manager, to define what is and is not able to do.
  */
-const capabilities = new Capabilities();
+let clientCapsAnalyzer: ClientCapabilitiesAnalyzer;
 
 /**
  * Provider of the semantic highlighting capability of the language server.
@@ -49,9 +49,8 @@ let provider: SemanticTokensProvider;
  * Defines procedures to be executed on the initialization process
  * of the connection with the client
  */
-connection.onInitialize((params: InitializeParams) => {
-    const caps = params.capabilities;
-    capabilities.initialize(caps);
+connection.onInitialize((params: InitializeParams): InitializeResult => {
+    clientCapsAnalyzer = new ClientCapabilitiesAnalyzer(params.capabilities);
     provider = new SemanticTokensProvider(params.capabilities.textDocument!.semanticTokens!);
     const result: InitializeResult = {
         capabilities: {
@@ -59,7 +58,7 @@ connection.onInitialize((params: InitializeParams) => {
             documentSymbolProvider: true
         }
     };
-    if (capabilities.workspace) {
+    if (clientCapsAnalyzer.hasWorkspaceFolderSupport) {
         result.capabilities.workspace = {
             workspaceFolders: {
                 supported: true
@@ -75,7 +74,7 @@ connection.onInitialize((params: InitializeParams) => {
 connection.onDocumentSymbol((params: DocumentSymbolParams) => {
     const document = documents.get(params.textDocument.uri);
     if (!document) {
-        return null;
+        return [];
     }
     try {
         const text = document.getText();
@@ -98,15 +97,15 @@ connection.onDocumentSymbol((params: DocumentSymbolParams) => {
  * Configuration, Workspace Folder and Document Semantic Tokens
  */
 connection.onInitialized(() => {
-    if (capabilities.configuration) {
+    if (clientCapsAnalyzer.hasConfigurationSupport) {
         connection.client.register(DidChangeConfigurationNotification.type, void 0);
     }
-    if (capabilities.workspace) {
+    if (clientCapsAnalyzer.hasWorkspaceFolderSupport) {
         connection.workspace.onDidChangeWorkspaceFolders(_event => {
             connection.console.log("Workspace folder change event received");
         });
     }
-    if (capabilities.tokens) {
+    if (clientCapsAnalyzer.hasTokensSupport) {
         const options: SemanticTokensRegistrationOptions = {
             documentSelector: null,
             legend: provider.legend,
@@ -140,7 +139,7 @@ const cache: Map<string, Thenable<DefaultSettings>> = new Map();
  * @returns - A Promise for the settings of the document requested
  */
 function getDocumentSettings(resource: string): Thenable<DefaultSettings> {
-    if (!capabilities.configuration) {
+    if (!clientCapsAnalyzer.hasConfigurationSupport) {
         return Promise.resolve(settings);
     }
     let result = cache.get(resource);
@@ -191,7 +190,7 @@ async function validateTextDocument(document: TextDocument): Promise<void> {
  * documents with there is a change in the configuration of the client.
  */
 connection.onDidChangeConfiguration(change => {
-    if (capabilities.configuration) {
+    if (clientCapsAnalyzer.hasConfigurationSupport) {
         cache.clear();
     } else {
         const config = change.settings.languageServerExample;
