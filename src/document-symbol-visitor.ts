@@ -1,17 +1,21 @@
-import { EoVisitor } from "./parser/EoVisitor";
+// SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
+// SPDX-License-Identifier: MIT
+
+import { ErrorNode } from "antlr4ts/tree/ErrorNode";
+import { ParseTree } from "antlr4ts/tree/ParseTree";
+import { RuleNode } from "antlr4ts/tree/RuleNode";
+import { TerminalNode } from "antlr4ts/tree/TerminalNode";
 import {
     DocumentSymbol,
-    SymbolKind,
-    Range
+    Range,
+    SymbolKind
 } from "vscode-languageserver";
 import {
+    MethodContext,
     ObjectContext,
-    MethodContext
+    ProgramContext
 } from "./parser/EoParser";
-import { RuleNode } from "antlr4ts/tree/RuleNode";
-import { ParseTree } from "antlr4ts/tree/ParseTree";
-import { TerminalNode } from "antlr4ts/tree/TerminalNode";
-import { ErrorNode } from "antlr4ts/tree/ErrorNode";
+import { EoVisitor } from "./parser/EoVisitor";
 
 /**
  * Implements symbol extraction using the existing `EoParser`.
@@ -38,7 +42,7 @@ export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
      * @param ctx MethodContext | ObjectContext | VoidContext
      * @returns Creates a new {@link Range} literal.
      */
-    private static createRange(ctx: ObjectContext | MethodContext): Range {
+    private static createRange(ctx: ObjectContext | MethodContext | ProgramContext): Range {
         const start = ctx.start;
         const stop = ctx.stop || ctx.start;
         return Range.create(
@@ -47,6 +51,10 @@ export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
             stop.line - 1,
             stop.charPositionInLine + (stop.text?.length || 0)
         );
+    }
+
+    visitProgram(ctx: ProgramContext): DocumentSymbol[] {
+        return this.visitChildren(ctx);
     }
 
     /**
