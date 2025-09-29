@@ -71,6 +71,67 @@ contexts:
 
 Should work. If it doesn't, [file an issue], we'll help.
 
+Here's a section you can add to your README.md file to configure Neovim:
+
+## Using with Neovim
+
+To use this LSP server with Neovim, you'll need to configure the LSP client. Here's an example configuration using the built-in LSP client and nvim-lspconfig:
+
+1. First, install the LSP server globally:
+```bash
+npm install -g eo-lsp-server
+```
+
+2. Ensure nvim-lspconfig is configured in your Neovim configuration. Then add the EO language server configuration:
+
+```lua
+local lspconfig = require('lspconfig')
+lspconfig.eo_lsp.setup({
+cmd = {'eo-lsp-server', '--stdio'},
+filetypes = {'eo'},
+root_dir = lspconfig.util.root_pattern('.git', '.eo-root'),
+settings = {}
+})
+```
+
+Or, if you prefer to use npx without installing it globally:
+
+```lua
+lspconfig.eo_lsp.setup({
+cmd = {'npx', '-y', 'eo-lsp-server@0.3.0', '--stdio'},
+filetypes = {'eo'},
+root_dir = lspconfig.util.root_pattern('.git', '.eo-root'),
+settings = {}
+})
+```
+
+3. For syntax highlighting, you can add file type detection and basic syntax. Create `ftdetect/eo.vim` in the Neovim configuration directory:
+
+```vim
+" ~/.config/nvim/ftdetect/eo.vim
+autocmd BufRead,BufNewFile *.eo set filetype=eo
+```
+
+And create the base file `syntax/eo.vim`:
+
+```vim
+" ~/.config/nvim/syntax/eo.vim
+eoComment syntax match "#.*$"
+eoMeta syntax match "^\+\S.*$"
+eoKeyword syntax match "[@^*?]"
+eoOperator syntax match "[\[\]\\>!:\.\)\(]|\+>"
+eoString syntax scope start='"' end='"'
+eoNumber syntax match "\b\(\+\|-\)\?\d\+\(\.\d\+\(e\(\+\|-\)\?\d\)\?\)\?\b"
+Link highlighting eoComment Comment
+Link highlighting eoMeta PreProc
+Link highlighting eoKeyword Keyword
+Link highlighting eoOperator Operator
+Link highlighting eoString String
+Link highlighting eoNumber Number
+```
+
+After configuration, restart Neovim and open the `.eo` file. The LSP server should start automatically and provide semantic tokens and error diagnostics.
+
 ## How to Contribute
 
 First, install [Node] modules with:
