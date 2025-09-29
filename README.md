@@ -94,17 +94,6 @@ settings = {}
 })
 ```
 
-Or, if you prefer to use npx without installing it globally:
-
-```lua
-lspconfig.eo_lsp.setup({
-cmd = {'npx', '-y', 'eo-lsp-server@0.3.0', '--stdio'},
-filetypes = {'eo'},
-root_dir = lspconfig.util.root_pattern('.git', '.eo-root'),
-settings = {}
-})
-```
-
 3. For syntax highlighting, you can add file type detection and basic syntax. Create `ftdetect/eo.vim` in the Neovim configuration directory:
 
 ```vim
