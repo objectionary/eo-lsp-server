@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
@@ -16,18 +17,15 @@ import {
     ProgramContext
 } from "./parser/EoParser";
 import { EoVisitor } from "./parser/EoVisitor";
+import { EoAstNormalizer, NormalizedNode } from "./EoASTNormalizer";
 
 /**
  * Implements symbol extraction using the existing `EoParser`.
  */
 export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
+    private normalizer = new EoAstNormalizer();
     private symbols: DocumentSymbol[] = [];
     private currentObject: DocumentSymbol | null = null;
-
-    constructor() {
-        this.symbols = [];
-        this.currentObject = null;
-    }
 
     /**
      * Get all extracted symbols
@@ -37,118 +35,41 @@ export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
         return this.symbols;
     }
 
-    /**
-     * Create LSP range from parser context
-     * @param ctx MethodContext | ObjectContext | VoidContext
-     * @returns Creates a new {@link Range} literal.
-     */
-    private static createRange(ctx: ObjectContext | MethodContext | ProgramContext): Range {
-        const start = ctx.start;
-        const stop = ctx.stop || ctx.start;
-        return Range.create(
-            start.line - 1,
-            start.charPositionInLine,
-            stop.line - 1,
-            stop.charPositionInLine + (stop.text?.length || 0)
-        );
-    }
-
     visitProgram(ctx: ProgramContext): DocumentSymbol[] {
-        return this.visitChildren(ctx);
+        const normalizedNodes = this.normalizer.normalizeProgram(ctx);
+        this.symbols = normalizedNodes.map(node => this.normalizedToDocumentSymbol(node));
+        return this.symbols;
     }
 
-    /**
-     * Visit object definitions
-     * @param ctx ObjectContext
-     * @returns symbols array
-     */
-    visitObject(ctx: ObjectContext): DocumentSymbol[] {
-        const name = "object";
-        const range = DocumentSymbolVisitor.createRange(ctx);
-        const symbol: DocumentSymbol = {
-            name,
-            kind: SymbolKind.Class,
-            range,
-            selectionRange: range,
-            children: []
+    private normalizedToDocumentSymbol(node: NormalizedNode): DocumentSymbol {
+        const kind = DocumentSymbolVisitor.getSymbolKind(node.type);
+        return {
+            name: node.name,
+            kind,
+            range: node.range,
+            selectionRange: node.selectionRange,
+            children: node.children.map(child => this.normalizedToDocumentSymbol(child))
         };
-        if (this.currentObject) {
-            this.currentObject.children?.push(symbol);
-        } else {
-            this.symbols.push(symbol);
-        }
-        const previousObject = this.currentObject;
-        this.currentObject = symbol;
-        this.visitChildren(ctx);
-        this.currentObject = previousObject;
-        return this.symbols;
     }
 
-    /**
-     * Visit method definitions
-     * @param ctx MethodContext
-     * @returns symbols array
-     */
-    visitMethod(ctx: MethodContext): DocumentSymbol[] {
-        if (!this.currentObject) {
-            return this.symbols;
+    private static getSymbolKind(type: string): SymbolKind {
+        switch (type) {
+            case "object": return SymbolKind.Class;
+            case "method": return SymbolKind.Method;
+            default: return SymbolKind.Object;
         }
-        const name = "method";
-        const range = DocumentSymbolVisitor.createRange(ctx);
-        const methodSymbol: DocumentSymbol = {
-            name,
-            kind: SymbolKind.Method,
-            range,
-            selectionRange: range,
-            children: []
-        };
-        this.currentObject.children?.push(methodSymbol);
-        return this.symbols;
     }
 
-    /**
-     * Visit the children of a node, and return a user-defined result
-     * of the operation.
-     * @param node The {@link RuleNode} whose children should be visited.
-     * @returns The result of visiting the children of the node.
-     */
-    visitChildren(node: RuleNode): DocumentSymbol[] {
-        for (let i = 0; i < node.childCount; i++) {
-            const child = node.getChild(i);
-            if (child) {
-                child.accept(this);
-            }
-        }
-        return this.symbols;
-    }
-
-    /**
-     * Visit a parse tree, and return a user-defined result of the operation.
-     *
-     * @param tree The {@link ParseTree} to visit.
-     * @returns The result of visiting the parse tree.
-     */
     visit(tree: ParseTree): DocumentSymbol[] {
-        return tree.accept(this);
+        return [];
     }
-
-    /**
-     * Visit a terminal node, and return a user-defined result of the operation.
-     *
-     * @param node The {@link TerminalNode} to visit.
-     * @returns The result of visiting the node.
-     */
+    visitChildren(node: RuleNode): DocumentSymbol[] {
+        return [];
+    }
     visitTerminal(node: TerminalNode): DocumentSymbol[] {
-        return this.symbols;
+        return [];
     }
-
-    /**
-     * Visit an error node, and return a user-defined result of the operation.
-     *
-     * @param node The {@link ErrorNode} to visit.
-     * @returns The result of visiting the node.
-     */
     visitErrorNode(node: ErrorNode): DocumentSymbol[] {
-        return this.symbols;
+        return [];
     }
 }
