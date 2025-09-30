@@ -78,13 +78,13 @@ Here's a section you can add to your README.md file to configure Neovim:
 To use this LSP server with Neovim, you'll need to configure the LSP client.
 Here's an example configuration using the built-in LSP client and nvim-lspconfig:
 
-1. First, install the LSP server globally:
+* First, install the LSP server globally:
 
 ```bash
 npm install -g eo-lsp-server
 ```
 
-2. Ensure nvim-lspconfig is configured in your Neovim configuration.
+* Ensure nvim-lspconfig is configured in your Neovim configuration.
 Then add the EO language server configuration:
 
 ```lua
@@ -97,7 +97,7 @@ settings = {}
 })
 ```
 
-3. For syntax highlighting, you can add file type detection and basic syntax.
+* For syntax highlighting, you can add file type detection and basic syntax.
 Create `ftdetect/eo.vim` in the Neovim configuration directory:
 
 ```vim
