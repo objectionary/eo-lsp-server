@@ -11,11 +11,7 @@ import {
     Range,
     SymbolKind
 } from "vscode-languageserver";
-import {
-    MethodContext,
-    ObjectContext,
-    ProgramContext
-} from "./parser/EoParser";
+import { ProgramContext } from "./parser/EoParser";
 import { EoVisitor } from "./parser/EoVisitor";
 import { EoAstNormalizer, NormalizedNode } from "./EoASTNormalizer";
 
@@ -54,8 +50,8 @@ export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
 
     private static getSymbolKind(type: string): SymbolKind {
         switch (type) {
-            case "object": return SymbolKind.Class;
-            case "method": return SymbolKind.Method;
+            case "object": return SymbolKind.Object;
+            case "attribute": return SymbolKind.Property;
             default: return SymbolKind.Object;
         }
     }

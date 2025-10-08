@@ -1,13 +1,11 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-// SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
-// SPDX-License-Identifier: MIT
-
 import { ParseTree } from "antlr4ts/tree/ParseTree";
 import { Range } from "vscode-languageserver";
-import { MethodContext, ObjectContext, ProgramContext } from "./parser/EoParser";
+import { BoundContext, MasterBodyContext, ObjectContext, ProgramContext } from "./parser/EoParser";
 import { RuleNode } from "antlr4ts/tree/RuleNode";
+import { customDebugLogger } from "./debug-logger";
 
 /**
  * Describes an EO node in a common way to work with
@@ -30,10 +28,10 @@ export interface NormalizedObject extends NormalizedNode {
 }
 
 /**
- * Describes a normalized method
+ * Describes a normalized attribute
  */
-export interface NormalizedMethod extends NormalizedNode {
-    type: "method";
+export interface NormalizedBound extends NormalizedNode {
+    type: "attribute";
 }
 
 /**
@@ -53,8 +51,10 @@ export class EoAstNormalizer {
      * @returns NormalizedNode array.
      * */
     normalizeProgram(ctx: ProgramContext): NormalizedNode[] {
+        customDebugLogger.log("normalizeProgram STARTED \n");
         const nodes: NormalizedNode[] = [];
         if (ctx.object()) {
+            customDebugLogger.log("Object detected!");
             const objectNode = this.normalizeObject(ctx.object());
             nodes.push(objectNode);
         }
@@ -68,40 +68,35 @@ export class EoAstNormalizer {
      * @returns normalized object as a simple structure
      */
     normalizeObject(ctx: ObjectContext): NormalizedObject {
-        if (this.normalizedNodes.has(ctx)) {
-            return this.normalizedNodes.get(ctx) as NormalizedObject;
-        }
+        customDebugLogger.log("normalizing OBJECT STARTED \n");
         const name = EoAstNormalizer.extractObjectName(ctx);
         const range = EoAstNormalizer.createRange(ctx);
         const parameters = EoAstNormalizer.extractObjectParameters(ctx);
+        const allChildren = this.findChildrenRecursively(ctx);
         const normalized: NormalizedObject = {
             type: "object",
             name,
             range,
             parameters,
-            children: [],
+            children: allChildren,
             text: ctx.text,
             selectionRange: EoAstNormalizer.findNameRange(ctx) || range
         };
         this.normalizedNodes.set(ctx, normalized);
-        normalized.children = this.normalizeChildren(ctx);
         return normalized;
     }
 
     /**
-     * Normalizes MethodContext
+     * Normalizes BoundContext
      *
-     * @param ctx MethodContext
-     * @returns normalized method as a simple structure
+     * @param ctx BoundContext
+     * @returns normalized bound as a simple structure
      */
-    normalizeMethod(ctx: MethodContext): NormalizedMethod {
-        if (this.normalizedNodes.has(ctx)) {
-            return this.normalizedNodes.get(ctx) as NormalizedMethod;
-        }
-        const name = EoAstNormalizer.extractMethodName(ctx);
+    normalizeAttribute(ctx: BoundContext): NormalizedBound {
+        const name = EoAstNormalizer.extractAttributeName(ctx);
         const range = EoAstNormalizer.createRange(ctx);
-        const normalized: NormalizedMethod = {
-            type: "method",
+        const normalized: NormalizedBound = {
+            type: "attribute",
             name,
             range,
             selectionRange: EoAstNormalizer.findNameRange(ctx) || range,
@@ -109,45 +104,56 @@ export class EoAstNormalizer {
             text: ctx.text
         };
         this.normalizedNodes.set(ctx, normalized);
-        normalized.children = this.normalizeChildren(ctx);
         return normalized;
     }
 
     /**
-     * Normalizes all the node's children
+     * Normalizes MasterBodyContext
      *
-     * @param node RuleNode
-     * @returns NormalizedNode array
+     * @param ctx MasterBodyContext
+     * @returns normalized masterbody as a simple structure
      */
-    private normalizeChildren(node: RuleNode): NormalizedNode[] {
+    normalizeMasterBody(ctx: MasterBodyContext): NormalizedBound {
+        const name = EoAstNormalizer.extractMasterBodyName(ctx);
+        const range = EoAstNormalizer.createRange(ctx);
+        const normalized: NormalizedBound = {
+            type: "attribute",
+            name,
+            range,
+            selectionRange: EoAstNormalizer.findNameRange(ctx) || range,
+            children: [],
+            text: ctx.text
+        };
+        this.normalizedNodes.set(ctx, normalized);
+        return normalized;
+    }
+
+    /**
+     * Recursively traverse through the children to find the
+     * desired parsetree node.
+     * @param node ParseTree node
+     * @returns normalized array of children
+     * */
+    findChildrenRecursively(node: ParseTree): NormalizedNode[] {
         const children: NormalizedNode[] = [];
-        for (let i = 0; i < node.childCount; i++) {
-            const child = node.getChild(i);
-            if (!child) {
-                continue;
+        const traverse = (current: ParseTree) => {
+            if (current instanceof BoundContext && current !== node) {
+                children.push(this.normalizeAttribute(current));
+            } else if (current instanceof MasterBodyContext && current !== node) {
+                children.push(this.normalizeMasterBody(current));
+            } else if (current instanceof ObjectContext && current !== node) {
+                children.push(this.normalizeObject(current));
             }
-            let normalizedChild: NormalizedNode | null = null;
-            if (child instanceof ObjectContext) {
-                normalizedChild = this.normalizeObject(child);
-            } else if (child instanceof MethodContext) {
-                normalizedChild = this.normalizeMethod(child);
-            } else if (child instanceof RuleNode) {
-                const childChildren = this.normalizeChildren(child);
-                if (childChildren.length > 0) {
-                    normalizedChild = {
-                        type: "block",
-                        name: `block_${i}`,
-                        range: EoAstNormalizer.createRange(child),
-                        selectionRange: EoAstNormalizer.createRange(child),
-                        children: childChildren,
-                        text: child.text
-                    };
+            if (current instanceof RuleNode) {
+                for (let i = 0; i < current.childCount; i++) {
+                    const child = current.getChild(i);
+                    if (child) {
+                        traverse(child);
+                    }
                 }
             }
-            if (normalizedChild) {
-                children.push(normalizedChild);
-            }
-        }
+        };
+        traverse(node);
         return children;
     }
 
@@ -175,17 +181,17 @@ export class EoAstNormalizer {
     }
 
     /**
-     * Method name extractor
+     * Bound attribute name extractor
      *
-     * @param ctx MethodContext
+     * @param ctx BoundContext
      * @returns string containing `name`
      * */
-    private static extractMethodName(ctx: MethodContext): string {
+    private static extractAttributeName(ctx: BoundContext): string {
         const text = ctx.text;
         if (text.includes("> @")) {
             return "@";
         }
-        const boundMatch = text.match(/\+\s*>\s*([a-zA-Z_][a-zA-Z0-9_-]*)/u);
+        const boundMatch = text.match(/(?:\+)?\s*>\s*([a-zA-Z_][a-zA-Z0-9_-]*)/u);
         if (boundMatch) {
             return boundMatch[1];
         }
@@ -194,7 +200,28 @@ export class EoAstNormalizer {
         if (lastWord && /^[a-zA-Z_]/u.test(lastWord)) {
             return lastWord;
         }
-        return "anonymous-method";
+        return "anonymous-attribute";
+    }
+
+    /**
+     * Masterbody attribute name extractor
+     *
+     * @param ctx MasterBodyContext
+     * @returns string containing `name`
+     * */
+    private static extractMasterBodyName(ctx: MasterBodyContext): string {
+        const text = ctx.text;
+        customDebugLogger.log(`\n MASTERBODY_CONTEXT contains TEXT: \n ${text} \n`);
+        const boundMatch = text.match(/(?:\+)?\s*>\s*([a-zA-Z_][a-zA-Z0-9_-]*)/u);
+        if (boundMatch) {
+            return boundMatch[1];
+        }
+        const words = text.trim().split(/\s+/u);
+        const lastWord = words[words.length - 1];
+        if (lastWord && /^[a-zA-Z_]/u.test(lastWord)) {
+            return lastWord;
+        }
+        return "anonymous-masterbody";
     }
 
     /**
