@@ -11,10 +11,9 @@ import {
     SubMasterContext
 } from "./parser/EoParser";
 import { RuleNode } from "antlr4ts/tree/RuleNode";
-import { customDebugLogger } from "./debug-logger";
 
 /**
- * Describes an EO node in a common way to work with-==
+ * Describes an EO node in a common way to work with
  */
 export interface NormalizedNode {
     type: string;
@@ -144,7 +143,6 @@ export class EoAstNormalizer {
         for (let i = 0; i < ctx.childCount; i++) {
             const child = ctx.getChild(i);
             if (child instanceof SubMasterContext) {
-                customDebugLogger.log("Found SubMasterContext, processing...");
                 this.processSubMaster(child, children);
             }
         }
@@ -266,7 +264,7 @@ export class EoAstNormalizer {
         if (lastWord && /^[a-zA-Z_]/u.test(lastWord)) {
             return lastWord;
         }
-        return "anonymous-bound";
+        return "anonymous";
     }
 
     /**
@@ -286,7 +284,7 @@ export class EoAstNormalizer {
         if (lastWord && /^[a-zA-Z_]/u.test(lastWord)) {
             return lastWord;
         }
-        return "anonymous-masterbody";
+        return "anonymous";
     }
 
     private static findNameRange(ctx: ParseTree): Range | null {
