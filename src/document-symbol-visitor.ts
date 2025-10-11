@@ -21,7 +21,6 @@ import { EoAstNormalizer, NormalizedNode } from "./EoASTNormalizer";
 export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
     private normalizer = new EoAstNormalizer();
     private symbols: DocumentSymbol[] = [];
-    private currentObject: DocumentSymbol | null = null;
 
     /**
      * Get all extracted symbols

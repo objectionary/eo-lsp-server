@@ -3,12 +3,18 @@
 
 import { ParseTree } from "antlr4ts/tree/ParseTree";
 import { Range } from "vscode-languageserver";
-import { BoundContext, MasterBodyContext, ObjectContext, ProgramContext } from "./parser/EoParser";
+import {
+    BoundContext,
+    MasterBodyContext,
+    ObjectContext,
+    ProgramContext,
+    SubMasterContext
+} from "./parser/EoParser";
 import { RuleNode } from "antlr4ts/tree/RuleNode";
 import { customDebugLogger } from "./debug-logger";
 
 /**
- * Describes an EO node in a common way to work with
+ * Describes an EO node in a common way to work with-==
  */
 export interface NormalizedNode {
     type: string;
@@ -24,7 +30,6 @@ export interface NormalizedNode {
  */
 export interface NormalizedObject extends NormalizedNode {
     type: "object";
-    parameters: string[];
 }
 
 /**
@@ -51,10 +56,8 @@ export class EoAstNormalizer {
      * @returns NormalizedNode array.
      * */
     normalizeProgram(ctx: ProgramContext): NormalizedNode[] {
-        customDebugLogger.log("normalizeProgram STARTED \n");
         const nodes: NormalizedNode[] = [];
         if (ctx.object()) {
-            customDebugLogger.log("Object detected!");
             const objectNode = this.normalizeObject(ctx.object());
             nodes.push(objectNode);
         }
@@ -68,16 +71,13 @@ export class EoAstNormalizer {
      * @returns normalized object as a simple structure
      */
     normalizeObject(ctx: ObjectContext): NormalizedObject {
-        customDebugLogger.log("normalizing OBJECT STARTED \n");
         const name = EoAstNormalizer.extractObjectName(ctx);
         const range = EoAstNormalizer.createRange(ctx);
-        const parameters = EoAstNormalizer.extractObjectParameters(ctx);
-        const allChildren = this.findChildrenRecursively(ctx);
+        const allChildren = this.findTopLevelChildren(ctx);
         const normalized: NormalizedObject = {
             type: "object",
             name,
             range,
-            parameters,
             children: allChildren,
             text: ctx.text,
             selectionRange: EoAstNormalizer.findNameRange(ctx) || range
@@ -92,8 +92,8 @@ export class EoAstNormalizer {
      * @param ctx BoundContext
      * @returns normalized bound as a simple structure
      */
-    normalizeAttribute(ctx: BoundContext): NormalizedBound {
-        const name = EoAstNormalizer.extractAttributeName(ctx);
+    normalizeBound(ctx: BoundContext): NormalizedBound {
+        const name = EoAstNormalizer.extractBoundName(ctx);
         const range = EoAstNormalizer.createRange(ctx);
         const normalized: NormalizedBound = {
             type: "attribute",
@@ -129,20 +129,86 @@ export class EoAstNormalizer {
     }
 
     /**
-     * Recursively traverse through the children to find the
-     * desired parsetree node.
-     * @param node ParseTree node
+     * Finds the direct children of an ObjectContext using
+     * ANTLR methods.
+     * @param ctx ObjectContext
      * @returns normalized array of children
      * */
-    findChildrenRecursively(node: ParseTree): NormalizedNode[] {
+    findTopLevelChildren(ctx: ObjectContext): NormalizedNode[] {
+        const children: NormalizedNode[] = [];
+        const masterBody = ctx.masterBody();
+        if (masterBody) {
+            const topLevelAttributes = this.extractTopLevelAttributes(masterBody);
+            children.push(...topLevelAttributes);
+        }
+        for (let i = 0; i < ctx.childCount; i++) {
+            const child = ctx.getChild(i);
+            if (child instanceof SubMasterContext) {
+                customDebugLogger.log("Found SubMasterContext, processing...");
+                this.processSubMaster(child, children);
+            }
+        }
+        return children;
+    }
+
+    /**
+     * Extracts top-level attributes from MasterBodyContext.
+     * @param masterBody MasterBodyContext.
+     * @returns normalized array of top-level attributes.
+     */
+    private extractTopLevelAttributes(masterBody: MasterBodyContext): NormalizedNode[] {
+        const attributes: NormalizedNode[] = [];
+        const traverseForTargets = (current: ParseTree, depth: number = 0) => {
+            if (current instanceof BoundContext) {
+                attributes.push(this.normalizeBound(current));
+                return;
+            }
+            if (current instanceof SubMasterContext) {
+                this.processSubMaster(current, attributes);
+                return;
+            }
+            if (current instanceof RuleNode && depth < 10) {
+                for (let i = 0; i < current.childCount; i++) {
+                    const child = current.getChild(i);
+                    if (child) {
+                        traverseForTargets(child, depth + 1);
+                    }
+                }
+            }
+        };
+        traverseForTargets(masterBody);
+        return attributes;
+    }
+
+    /**
+     * Loops through the SubMasterContext and gets only the
+     * MasterBodyContext's children.
+     * @param subMaster SubMasterContext.
+     * @param children NormalizedNode[].
+     * @returns void.
+     * */
+    private processSubMaster(subMaster: SubMasterContext, children: NormalizedNode[]): void {
+        for (let i = 0; i < subMaster.childCount; i++) {
+            const child = subMaster.getChild(i);
+            if (child instanceof MasterBodyContext) {
+                children.push(this.normalizeMasterBody(child));
+            }
+        }
+    }
+
+    /**
+     * Recursively traverse through the children to find
+     * all of the nested nodes.
+     * @param node ObjectContext
+     * @returns normalized array of nested nodes.
+     * */
+    findNestedChildrenRecursively(node: ObjectContext): NormalizedNode[] {
         const children: NormalizedNode[] = [];
         const traverse = (current: ParseTree) => {
-            if (current instanceof BoundContext && current !== node) {
-                children.push(this.normalizeAttribute(current));
-            } else if (current instanceof MasterBodyContext && current !== node) {
+            if (current instanceof MasterBodyContext) {
                 children.push(this.normalizeMasterBody(current));
-            } else if (current instanceof ObjectContext && current !== node) {
-                children.push(this.normalizeObject(current));
+            } else if (current instanceof BoundContext) {
+                children.push(this.normalizeBound(current));
             }
             if (current instanceof RuleNode) {
                 for (let i = 0; i < current.childCount; i++) {
@@ -186,7 +252,7 @@ export class EoAstNormalizer {
      * @param ctx BoundContext
      * @returns string containing `name`
      * */
-    private static extractAttributeName(ctx: BoundContext): string {
+    private static extractBoundName(ctx: BoundContext): string {
         const text = ctx.text;
         if (text.includes("> @")) {
             return "@";
@@ -200,7 +266,7 @@ export class EoAstNormalizer {
         if (lastWord && /^[a-zA-Z_]/u.test(lastWord)) {
             return lastWord;
         }
-        return "anonymous-attribute";
+        return "anonymous-bound";
     }
 
     /**
@@ -211,7 +277,6 @@ export class EoAstNormalizer {
      * */
     private static extractMasterBodyName(ctx: MasterBodyContext): string {
         const text = ctx.text;
-        customDebugLogger.log(`\n MASTERBODY_CONTEXT contains TEXT: \n ${text} \n`);
         const boundMatch = text.match(/(?:\+)?\s*>\s*([a-zA-Z_][a-zA-Z0-9_-]*)/u);
         if (boundMatch) {
             return boundMatch[1];
@@ -222,21 +287,6 @@ export class EoAstNormalizer {
             return lastWord;
         }
         return "anonymous-masterbody";
-    }
-
-    /**
-     * Object parameters extractor
-     *
-     * @param ctx ObjectContext
-     * @returns string array containing parameters
-     */
-    private static extractObjectParameters(ctx: ObjectContext): string[] {
-        const text = ctx.text;
-        const bracketMatch = text.match(/\[([^\]]*)\]/u);
-        if (bracketMatch) {
-            return bracketMatch[1].split(",").map(p => p.trim()).filter(p => p);
-        }
-        return [];
     }
 
     private static findNameRange(ctx: ParseTree): Range | null {
