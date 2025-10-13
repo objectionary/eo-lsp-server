@@ -43,7 +43,7 @@ export interface NormalizedBound extends NormalizedNode {
  * so it hides all of the ANTLR4's complexity inside, by
  * simplifying RuleContext into a simple structure.
  *
- * Basicly, we need this to extract the `name` of the symbols.
+ * Basically, we need this to extract the `name` of the symbols.
  */
 export class EoAstNormalizer {
     private normalizedNodes: Map<ParseTree, NormalizedNode> = new Map();
