@@ -6,7 +6,7 @@
 .ONESHELL:
 SHELL := bash
 
-VERSION := 0.58.6
+VERSION := 0.58.8
 GRAMMAR_URL := https://raw.githubusercontent.com/objectionary/eo/refs/tags/$(VERSION)/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4
 
 TSS := $(shell find src -name '*.ts')
