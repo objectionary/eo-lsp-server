@@ -10,3 +10,5 @@ src/parser/
 .claude/
 Eo.g4
 compiled/
+mvnw/dependency-reduced-pom.xml
+target/
