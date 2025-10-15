@@ -31,7 +31,7 @@ Eo.g4: Makefile
 	curl --silent $(GRAMMAR_URL) > $@
 
 src/parser: Eo.g4 Makefile
-	npx antlr4ts -visitor $< -o src/parser
+	mvnw/mvnw -f mvnw/pom.xml generate-sources -Dantlr4.outputDir=../src/parser -Dantlr4.sourceDir=../
 
 test: build
 	npx jest --coverage
