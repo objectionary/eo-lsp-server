@@ -34,7 +34,7 @@ export interface NormalizedObject extends NormalizedNode {
 /**
  * Describes a normalized attribute
  */
-export interface NormalizedBound extends NormalizedNode {
+export interface NormalizedAttribute extends NormalizedNode {
     type: "attribute";
 }
 
@@ -45,7 +45,7 @@ export interface NormalizedBound extends NormalizedNode {
  *
  * Basically, we need this to extract the `name` of the symbols.
  */
-export class EoAstNormalizer {
+export class EoASTNormalizer {
     private normalizedNodes: Map<ParseTree, NormalizedNode> = new Map();
 
     /**
@@ -70,16 +70,19 @@ export class EoAstNormalizer {
      * @returns normalized object as a simple structure
      */
     normalizeObject(ctx: ObjectContext): NormalizedObject {
-        const name = EoAstNormalizer.extractObjectName(ctx);
-        const range = EoAstNormalizer.createRange(ctx);
-        const allChildren = this.findTopLevelChildren(ctx);
+        if (this.normalizedNodes.has(ctx)) {
+            return this.normalizedNodes.get(ctx) as NormalizedObject;
+        }
+        const name = EoASTNormalizer.extractObjectName(ctx);
+        const range = EoASTNormalizer.createRange(ctx);
+        const topLevelChildren = this.findTopLevelChildren(ctx);
         const normalized: NormalizedObject = {
             type: "object",
             name,
             range,
-            children: allChildren,
+            children: topLevelChildren,
             text: ctx.text,
-            selectionRange: EoAstNormalizer.findNameRange(ctx) || range
+            selectionRange: EoASTNormalizer.findNameRange(ctx) || range
         };
         this.normalizedNodes.set(ctx, normalized);
         return normalized;
@@ -91,14 +94,17 @@ export class EoAstNormalizer {
      * @param ctx BoundContext
      * @returns normalized bound as a simple structure
      */
-    normalizeBound(ctx: BoundContext): NormalizedBound {
-        const name = EoAstNormalizer.extractBoundName(ctx);
-        const range = EoAstNormalizer.createRange(ctx);
-        const normalized: NormalizedBound = {
+    normalizeBound(ctx: BoundContext): NormalizedAttribute {
+        if (this.normalizedNodes.has(ctx)) {
+            return this.normalizedNodes.get(ctx) as NormalizedAttribute;
+        }
+        const name = EoASTNormalizer.extractBoundName(ctx);
+        const range = EoASTNormalizer.createRange(ctx);
+        const normalized: NormalizedAttribute = {
             type: "attribute",
             name,
             range,
-            selectionRange: EoAstNormalizer.findNameRange(ctx) || range,
+            selectionRange: EoASTNormalizer.findNameRange(ctx) || range,
             children: [],
             text: ctx.text
         };
@@ -112,14 +118,17 @@ export class EoAstNormalizer {
      * @param ctx MasterBodyContext
      * @returns normalized masterbody as a simple structure
      */
-    normalizeMasterBody(ctx: MasterBodyContext): NormalizedBound {
-        const name = EoAstNormalizer.extractMasterBodyName(ctx);
-        const range = EoAstNormalizer.createRange(ctx);
-        const normalized: NormalizedBound = {
+    normalizeMasterBody(ctx: MasterBodyContext): NormalizedAttribute {
+        if (this.normalizedNodes.has(ctx)) {
+            return this.normalizedNodes.get(ctx) as NormalizedAttribute;
+        }
+        const name = EoASTNormalizer.extractMasterBodyName(ctx);
+        const range = EoASTNormalizer.createRange(ctx);
+        const normalized: NormalizedAttribute = {
             type: "attribute",
             name,
             range,
-            selectionRange: EoAstNormalizer.findNameRange(ctx) || range,
+            selectionRange: EoASTNormalizer.findNameRange(ctx) || range,
             children: [],
             text: ctx.text
         };
@@ -288,7 +297,7 @@ export class EoAstNormalizer {
     }
 
     private static findNameRange(ctx: ParseTree): Range | null {
-        return EoAstNormalizer.createRange(ctx);
+        return EoASTNormalizer.createRange(ctx);
     }
 
     /**
