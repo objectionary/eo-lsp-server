@@ -18,7 +18,7 @@ import {
 } from "vscode-languageserver/node.js";
 import { ClientCapabilitiesAnalyzer } from "./capabilities";
 import { DefaultSettings } from "./defaultSettings";
-import { DocumentSymbolVisitor } from "./document-symbol-visitor";
+import { DocumentSymbolVisitor } from "./documentSymbolVisitor";
 import { EoVersion } from "./eo-version";
 import { getParserErrors } from "./parser";
 import { Processor } from "./processor";
