@@ -9,8 +9,7 @@ import { TerminalNode } from "antlr4ts/tree/TerminalNode";
 import {
     DocumentSymbol,
     Range,
-    SymbolKind,
-    SymbolTag
+    SymbolKind
 } from "vscode-languageserver";
 import { ProgramContext } from "./parser/EoParser";
 import { EoVisitor } from "./parser/EoVisitor";
@@ -24,30 +23,19 @@ export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
     private symbols: DocumentSymbol[] = [];
 
     /**
-     * Get all the extracted symbols
+     * Get all extracted symbols
      * @returns symbols array
      */
     public getSymbols(): DocumentSymbol[] {
         return this.symbols;
     }
 
-    /**
-     * Entrypoint of the visitor.
-     * Maps the normalized nodes to symbols array.
-     * @param ctx EoParser `ProgramContext`.
-     * @returns symbols array.
-     * */
     visitProgram(ctx: ProgramContext): DocumentSymbol[] {
         const normalizedNodes = this.normalizer.normalizeProgram(ctx);
         this.symbols = normalizedNodes.map(node => this.normalizedToDocumentSymbol(node));
         return this.symbols;
     }
 
-    /**
-     * Converts the normalized node to `DocumentSymbol`.
-     * @param node the normalized node.
-     * @returns `DocumentSymbol` node.
-     * */
     private normalizedToDocumentSymbol(node: NormalizedNode): DocumentSymbol {
         const kind = DocumentSymbolVisitor.getSymbolKind(node.type);
         return {
@@ -59,20 +47,14 @@ export class DocumentSymbolVisitor implements EoVisitor<DocumentSymbol[]> {
         };
     }
 
-    /**
-     * Get a number of the `SymbolKind` type.
-     * @param type string.
-     * @returns number of `SymbolKind`.
-     * */
     private static getSymbolKind(type: string): SymbolKind {
         switch (type) {
             case "object": return SymbolKind.Object;
             case "attribute": return SymbolKind.Property;
-            default: return SymbolKind.Property;
+            default: return SymbolKind.Object;
         }
     }
 
-    // We omit these methods from the EoVisitor's interface.
     visit(tree: ParseTree): DocumentSymbol[] {
         return [];
     }
