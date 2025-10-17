@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-import { CharStreams, Token, VocabularyImpl } from "antlr4ts";
+import { CharStreams, Token } from "antlr4";
 import { IndentationLexer } from "../src/IndentationLexer";
-import { EoLexer } from "../src/parser/EoLexer";
+import EoLexer from "../src/parser/EoLexer";
 
 describe("IndentationLexer", () => {
 
@@ -37,8 +37,6 @@ describe("IndentationLexer", () => {
             expect(lexer.ruleNames).toEqual(EoLexer.ruleNames);
             /* eslint-disable-next-line no-underscore-dangle */
             expect(lexer.serializedATN).toEqual(EoLexer._serializedATN);
-            expect(lexer.vocabulary).toBeInstanceOf(VocabularyImpl);
-            expect(lexer.vocabulary).toEqual(EoLexer.VOCABULARY);
         });
 
     });

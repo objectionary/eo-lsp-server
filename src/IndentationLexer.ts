@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-import { Token, CommonToken, Lexer, CharStream } from "antlr4ts";
-import { EoLexer } from "./parser/EoLexer";
-import { EoParser } from "./parser/EoParser";
+import { Token, CommonToken, Lexer, CharStream } from "antlr4";
+import EoLexer from "./parser/EoLexer";
+import EoParser from "./parser/EoParser";
 
 /**
  * Custom lexer that wraps EoLexer to handle indentation-based TAB/UNTAB tokens
@@ -42,7 +42,7 @@ export class IndentationLexer extends Lexer {
      */
     private emitIndent(shift: number): void {
         for (let i = 0; i < shift; i++) {
-            this.emitToken(IndentationLexer.TAB);
+            this.emitIndentationToken(IndentationLexer.TAB);
         }
     }
 
@@ -53,7 +53,7 @@ export class IndentationLexer extends Lexer {
      */
     private emitDedent(shift: number): void {
         for (let i = 0; i < shift; i++) {
-            this.emitToken(IndentationLexer.UNTAB);
+            this.emitIndentationToken(IndentationLexer.UNTAB);
         }
     }
 
@@ -63,10 +63,10 @@ export class IndentationLexer extends Lexer {
      * @param type - Token type (must be IndentationLexer.TAB or IndentationLexer.UNTAB)
      * @returns Void
      */
-    private emitToken(type: number) {
-        const tkn = new CommonToken(type, type === IndentationLexer.TAB ? "TAB" : "UNTAB");
+    private emitIndentationToken(type: number) {
+        const tkn = new CommonToken([this.wrapped, this._input], type, Token.DEFAULT_CHANNEL, 0, 0);
         tkn.line = this.wrapped.line;
-        tkn.charPositionInLine = 0;
+        tkn.column = 0;
         this.tokens.push(tkn);
     }
 
@@ -176,10 +176,7 @@ export class IndentationLexer extends Lexer {
     get ruleNames(): string[] {
         return this.wrapped.ruleNames;
     }
-    get serializedATN(): string {
+    get serializedATN(): number[] {
         return this.wrapped.serializedATN;
-    }
-    get vocabulary(): any {
-        return this.wrapped.vocabulary;
     }
 }

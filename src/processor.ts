@@ -4,18 +4,17 @@
 import {
     CharStreams,
     CommonTokenStream,
-    CodePointCharStream
-} from "antlr4ts";
-import { EoLexer } from "./parser/EoLexer";
-import { EoParser } from "./parser/EoParser";
+    CharStream
+} from "antlr4";
 import { IndentationLexer } from "./IndentationLexer";
+import EoParser from "./parser/EoParser";
 
 export class Processor {
 
     /**
      * Text to be lexed and parsed
      */
-    stream: CodePointCharStream;
+    stream: CharStream;
 
     /**
      * EO grammar lexer with indentation support
