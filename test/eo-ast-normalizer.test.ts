@@ -1,14 +1,8 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-import { EoASTNormalizer } from "../src/EoASTNormalizer";
+import { EoASTNormalizer, NormalizedNode } from "../src/EoASTNormalizer";
 import { Processor } from "../src/processor";
-import {
-    MasterBodyContext,
-    SubMasterContext,
-    ObjectContext,
-    BoundContext
-} from "../src/parser/EoParser";
 import path from "path";
 import * as fs from "fs";
 
@@ -58,5 +52,27 @@ describe("EoASTNormalizer", () => {
         expect(boundResult).toBe(cachedValue);
         expect(masterBodyResult).toBe(cachedValue);
         getSpy.mockRestore();
+    });
+
+    test("we expect findTopLevelChildren to trigger processSubMaster method", () => {
+        const children: NormalizedNode[] = [];
+        const mockSubMasterContext = {
+            masterBody: jest.fn(),
+            getChild: jest.fn(),
+            childCount: 0,
+            text: "sub-master"
+        };
+        const mockObjectContext = {
+            masterBody: jest.fn().mockReturnValue(null),
+            childCount: 1,
+            getChild: jest.fn().mockReturnValue(mockSubMasterContext)
+        };
+        const originalSubMaster = jest.requireActual("../src/parser/EoParser").SubMasterContext;
+        Object.setPrototypeOf(mockSubMasterContext, originalSubMaster.prototype);
+        const processSubMasterSpy = jest.spyOn((normalizer as any), "processSubMaster");
+        normalizer.findTopLevelChildren(mockObjectContext as any);
+        expect(processSubMasterSpy).toHaveBeenCalled();
+        expect(processSubMasterSpy).toHaveBeenCalledWith(mockSubMasterContext, children);
+        processSubMasterSpy.mockRestore();
     });
 });
