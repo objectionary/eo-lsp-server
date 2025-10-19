@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import { EoASTNormalizer, NormalizedNode } from "../src/EoASTNormalizer";
+import { ObjectContext } from "../src/parser/EoParser";
 import { Processor } from "../src/processor";
 import path from "path";
 import * as fs from "fs";
@@ -74,5 +75,14 @@ describe("EoASTNormalizer", () => {
         expect(processSubMasterSpy).toHaveBeenCalled();
         expect(processSubMasterSpy).toHaveBeenCalledWith(mockSubMasterContext, children);
         processSubMasterSpy.mockRestore();
+    });
+
+    test("we expect findNestedChildrenRecursively to return 6 nested children", () => {
+        const objectCtx = programCtx.object();
+        if (!objectCtx) {
+            throw new Error("No ObjectContext found in Fibonacci test file");
+        }
+        const result = normalizer.findNestedChildrenRecursively(objectCtx);
+        expect(result.length).toBe(6);
     });
 });
