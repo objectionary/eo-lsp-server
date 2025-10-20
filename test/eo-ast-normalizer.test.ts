@@ -91,5 +91,16 @@ describe("EoASTNormalizer", () => {
             expect(processSubMasterSpy).toHaveBeenCalledWith(mockSubMasterContext, children);
             processSubMasterSpy.mockRestore();
         });
+
+        test("we expect extractObjectName method to return `anonymous`", () => {
+            const extractObjectNameSpy = jest.spyOn((EoASTNormalizer as any), "extractObjectName");
+            const mockObjectContext = {
+                text: "[]"
+            };
+            const result = (EoASTNormalizer as any).extractObjectName(mockObjectContext);
+            expect(result).toBe("anonymous");
+            expect(extractObjectNameSpy).toHaveReturnedWith("anonymous");
+            extractObjectNameSpy.mockRestore();
+        });
     });
 });
