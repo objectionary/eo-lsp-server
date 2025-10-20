@@ -238,17 +238,9 @@ export class EoASTNormalizer {
      */
     private static extractObjectName(ctx: ObjectContext): string {
         const text = ctx.text;
-        const gtMatch = text.match(/\]\s*>\s*([a-zA-Z_][a-zA-Z0-9_-]*)/u);
-        if (gtMatch) {
-            return gtMatch[1];
-        }
-        const simpleMatch = text.match(/^([a-zA-Z_][a-zA-Z0-9_-]*)\s*>/mu);
-        if (simpleMatch) {
-            return simpleMatch[1];
-        }
-        const boundMatch = text.match(/\[\]\s*\+\s*>\s*([a-zA-Z_][a-zA-Z0-9_-]*)/u);
-        if (boundMatch) {
-            return boundMatch[1];
+        const match = text.match(/(?<!#.*)(?:\]|\[\])\s*>\s*([a-zA-Z_][a-zA-Z0-9_-]*)/u);
+        if (match) {
+            return match[1];
         }
         return "anonymous";
     }
