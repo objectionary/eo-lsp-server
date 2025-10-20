@@ -260,11 +260,6 @@ export class EoASTNormalizer {
         if (boundMatch) {
             return boundMatch[1];
         }
-        const words = text.trim().split(/\s+/u);
-        const lastWord = words[words.length - 1];
-        if (lastWord && /^[a-zA-Z_]/u.test(lastWord)) {
-            return lastWord;
-        }
         return "anonymous";
     }
 
@@ -279,11 +274,6 @@ export class EoASTNormalizer {
         const boundMatch = text.match(/(?:\+)?\s*>\s*([a-zA-Z_][a-zA-Z0-9_-]*)/u);
         if (boundMatch) {
             return boundMatch[1];
-        }
-        const words = text.trim().split(/\s+/u);
-        const lastWord = words[words.length - 1];
-        if (lastWord && /^[a-zA-Z_]/u.test(lastWord)) {
-            return lastWord;
         }
         return "anonymous";
     }

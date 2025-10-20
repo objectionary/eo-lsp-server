@@ -92,15 +92,55 @@ describe("EoASTNormalizer", () => {
             processSubMasterSpy.mockRestore();
         });
 
-        test("we expect extractObjectName method to return `anonymous`", () => {
-            const extractObjectNameSpy = jest.spyOn((EoASTNormalizer as any), "extractObjectName");
-            const mockObjectContext = {
-                text: "[]"
-            };
-            const result = (EoASTNormalizer as any).extractObjectName(mockObjectContext);
-            expect(result).toBe("anonymous");
-            expect(extractObjectNameSpy).toHaveReturnedWith("anonymous");
-            extractObjectNameSpy.mockRestore();
+        describe("Name extraction methods", () => {
+            let extractObjectNameSpy: jest.SpyInstance;
+            let extractBoundNameSpy: jest.SpyInstance;
+            let extractMasterBodyNameSpy: jest.SpyInstance;
+
+            beforeEach(() => {
+                extractObjectNameSpy = jest.spyOn(EoASTNormalizer as any, "extractObjectName");
+                extractBoundNameSpy = jest.spyOn(EoASTNormalizer as any, "extractBoundName");
+                extractMasterBodyNameSpy = jest.spyOn(EoASTNormalizer as any, "extractMasterBodyName");
+            });
+
+            afterEach(() => {
+                extractObjectNameSpy.mockRestore();
+                extractBoundNameSpy.mockRestore();
+                extractMasterBodyNameSpy.mockRestore();
+            });
+
+            describe("anonymous context", () => {
+                const mockAnonymousContext = { text: "[]" };
+
+                test("we expect extractObjectName to return 'anonymous'", () => {
+                    const result = (EoASTNormalizer as any).extractObjectName(mockAnonymousContext);
+                    expect(result).toBe("anonymous");
+                });
+
+                test("we expect extractBoundName to return 'anonymous'", () => {
+                    const result = (EoASTNormalizer as any).extractBoundName(mockAnonymousContext);
+                    expect(result).toBe("anonymous");
+                });
+
+                test("we expect extractMasterBodyName to return 'anonymous'", () => {
+                    const result = (EoASTNormalizer as any).extractMasterBodyName(mockAnonymousContext);
+                    expect(result).toBe("anonymous");
+                });
+            });
+
+            describe("test-attribute context", () => {
+                const mockTestAttributeContext = { text: "[] +> test-attribute" };
+
+                test("we expect extractBoundName to return 'test-attribute'", () => {
+                    const result = (EoASTNormalizer as any).extractBoundName(mockTestAttributeContext);
+                    expect(result).toBe("test-attribute");
+                });
+
+                test("we expect extractMasterBodyName to return 'test-attribute'", () => {
+                    const result = (EoASTNormalizer as any).extractMasterBodyName(mockTestAttributeContext);
+                    expect(result).toBe("test-attribute");
+                });
+            });
         });
     });
 });
