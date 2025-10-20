@@ -33,6 +33,7 @@ describe("EoASTNormalizer", () => {
             expect(nodes2).toEqual(nodes);
             getSpy.mockRestore();
         });
+
         test("we expect findNestedChildrenRecursively to return 6 nested children", () => {
             const objectCtx = programCtx.object();
             if (!objectCtx) {
@@ -44,6 +45,21 @@ describe("EoASTNormalizer", () => {
     });
 
     describe("EoASTNormalizer mock tests", () => {
+        test("we expect createRange method to use ctx.start as fallback when ctx.stop is null", () => {
+            const mockCtx = {
+                start: {
+                    line: 2,
+                    charPositionInLine: 5
+                },
+                stop: null
+            };
+            const result = (EoASTNormalizer as any).createRange(mockCtx);
+            expect(result).toEqual({
+                start: { line: 1, character: 5 },
+                end: { line: 1, character: 5 }
+            });
+        });
+
         test("we expect object() to return an empty array", () => {
             const mockProgramContext = {
                 object: jest.fn().mockReturnValue(null)

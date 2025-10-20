@@ -280,10 +280,10 @@ export class EoASTNormalizer {
 
     /**
      * Create LSP range from parser context
-     * @param ctx MethodContext | ObjectContext | VoidContext
+     * @param ctx MasterBodyContext | BoundContext | ObjectContext
      * @returns Creates a new {@link Range} literal.
      */
-    private static createRange(ctx: any): Range {
+    private static createRange(ctx: MasterBodyContext | BoundContext | ObjectContext): Range {
         const start = ctx.start;
         const stop = ctx.stop || ctx.start;
         return Range.create(
