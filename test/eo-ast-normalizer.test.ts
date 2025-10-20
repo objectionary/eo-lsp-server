@@ -44,6 +44,14 @@ describe("EoASTNormalizer", () => {
     });
 
     describe("EoASTNormalizer mock tests", () => {
+        test("we expect object() to return an empty array", () => {
+            const mockProgramContext = {
+                object: jest.fn().mockReturnValue(null)
+            };
+            const nodes = normalizer.normalizeProgram(mockProgramContext as any);
+            expect(nodes).toEqual([]);
+        });
+
         test("we expect normalizeBound and normalizeMasterBody to return cached value", () => {
             const mockCtx = {
                 text: "> cachedAttribute",

@@ -82,7 +82,7 @@ export class EoASTNormalizer {
             range,
             children: topLevelChildren,
             text: ctx.text,
-            selectionRange: EoASTNormalizer.findNameRange(ctx) || range
+            selectionRange: range
         };
         this.normalizedNodes.set(ctx, normalized);
         return normalized;
@@ -104,7 +104,7 @@ export class EoASTNormalizer {
             type: "attribute",
             name,
             range,
-            selectionRange: EoASTNormalizer.findNameRange(ctx) || range,
+            selectionRange: range,
             children: [],
             text: ctx.text
         };
@@ -128,7 +128,7 @@ export class EoASTNormalizer {
             type: "attribute",
             name,
             range,
-            selectionRange: EoASTNormalizer.findNameRange(ctx) || range,
+            selectionRange: range,
             children: [],
             text: ctx.text
         };
@@ -276,10 +276,6 @@ export class EoASTNormalizer {
             return boundMatch[1];
         }
         return "anonymous";
-    }
-
-    private static findNameRange(ctx: ParseTree): Range | null {
-        return EoASTNormalizer.createRange(ctx);
     }
 
     /**
