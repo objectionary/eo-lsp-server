@@ -18,7 +18,7 @@ import {
 } from "vscode-languageserver/node.js";
 import { ClientCapabilitiesAnalyzer } from "./capabilities";
 import { DefaultSettings } from "./defaultSettings";
-import { DocumentSymbolVisitor } from "./documentSymbolVisitor";
+import { EoDocumentSymbol } from "./eoDocumentSymbol";
 import { EoVersion } from "./eo-version";
 import { getParserErrors } from "./parser";
 import { Processor } from "./processor";
@@ -80,9 +80,9 @@ connection.onDocumentSymbol((params: DocumentSymbolParams) => {
         const text = document.getText();
         const processor = new Processor(text);
         const abstractSyntaxTree = processor.parser.program();
-        const visitor = new DocumentSymbolVisitor();
-        abstractSyntaxTree.accept(visitor);
-        const symbols = visitor.getSymbols();
+        const eoDocumentSymbol = new EoDocumentSymbol();
+        abstractSyntaxTree.accept(eoDocumentSymbol);
+        const symbols = eoDocumentSymbol.symbol();
         return symbols;
     } catch (error) {
         return [];
