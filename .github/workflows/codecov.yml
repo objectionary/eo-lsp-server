@@ -26,7 +26,7 @@ jobs:
           java-version: 23
       - uses: actions/setup-node@v6
         with:
-          node-version: 22.x
+          node-version: 24.x
       - run: npm i
       - run: make test
       - uses: codecov/codecov-action@v5
