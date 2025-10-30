@@ -86,7 +86,7 @@ connection.onDocumentSymbol((params: DocumentSymbolParams) => {
         const symbols = eoDocumentSymbol.symbol();
         return symbols;
     } catch (error) {
-        throw error;
+        throw new Error(`Failed to parse the document: ${error}`);
     }
 });
 
