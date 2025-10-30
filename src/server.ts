@@ -23,6 +23,7 @@ import { EoVersion } from "./eo-version";
 import { getParserErrors } from "./parser";
 import { Processor } from "./processor";
 import { SemanticTokensProvider } from "./semantics";
+import { ParserError } from "./parserError";
 
 /**
  * Connection with the server, using Node's IPC as a transport.
@@ -85,8 +86,6 @@ connection.onDocumentSymbol((params: DocumentSymbolParams) => {
         const symbols = eoDocumentSymbol.symbol();
         return symbols;
     } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error("Failed to parse the document:", error);
         throw error;
     }
 });
