@@ -76,16 +76,18 @@ connection.onDocumentSymbol((params: DocumentSymbolParams) => {
     if (!document) {
         return [];
     }
+    const text = document.getText();
+    const processor = new Processor(text);
     try {
-        const text = document.getText();
-        const processor = new Processor(text);
         const abstractSyntaxTree = processor.parser.program();
         const eoDocumentSymbol = new EoDocumentSymbol();
         abstractSyntaxTree.accept(eoDocumentSymbol);
         const symbols = eoDocumentSymbol.symbol();
         return symbols;
     } catch (error) {
-        return [];
+        // eslint-disable-next-line no-console
+        console.error("Failed to parse the document:", error);
+        throw error;
     }
 });
 
