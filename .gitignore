@@ -10,3 +10,4 @@ src/parser/
 .claude/
 Eo.g4
 compiled/
+antlr4/

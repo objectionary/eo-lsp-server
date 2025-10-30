@@ -8,6 +8,12 @@ SHELL := bash
 
 VERSION := 0.58.8
 GRAMMAR_URL := https://raw.githubusercontent.com/objectionary/eo/refs/tags/$(VERSION)/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4
+ANTLR4_VERSION := 4.13.2
+
+# a few URLs for download antlr4 tools
+# ANTLR4_URL := https://github.com/antlr/website-antlr4/blob/gh-pages/download/antlr-${ANTLR4_VERSION}-complete.jar
+# ANTLR4_URL := https://repo1.maven.org/maven2/org/antlr/antlr4/${ANTLR4_VERSION}/antlr4-${ANTLR4_VERSION}-complete.jar
+ANTLR4_URL := https://www.antlr.org/download/antlr-${ANTLR4_VERSION}-complete.jar
 
 TSS := $(shell find src -name '*.ts')
 
@@ -30,8 +36,12 @@ tsc-compiled: $(TSS) Makefile
 Eo.g4: Makefile
 	curl --silent $(GRAMMAR_URL) > $@
 
-src/parser: Eo.g4 Makefile
-	npx antlr4ts -visitor $< -o src/parser
+antlr4: Makefile
+	mkdir -p $@
+	curl --silent ${ANTLR4_URL} > $@/antlr4-${ANTLR4_VERSION}-complete.jar
+
+src/parser: Eo.g4 antlr4 Makefile
+	java -jar antlr4/antlr4-${ANTLR4_VERSION}-complete.jar -o src/parser -visitor -Dlanguage=TypeScript Eo.g4 
 
 test: build
 	npx jest --coverage
