@@ -2,79 +2,83 @@
 // SPDX-License-Identifier: MIT
 
 import { EoAst, EoAstNode } from "../src/eoAst";
-import { ProgramContext } from "../src/parser/EoParser";
 import { Processor } from "../src/processor";
 import path from "path";
 import * as fs from "fs";
 
 
 describe("EoAst", () => {
-    let eoAst: EoAst;
-    let programCtx: ProgramContext;
 
-    beforeAll(() => {
+    /**
+     * Reads and parses the `fibonacci.eo` eo-file
+     * @returns program context
+     * */
+    function program() {
         const programPath = path.join(__dirname, "../fixtures", "fibonacci.eo");
         const text = fs.readFileSync(programPath, "utf8");
         const processor = new Processor(text);
-        programCtx = processor.parser.program();
-    });
-
-    beforeEach(() => {
-        eoAst = new EoAst();
-    });
+        const programCtx = processor.parser.program();
+        return programCtx;
+    }
 
     describe("EoAst integration tests", () => {
         test("we expect to obtain an equal nodes", () => {
-            const getSpy = jest.spyOn((eoAst as any).nodes, "get");
+            const programCtx = program();
+            const eoAst = new EoAst();
+            const get = jest.spyOn((eoAst as any).nodes, "get");
             const nodes = eoAst.program(programCtx);
             expect(nodes.length).toBeGreaterThan(0);
             const nodes2 = eoAst.program(programCtx);
-            expect(getSpy).toHaveBeenCalledTimes(1);
+            expect(get).toHaveBeenCalledTimes(1);
             expect(nodes2).toEqual(nodes);
-            getSpy.mockRestore();
+            get.mockRestore();
         });
 
         test("we expect hierarchy to return 6 nested children", () => {
-            const objectCtx = programCtx.object();
-            if (!objectCtx) {
+            const programCtx = program();
+            const eoAst = new EoAst();
+            const context = programCtx.object();
+            if (!context) {
                 throw new Error("No ObjectContext found in Fibonacci test file");
             }
-            const result = eoAst.hierarchy(objectCtx);
-            expect(result.length).toBe(6);
+            const nested = eoAst.hierarchy(context);
+            expect(nested.length).toBe(6);
         });
     });
 
     describe("EoAst mock tests", () => {
         test("we expect createRange method to use ctx.start as fallback when ctx.stop is null", () => {
-            const mockCtx = {
+            const context = {
                 start: {
                     line: 2,
                     charPositionInLine: 5
                 },
                 stop: null
             };
-            const result = (EoAst as any).createRange(mockCtx);
-            expect(result).toEqual({
+            const range = (EoAst as any).createRange(context);
+            expect(range).toEqual({
                 start: { line: 1, character: 5 },
                 end: { line: 1, character: 5 }
             });
         });
 
         test("we expect object() to return an empty array", () => {
-            const mockProgramContext = {
+            const eoAst = new EoAst();
+            const context = {
                 object: jest.fn().mockReturnValue(null)
             };
-            const nodes = eoAst.program(mockProgramContext as any);
+            const nodes = eoAst.program(context as any);
             expect(nodes).toEqual([]);
         });
 
         test("we expect bound and masterBody to return cached value", () => {
-            const mockCtx = {
+            const eoAst = new EoAst();
+            const context = {
                 text: "> cachedAttribute",
                 start: { line: 1, charPositionInLine: 0 },
                 stop: { line: 1, charPositionInLine: 16, text: "> cachedAttribute" }
             };
-            const cachedValue = {
+            const cached = {
                 type: "attribute",
                 name: "cachedAttribute",
                 range: { start: { line: 0, character: 0 }, end: { line: 0, character: 16 } },
@@ -83,85 +87,70 @@ describe("EoAst", () => {
                 text: "> cachedAttribute"
             };
             const nodes = (eoAst as any).nodes;
-            nodes.set(mockCtx, cachedValue);
-            const getSpy = jest.spyOn(nodes, "get");
-            const bound = eoAst.bound(mockCtx as any);
-            const masterBody = eoAst.masterBody(mockCtx as any);
-            expect(getSpy).toHaveBeenCalledTimes(2);
-            expect(getSpy).toHaveBeenCalledWith(mockCtx);
-            expect(bound).toBe(cachedValue);
-            expect(masterBody).toBe(cachedValue);
-            getSpy.mockRestore();
+            nodes.set(context, cached);
+            const get = jest.spyOn(nodes, "get");
+            const bound = eoAst.bound(context as any);
+            const masterBody = eoAst.masterBody(context as any);
+            expect(get).toHaveBeenCalledTimes(2);
+            expect(get).toHaveBeenCalledWith(context);
+            expect(bound).toBe(cached);
+            expect(masterBody).toBe(cached);
+            get.mockRestore();
         });
 
         test("we expect topChildren to trigger lookNested method", () => {
+            const eoAst = new EoAst();
             const children: EoAstNode[] = [];
-            const mockSubMasterContext = {
+            const subMasterCtx = {
                 masterBody: jest.fn(),
                 getChild: jest.fn(),
                 childCount: 0,
                 text: "sub-master"
             };
-            const mockObjectContext = {
+            const objectCtx = {
                 masterBody: jest.fn().mockReturnValue(null),
                 childCount: 1,
-                getChild: jest.fn().mockReturnValue(mockSubMasterContext)
+                getChild: jest.fn().mockReturnValue(subMasterCtx)
             };
             const originalSubMaster = jest.requireActual("../src/parser/EoParser").SubMasterContext;
-            Object.setPrototypeOf(mockSubMasterContext, originalSubMaster.prototype);
+            Object.setPrototypeOf(subMasterCtx, originalSubMaster.prototype);
             const lookNested = jest.spyOn((eoAst as any), "lookNested");
-            eoAst.topChildren(mockObjectContext as any);
-            expect(lookNested).toHaveBeenCalled();
-            expect(lookNested).toHaveBeenCalledWith(mockSubMasterContext, children);
+            eoAst.topChildren(objectCtx as any);
+            expect(lookNested).toHaveBeenCalledWith(subMasterCtx, children);
             lookNested.mockRestore();
         });
 
         describe("Name extraction methods", () => {
-            let objectName: jest.SpyInstance;
-            let boundName: jest.SpyInstance;
-            let masterBodyName: jest.SpyInstance;
-
-            beforeEach(() => {
-                objectName = jest.spyOn(EoAst as any, "objectName");
-                boundName = jest.spyOn(EoAst as any, "boundName");
-                masterBodyName = jest.spyOn(EoAst as any, "masterBodyName");
-            });
-
-            afterEach(() => {
-                objectName.mockRestore();
-                boundName.mockRestore();
-                masterBodyName.mockRestore();
-            });
-
             describe("anonymous context", () => {
-                const mockAnonymousContext = { text: "[]" };
-
                 test("we expect objectName to return 'anonymous'", () => {
-                    const result = (EoAst as any).objectName(mockAnonymousContext);
+                    const anonymous = { text: "[]" };
+                    const result = (EoAst as any).objectName(anonymous);
                     expect(result).toBe("anonymous");
                 });
 
                 test("we expect boundName to return 'anonymous'", () => {
-                    const result = (EoAst as any).boundName(mockAnonymousContext);
+                    const anonymous = { text: "[]" };
+                    const result = (EoAst as any).boundName(anonymous);
                     expect(result).toBe("anonymous");
                 });
 
                 test("we expect masterBodyName to return 'anonymous'", () => {
-                    const result = (EoAst as any).masterBodyName(mockAnonymousContext);
+                    const anonymous = { text: "[]" };
+                    const result = (EoAst as any).masterBodyName(anonymous);
                     expect(result).toBe("anonymous");
                 });
             });
 
             describe("test-attribute context", () => {
-                const mockTestAttributeContext = { text: "[] +> test-attribute" };
-
                 test("we expect boundName to return 'test-attribute'", () => {
-                    const result = (EoAst as any).boundName(mockTestAttributeContext);
+                    const testAttr = { text: "[] +> test-attribute" };
+                    const result = (EoAst as any).boundName(testAttr);
                     expect(result).toBe("test-attribute");
                 });
 
                 test("we expect masterBodyName to return 'test-attribute'", () => {
-                    const result = (EoAst as any).masterBodyName(mockTestAttributeContext);
+                    const testAttr = { text: "[] +> test-attribute" };
+                    const result = (EoAst as any).masterBodyName(testAttr);
                     expect(result).toBe("test-attribute");
                 });
             });
