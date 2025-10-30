@@ -2,17 +2,14 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-import { ErrorNode } from "antlr4ts/tree/ErrorNode";
-import { ParseTree } from "antlr4ts/tree/ParseTree";
-import { RuleNode } from "antlr4ts/tree/RuleNode";
-import { TerminalNode } from "antlr4ts/tree/TerminalNode";
 import {
     DocumentSymbol,
     SymbolKind
 } from "vscode-languageserver";
 import { ProgramContext } from "./parser/EoParser";
-import { EoVisitor } from "./parser/EoVisitor";
 import { EoAst, EoAstNode } from "./eoAst";
+import EoVisitor from "./parser/EoVisitor";
+import { ErrorNode, ParseTree, RuleNode, TerminalNode } from "antlr4";
 
 /**
  * Implements symbol extraction using the existing `EoParser`.

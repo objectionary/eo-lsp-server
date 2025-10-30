@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-import { ParseTree } from "antlr4ts/tree/ParseTree";
 import { Range } from "vscode-languageserver";
 import {
     BoundContext,
@@ -10,7 +9,7 @@ import {
     ProgramContext,
     SubMasterContext
 } from "./parser/EoParser";
-import { RuleNode } from "antlr4ts/tree/RuleNode";
+import { ParserRuleContext, ParseTree } from "antlr4";
 
 /**
  * Describes an EO node in a common way to work with
@@ -81,7 +80,7 @@ export class EoAst {
             name,
             range,
             children: topChildren,
-            text: ctx.text,
+            text: ctx.getText(),
             selectionRange: range
         };
         this.nodes.set(ctx, normalized);
@@ -106,7 +105,7 @@ export class EoAst {
             range,
             selectionRange: range,
             children: [],
-            text: ctx.text
+            text: ctx.getText()
         };
         this.nodes.set(ctx, normalized);
         return normalized;
@@ -130,7 +129,7 @@ export class EoAst {
             range,
             selectionRange: range,
             children: [],
-            text: ctx.text
+            text: ctx.getText()
         };
         this.nodes.set(ctx, normalized);
         return normalized;
@@ -149,7 +148,7 @@ export class EoAst {
             const topAttributes = this.topAttributes(masterBody);
             children.push(...topAttributes);
         }
-        for (let i = 0; i < ctx.childCount; i++) {
+        for (let i = 0; i < ctx.getChildCount(); i++) {
             const child = ctx.getChild(i);
             if (child instanceof SubMasterContext) {
                 this.lookNested(child, children);
@@ -174,8 +173,8 @@ export class EoAst {
                 this.lookNested(current, attributes);
                 return;
             }
-            if (current instanceof RuleNode && depth < 10) {
-                for (let i = 0; i < current.childCount; i++) {
+            if (current instanceof ParserRuleContext && depth < 10) {
+                for (let i = 0; i < current.getChildCount(); i++) {
                     const child = current.getChild(i);
                     if (child) {
                         look(child, depth + 1);
@@ -195,7 +194,7 @@ export class EoAst {
      * @returns void.
      * */
     private lookNested(subMaster: SubMasterContext, children: EoAstNode[]): void {
-        for (let i = 0; i < subMaster.childCount; i++) {
+        for (let i = 0; i < subMaster.getChildCount(); i++) {
             const child = subMaster.getChild(i);
             if (child instanceof MasterBodyContext) {
                 children.push(this.masterBody(child));
@@ -217,8 +216,8 @@ export class EoAst {
             } else if (current instanceof BoundContext) {
                 children.push(this.bound(current));
             }
-            if (current instanceof RuleNode) {
-                for (let i = 0; i < current.childCount; i++) {
+            if (current instanceof ParserRuleContext) {
+                for (let i = 0; i < current.getChildCount(); i++) {
                     const child = current.getChild(i);
                     if (child) {
                         look(child);
@@ -237,7 +236,7 @@ export class EoAst {
      * @returns string containing `name`
      */
     private static objectName(ctx: ObjectContext): string {
-        const text = ctx.text;
+        const text = ctx.getText();
         const match = text.match(/(?<!#.*)(?:\]|\[\])\s*>\s*([a-zA-Z_][a-zA-Z0-9_-]*)/u);
         if (match) {
             return match[1];
@@ -252,7 +251,7 @@ export class EoAst {
      * @returns string containing `name`
      * */
     private static boundName(ctx: BoundContext): string {
-        const text = ctx.text;
+        const text = ctx.getText();
         if (text.includes("> @")) {
             return "@";
         }
@@ -270,7 +269,7 @@ export class EoAst {
      * @returns string containing `name`
      * */
     private static masterBodyName(ctx: MasterBodyContext): string {
-        const text = ctx.text;
+        const text = ctx.getText();
         const match = text.match(/(?:\+)?\s*>\s*([a-zA-Z_][a-zA-Z0-9_-]*)/u);
         if (match) {
             return match[1];
@@ -288,9 +287,9 @@ export class EoAst {
         const stop = ctx.stop || ctx.start;
         return Range.create(
             start.line - 1,
-            start.charPositionInLine,
+            start.column,
             stop.line - 1,
-            stop.charPositionInLine + (stop.text?.length || 0)
+            stop.column + (stop.text?.length || 0)
         );
     }
 }
