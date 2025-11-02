@@ -40,10 +40,10 @@ Eo.g4: Makefile
 
 antlr4: Makefile
 	mkdir -p $@
-	curl --silent ${ANTLR4_URL} > $@/antlr4-${ANTLR4_VERSION}-complete.jar
+	curl --silent $(ANTLR4_URL) > $@/antlr4-$(ANTLR4_VERSION)-complete.jar
 
 src/parser: Eo.g4 antlr4 Makefile
-	env DYLD_BIND_AT_LAUNCH=1 java -jar antlr4/antlr4-${ANTLR4_VERSION}-complete.jar -o src/parser -visitor -Dlanguage=TypeScript Eo.g4
+	env DYLD_BIND_AT_LAUNCH=1 java -jar antlr4/antlr4-$(ANTLR4_VERSION)-complete.jar -o src/parser -visitor -Dlanguage=TypeScript Eo.g4
 
 test: build
 	npx jest --coverage
