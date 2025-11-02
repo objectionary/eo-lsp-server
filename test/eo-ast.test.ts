@@ -51,7 +51,7 @@ describe("EoAst", () => {
             const context = {
                 start: {
                     line: 2,
-                    charPositionInLine: 5
+                    column: 5
                 },
                 stop: null
             };
@@ -75,8 +75,8 @@ describe("EoAst", () => {
             const eoAst = new EoAst();
             const context = {
                 text: "> cachedAttribute",
-                start: { line: 1, charPositionInLine: 0 },
-                stop: { line: 1, charPositionInLine: 16, text: "> cachedAttribute" }
+                start: { line: 1, column: 0 },
+                stop: { line: 1, column: 16, text: "> cachedAttribute" }
             };
             const cached = {
                 type: "attribute",
@@ -104,12 +104,12 @@ describe("EoAst", () => {
             const subMasterCtx = {
                 masterBody: jest.fn(),
                 getChild: jest.fn(),
-                childCount: 0,
-                text: "sub-master"
+                getChildCount: jest.fn().mockReturnValue(0),
+                getText: jest.fn().mockReturnValue("sub-master")
             };
             const objectCtx = {
                 masterBody: jest.fn().mockReturnValue(null),
-                childCount: 1,
+                getChildCount: jest.fn().mockReturnValue(1),
                 getChild: jest.fn().mockReturnValue(subMasterCtx)
             };
             const originalSubMaster = jest.requireActual("../src/parser/EoParser").SubMasterContext;
@@ -123,19 +123,19 @@ describe("EoAst", () => {
         describe("Name extraction methods", () => {
             describe("anonymous context", () => {
                 test("we expect objectName to return 'anonymous'", () => {
-                    const anonymous = { text: "[]" };
+                    const anonymous = { getText: jest.fn().mockReturnValue("[]") };
                     const result = (EoAst as any).objectName(anonymous);
                     expect(result).toBe("anonymous");
                 });
 
                 test("we expect boundName to return 'anonymous'", () => {
-                    const anonymous = { text: "[]" };
+                    const anonymous = { getText: jest.fn().mockReturnValue("[]") };
                     const result = (EoAst as any).boundName(anonymous);
                     expect(result).toBe("anonymous");
                 });
 
                 test("we expect masterBodyName to return 'anonymous'", () => {
-                    const anonymous = { text: "[]" };
+                    const anonymous = { getText: jest.fn().mockReturnValue("[]") };
                     const result = (EoAst as any).masterBodyName(anonymous);
                     expect(result).toBe("anonymous");
                 });
@@ -143,13 +143,13 @@ describe("EoAst", () => {
 
             describe("test-attribute context", () => {
                 test("we expect boundName to return 'test-attribute'", () => {
-                    const testAttr = { text: "[] +> test-attribute" };
+                    const testAttr = { getText: jest.fn().mockReturnValue("[] +> test-attribute") };
                     const result = (EoAst as any).boundName(testAttr);
                     expect(result).toBe("test-attribute");
                 });
 
                 test("we expect masterBodyName to return 'test-attribute'", () => {
-                    const testAttr = { text: "[] +> test-attribute" };
+                    const testAttr = { getText: jest.fn().mockReturnValue("[] +> test-attribute") };
                     const result = (EoAst as any).masterBodyName(testAttr);
                     expect(result).toBe("test-attribute");
                 });
