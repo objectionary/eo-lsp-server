@@ -35,7 +35,6 @@ describe("IndentationLexer", () => {
             expect(lexer.grammarFileName).toBe("Eo.g4");
             expect(lexer.modeNames).toEqual(EoLexer.modeNames);
             expect(lexer.ruleNames).toEqual(EoLexer.ruleNames);
-            /* eslint-disable-next-line no-underscore-dangle */
             expect(lexer.serializedATN).toEqual(EoLexer._serializedATN);
         });
 

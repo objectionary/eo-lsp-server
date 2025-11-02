@@ -3,18 +3,7 @@
 
 import { SemanticTokensProvider } from "../src/semantics";
 import { SemanticTokensBuilder, SemanticTokensClientCapabilities } from "vscode-languageserver/node.js";
-import * as fs from "fs";
-import * as path from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
-
-/**
- * Return the path to the document
- * @param p - Document's name
- * @returns - Path to document
- */
-function getDocPath(p: string) {
-    return path.resolve(__dirname, "../../testFixture", p);
-}
 
 describe("Semantics module", () => {
     let provider: SemanticTokensProvider;

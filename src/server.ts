@@ -23,7 +23,6 @@ import { EoVersion } from "./eo-version";
 import { getParserErrors } from "./parser";
 import { Processor } from "./processor";
 import { SemanticTokensProvider } from "./semantics";
-import { ParserError } from "./parserError";
 
 /**
  * Connection with the server, using Node's IPC as a transport.

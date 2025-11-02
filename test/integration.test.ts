@@ -6,8 +6,8 @@ import * as path from "path";
 import * as fs from "fs";
 
 let server: ChildProcess;
-const handlers: Map<number, (response: any) => void> = new Map();
-let notifications: ((notification: any) => void)[] = [];
+const handlers: Map<number, (_response: any) => void> = new Map();
+let notifications: ((_notification: any) => void)[] = [];
 let id = 0;
 let buffer = Buffer.alloc(0);
 
@@ -360,7 +360,7 @@ describe("LSP Server Integration", () => {
         const uri = "file:///malformed.eo";
         const content = "-- invalid syntax --";
         const diagnosticsPromise = new Promise(resolve => {
-            let handler: ((message: any) => void) | null = null;
+            let handler: ((_message: any) => void) | null = null;
             const timeout = setTimeout(() => {
                 notifications = notifications.filter(h => h !== handler);
                 resolve([]);

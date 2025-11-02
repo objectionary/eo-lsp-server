@@ -22,7 +22,7 @@ export class ErrorListener implements ANTLRErrorListener<AntlrToken> {
     errors: ParserError[] = [];
 
     syntaxError(recognizer: Recognizer<AntlrToken>, symbol: AntlrToken | undefined, line: number,
-        position: number, msg: string, e: RecognitionException | undefined) {
+        position: number, msg: string, _e: RecognitionException | undefined) {
         this.errors.push(new ParserError(line, position, msg));
     }
 }

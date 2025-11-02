@@ -5,7 +5,6 @@ import { antlrTypeNumToString, getTokenTypes, getParserErrors, buildTokenSetAndM
 import * as fs from "fs";
 import * as path from "path";
 
-/* eslint-disable no-console */
 describe("Parser module", () => {
     test("Gets an EO grammar token name from an ANTLR token number", () => {
         expect(antlrTypeNumToString(1)).toBe("COMMENTARY");

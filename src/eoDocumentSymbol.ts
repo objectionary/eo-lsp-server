@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 // SPDX-FileCopyrightText: Copyright (c) 2024-2025 Objectionary.com
 // SPDX-License-Identifier: MIT
 
@@ -68,16 +67,16 @@ export class EoDocumentSymbol implements EoVisitor<DocumentSymbol[]> {
     }
 
     // We omit these methods below from the EoVisitor's interface.
-    visit(tree: ParseTree): DocumentSymbol[] {
+    visit(_tree: ParseTree): DocumentSymbol[] {
         return [];
     }
-    visitChildren(node: RuleNode): DocumentSymbol[] {
+    visitChildren(_node: RuleNode): DocumentSymbol[] {
         return [];
     }
-    visitTerminal(node: TerminalNode): DocumentSymbol[] {
+    visitTerminal(_node: TerminalNode): DocumentSymbol[] {
         return [];
     }
-    visitErrorNode(node: ErrorNode): DocumentSymbol[] {
+    visitErrorNode(_node: ErrorNode): DocumentSymbol[] {
         return [];
     }
 }
