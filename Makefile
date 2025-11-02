@@ -6,7 +6,7 @@
 .ONESHELL:
 SHELL := bash
 
-VERSION := 0.58.8
+VERSION := 0.59.0
 GRAMMAR_URL := https://raw.githubusercontent.com/objectionary/eo/refs/tags/$(VERSION)/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4
 ANTLR4_VERSION := 4.13.2
 
@@ -23,12 +23,14 @@ build: src/parser compiled Makefile
 	npx ncc build compiled/server.js
 	sed -i "1i\#!/usr/bin/env node\n" dist/index.js
 
-compiled: src/parser tsc-compiled Makefile
+compiled: src/parser src/eo-version.ts tsc-compiled Makefile
 	mkdir -p $@
 	cp -R tsc-compiled/src/* $@
 	cp -R src/parser/Eo.tokens $@/parser
 	cp -R src/parser/EoLexer.tokens $@/parser
-	sed -i "s/[0-9]\+\.[0-9]\+\.[0-9]\+/$(VERSION)/" src/eo-version.ts
+
+src/eo-version.ts:
+	echo "export const EoVersion = \"$(VERSION)\";" > $@
 
 tsc-compiled: $(TSS) Makefile
 	npx tsc -b
