@@ -21,7 +21,7 @@ jobs:
       - run: |-
           latest=$(curl --silent -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/objectionary/eo/releases/latest | jq -r '.tag_name')
           sed -E -i "s/VERSION := [0-9\.]+/VERSION := ${latest}/" Makefile
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@v8
         with:
           sign-commits: true
           branch: version-up
