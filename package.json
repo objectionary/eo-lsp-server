@@ -36,7 +36,7 @@
     "mocha": "^11.0.0",
     "ts-node": "^10.9.1",
     "typedoc": "^0.28.0",
-    "typescript": "^5.0.0",
+    "typescript": "^6.0.0",
     "vsce": "^2.13.0"
   },
   "engines": {
