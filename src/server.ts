@@ -23,6 +23,7 @@ import { EoVersion } from "./eo-version";
 import { getParserErrors } from "./parser";
 import { Processor } from "./processor";
 import { SemanticTokensProvider } from "./semantics";
+import { semanticTokenClientCapabilities } from "./semantic-token-capability";
 
 /**
  * Connection with the server, using Node's IPC as a transport.
@@ -43,7 +44,7 @@ let clientCapsAnalyzer: ClientCapabilitiesAnalyzer;
 /**
  * Provider of the semantic highlighting capability of the language server.
  */
-let provider: SemanticTokensProvider;
+let provider: SemanticTokensProvider | undefined;
 
 /**
  * Defines procedures to be executed on the initialization process
@@ -51,7 +52,8 @@ let provider: SemanticTokensProvider;
  */
 connection.onInitialize((params: InitializeParams): InitializeResult => {
     clientCapsAnalyzer = new ClientCapabilitiesAnalyzer(params.capabilities);
-    provider = new SemanticTokensProvider(params.capabilities.textDocument!.semanticTokens!);
+    const semanticTokens = semanticTokenClientCapabilities(params.capabilities);
+    provider = semanticTokens ? new SemanticTokensProvider(semanticTokens) : undefined;
     const result: InitializeResult = {
         capabilities: {
             textDocumentSync: TextDocumentSyncKind.Incremental,
@@ -105,7 +107,7 @@ connection.onInitialized(() => {
             connection.console.log("Workspace folder change event received");
         });
     }
-    if (clientCapsAnalyzer.hasTokensSupport) {
+    if (clientCapsAnalyzer.hasTokensSupport && provider) {
         const options: SemanticTokensRegistrationOptions = {
             documentSelector: null,
             legend: provider.legend,
@@ -227,7 +229,7 @@ connection.onDidChangeWatchedFiles(_change => {
  */
 connection.languages.semanticTokens.on(params => {
     const document = documents.get(params.textDocument.uri);
-    if (!document) {
+    if (!document || !provider) {
         return { data: [] };
     }
     return provider.provideSemanticTokens(document);
@@ -239,7 +241,7 @@ connection.languages.semanticTokens.on(params => {
  */
 connection.languages.semanticTokens.onDelta(params => {
     const document = documents.get(params.textDocument.uri);
-    if (!document) {
+    if (!document || !provider) {
         return { data: [] };
     }
     return provider.provideDeltas(document);
