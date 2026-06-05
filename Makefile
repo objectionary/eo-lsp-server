@@ -8,7 +8,7 @@ SHELL := bash
 
 VERSION := 0.61.0
 GRAMMAR_URL := https://raw.githubusercontent.com/objectionary/eo/refs/tags/$(VERSION)/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4
-ANTLR4_VERSION := 0.61.0
+ANTLR4_VERSION := 4.13.2
 
 # a few URLs for download antlr4 tools
 # ANTLR4_URL := https://github.com/antlr/website-antlr4/blob/gh-pages/download/antlr-${ANTLR4_VERSION}-complete.jar

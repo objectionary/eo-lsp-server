@@ -72,8 +72,8 @@ describe("Semantics module", () => {
         expect(tokenizeSpy).toHaveBeenCalledWith(document);
         expect(builderSpy).toHaveBeenCalledTimes(3);
         expect(builderSpy).toHaveBeenNthCalledWith(1, 0, 0, 7, 0, 0);
-        expect(builderSpy).toHaveBeenNthCalledWith(2, 1, 3, 1, 7, 0);
-        expect(builderSpy).toHaveBeenNthCalledWith(3, 1, 5, 4, 19, 0);
+        expect(builderSpy).toHaveBeenNthCalledWith(2, 1, 3, 1, 6, 0);
+        expect(builderSpy).toHaveBeenNthCalledWith(3, 1, 5, 4, 18, 0);
         tokenizeSpy.mockRestore();
         builderSpy.mockRestore();
     });
