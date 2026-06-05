@@ -153,6 +153,15 @@ export class SemanticTokensProvider {
     }
 
     /**
+     * Deletes the cached semantic token builder for the given document URI.
+     * @param uri - Text document URI whose cached builder should be removed
+     * @returns {void}
+     */
+    deleteTokenBuilder(uri: string) {
+        this.tokenBuilders.delete(uri);
+    }
+
+    /**
      * Pushes into a SemanticTokensBuilder the semantic tokens obtained from a text document
      * @param builder - SemanticTokensBuilder to be populated with the semantic tokens of the
      *                  given document

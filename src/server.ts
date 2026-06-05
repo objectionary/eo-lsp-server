@@ -209,6 +209,7 @@ connection.onDidChangeConfiguration(change => {
  */
 documents.onDidClose(e => {
     cache.delete(e.document.uri);
+    provider.deleteTokenBuilder(e.document.uri);
 });
 
 /**
