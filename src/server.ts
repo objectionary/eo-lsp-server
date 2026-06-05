@@ -23,6 +23,7 @@ import { EoVersion } from "./eo-version";
 import { getParserErrors } from "./parser";
 import { Processor } from "./processor";
 import { SemanticTokensProvider } from "./semantics";
+import { validateTextDocuments } from "./validation";
 
 /**
  * Connection with the server, using Node's IPC as a transport.
@@ -196,7 +197,11 @@ connection.onDidChangeConfiguration(change => {
         const config = change.settings.languageServerExample;
         settings = (config && typeof config === "object") ? config : defaultSettings;
     }
-    documents.all().forEach(validateTextDocument);
+    validateTextDocuments(
+        documents.all(),
+        validateTextDocument,
+        message => connection.console.error(message)
+    );
 });
 
 /**
