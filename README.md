@@ -9,6 +9,8 @@ This is the [LSP] server for [EO](https://github.com/objectionary/eo).
 It provides semantic highlighting and parsing error checking for `.eo` files
 (written in [EOLANG]).
 In order to use it, you need to have [Node] and [npm] installed.
+Building it from source additionally requires a [Java] runtime
+(JRE 11 or newer), since the parser is generated with [ANTLR4].
 
 ## Using with IntelliJ (with LSP4IJ)
 
@@ -107,7 +109,8 @@ First, install [Node] modules with:
 npm install
 ```
 
-Then, build the project:
+Then, build the project (this needs a [Java] runtime on your `PATH`,
+because `make` generates the parser by running the [ANTLR4] jar):
 
 ```bash
 make
@@ -136,3 +139,5 @@ Create a pull request, we'll be glad to review it and merge.
 [IntelliJ]: https://www.jetbrains.com/idea/
 [npm]: https://www.npmjs.com/
 [Neovim]: https://neovim.io/
+[Java]: https://www.java.com/
+[ANTLR4]: https://www.antlr.org/
