@@ -71,6 +71,34 @@ contexts:
 
 Should work. If it doesn't, [file an issue], we'll help.
 
+## Using with Neovim
+
+To use this [LSP] server with [Neovim], you need [Neovim] 0.11 or later
+(the built-in LSP client, no plugin required).
+
+First, tell Neovim that `*.eo` files use the `eo` filetype, by adding
+this to your `init.lua`:
+
+```lua
+vim.filetype.add({ extension = { eo = 'eo' } })
+```
+
+Then, register the server and enable it:
+
+```lua
+vim.lsp.config['eo_lsp'] = {
+  cmd = { 'npx', '-y', 'eo-lsp-server@0.4.0', '--stdio' },
+  filetypes = { 'eo' },
+  root_markers = { '.git', '.eo-root' },
+}
+vim.lsp.enable('eo_lsp')
+```
+
+Open any `*.eo` file; the server starts on attach and provides
+semantic tokens and diagnostics.
+
+Should work. If it doesn't, [file an issue], we'll help.
+
 ## How to Contribute
 
 First, install [Node] modules with:
@@ -107,3 +135,4 @@ Create a pull request, we'll be glad to review it and merge.
 [lsp4ij-doc]: https://github.com/redhat-developer/lsp4ij/blob/main/docs/user-defined-ls/eo-lsp-server.md
 [IntelliJ]: https://www.jetbrains.com/idea/
 [npm]: https://www.npmjs.com/
+[Neovim]: https://neovim.io/
