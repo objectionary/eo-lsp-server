@@ -6,8 +6,8 @@ import * as path from "path";
 import * as fs from "fs";
 
 let server: ChildProcess;
-const handlers: Map<number, (response: any) => void> = new Map();
-let notifications: ((notification: any) => void)[] = [];
+const handlers: Map<number, (_response: any) => void> = new Map();
+let notifications: ((_notification: any) => void)[] = [];
 let id = 0;
 let buffer = Buffer.alloc(0);
 
@@ -354,13 +354,13 @@ describe("LSP Server Integration", () => {
         sendNotification("initialized", {});
         sendNotification("workspace/didChangeConfiguration", {
             settings: {
-                languageServerExample: null
+                eo: null
             }
         });
         const uri = "file:///malformed.eo";
         const content = "-- invalid syntax --";
         const diagnosticsPromise = new Promise(resolve => {
-            let handler: ((message: any) => void) | null = null;
+            let handler: ((_message: any) => void) | null = null;
             const timeout = setTimeout(() => {
                 notifications = notifications.filter(h => h !== handler);
                 resolve([]);
@@ -385,5 +385,50 @@ describe("LSP Server Integration", () => {
         });
         const diagnostics = await diagnosticsPromise;
         expect(Array.isArray(diagnostics)).toBeTruthy();
+    }, 15000);
+
+    test("Server reads the diagnostics limit from the eo configuration section", async () => {
+        await sendRequest("initialize", {
+            processId: process.pid,
+            rootUri: null,
+            capabilities: {
+                workspace: {
+                    configuration: false
+                },
+                textDocument: {
+                    semanticTokens: {
+                        tokenTypes: [],
+                        tokenModifiers: []
+                    }
+                }
+            }
+        });
+        sendNotification("initialized", {});
+        sendNotification("workspace/didChangeConfiguration", {
+            settings: {
+                eo: { limit: 0 }
+            }
+        });
+        const uri = "file:///eo-section.eo";
+        const diagnosticsPromise = new Promise(resolve => {
+            const handler = (message: any) => {
+                if (message.method === "textDocument/publishDiagnostics" &&
+                    message.params.uri === uri) {
+                    notifications = notifications.filter(h => h !== handler);
+                    resolve(message.params.diagnostics);
+                }
+            };
+            notifications.push(handler);
+        });
+        sendNotification("textDocument/didOpen", {
+            textDocument: {
+                uri,
+                languageId: "eo",
+                version: 1,
+                text: "-- broken --"
+            }
+        });
+        const diagnostics = await diagnosticsPromise;
+        expect((diagnostics as any[]).length).toBe(0);
     }, 15000);
 });

@@ -9,6 +9,8 @@ This is the [LSP] server for [EO](https://github.com/objectionary/eo).
 It provides semantic highlighting and parsing error checking for `.eo` files
 (written in [EOLANG]).
 In order to use it, you need to have [Node] and [npm] installed.
+Building it from source additionally requires a [Java] runtime
+(JRE 11 or newer), since the parser is generated with [ANTLR4].
 
 ## Using with IntelliJ (with LSP4IJ)
 
@@ -36,7 +38,7 @@ in `Settings → Package Settings → LSP → Settings`:
   "clients": {
     "eo-lsp": {
       "enabled": true,
-      "command": ["npx", "-y", "eo-lsp-server@0.3.0", "--stdio"],
+      "command": ["npx", "-y", "eo-lsp-server@0.4.0", "--stdio"],
       "selector": "source.eo"
     }
   }
@@ -71,60 +73,33 @@ contexts:
 
 Should work. If it doesn't, [file an issue], we'll help.
 
-Here's a section you can add to your README.md file to configure Neovim:
-
 ## Using with Neovim
 
-To use this LSP server with Neovim, you'll need to configure the LSP client.
-Here's an example configuration using the built-in LSP client and nvim-lspconfig:
+To use this [LSP] server with [Neovim], you need [Neovim] 0.11 or later
+(the built-in LSP client, no plugin required).
 
-* First, install the LSP server globally:
-
-```bash
-npm install -g eo-lsp-server
-```
-
-* Ensure nvim-lspconfig is configured in your Neovim configuration.
-Then add the EO language server configuration:
+First, tell Neovim that `*.eo` files use the `eo` filetype, by adding
+this to your `init.lua`:
 
 ```lua
-local lspconfig = require('lspconfig')
-lspconfig.eo_lsp.setup({
-cmd = {'eo-lsp-server', '--stdio'},
-filetypes = {'eo'},
-root_dir = lspconfig.util.root_pattern('.git', '.eo-root'),
-settings = {}
-})
+vim.filetype.add({ extension = { eo = 'eo' } })
 ```
 
-* For syntax highlighting, you can add file type detection and basic syntax.
-Create `ftdetect/eo.vim` in the Neovim configuration directory:
+Then, register the server and enable it:
 
-```vim
-" ~/.config/nvim/ftdetect/eo.vim
-autocmd BufRead,BufNewFile *.eo set filetype=eo
+```lua
+vim.lsp.config['eo_lsp'] = {
+  cmd = { 'npx', '-y', 'eo-lsp-server@0.4.0', '--stdio' },
+  filetypes = { 'eo' },
+  root_markers = { '.git', '.eo-root' },
+}
+vim.lsp.enable('eo_lsp')
 ```
 
-And create the base file `syntax/eo.vim`:
+Open any `*.eo` file; the server starts on attach and provides
+semantic tokens and diagnostics.
 
-```vim
-" ~/.config/nvim/syntax/eo.vim
-eoComment syntax match "#.*$"
-eoMeta syntax match "^\+\S.*$"
-eoKeyword syntax match "[@^*?]"
-eoOperator syntax match "[\[\]\\>!:\.\)\(]|\+>"
-eoString syntax scope start='"' end='"'
-eoNumber syntax match "\b\(\+\|-\)\?\d\+\(\.\d\+\(e\(\+\|-\)\?\d\)\?\)\?\b"
-Link highlighting eoComment Comment
-Link highlighting eoMeta PreProc
-Link highlighting eoKeyword Keyword
-Link highlighting eoOperator Operator
-Link highlighting eoString String
-Link highlighting eoNumber Number
-```
-
-After configuration, restart Neovim and open the `.eo` file.
-The LSP server should start automatically and provide semantic tokens and error diagnostics.
+Should work. If it doesn't, [file an issue], we'll help.
 
 ## How to Contribute
 
@@ -134,7 +109,8 @@ First, install [Node] modules with:
 npm install
 ```
 
-Then, build the project:
+Then, build the project (this needs a [Java] runtime on your `PATH`,
+because `make` generates the parser by running the [ANTLR4] jar):
 
 ```bash
 make
@@ -162,3 +138,6 @@ Create a pull request, we'll be glad to review it and merge.
 [lsp4ij-doc]: https://github.com/redhat-developer/lsp4ij/blob/main/docs/user-defined-ls/eo-lsp-server.md
 [IntelliJ]: https://www.jetbrains.com/idea/
 [npm]: https://www.npmjs.com/
+[Neovim]: https://neovim.io/
+[Java]: https://www.java.com/
+[ANTLR4]: https://www.antlr.org/

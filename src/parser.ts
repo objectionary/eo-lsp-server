@@ -3,7 +3,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { Token as AntlrToken } from "antlr4ts";
+import { Token as AntlrToken } from "antlr4";
 import { Processor } from "./processor";
 import { ParserError } from "./parserError";
 import { ErrorListener } from "./errorListener";
@@ -46,7 +46,7 @@ export function buildTokenSetAndMap(locationPath: string) {
                     }
                 }
             });
-        } catch (e) {
+        } catch (_e) {
             throw new Error("EoLexer.tokens file missing");
         }
     }
@@ -91,7 +91,7 @@ export function getTokenTypes(): Set<string> {
 export function tokenize(input: string): AntlrToken[] {
     const processor = new Processor(input);
     processor.tokens.fill();
-    return processor.tokens.getTokens();
+    return processor.tokens.tokens;
 }
 
 /**

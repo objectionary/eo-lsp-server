@@ -128,8 +128,8 @@ export class SemanticTokensProvider {
             }
             tokens.push({
                 line: tk.line - 1,
-                start: tk.charPositionInLine,
-                length: tk.stopIndex - tk.startIndex + 1,
+                start: tk.column,
+                length: tk.stop - tk.start + 1,
                 tokenType: legend,
                 tokenModifier: 0
             });
@@ -150,6 +150,15 @@ export class SemanticTokensProvider {
             this.tokenBuilders.set(document.uri, result);
         }
         return result;
+    }
+
+    /**
+     * Deletes the cached semantic token builder for the given document URI.
+     * @param uri - Text document URI whose cached builder should be removed
+     * @returns {void}
+     */
+    deleteTokenBuilder(uri: string) {
+        this.tokenBuilders.delete(uri);
     }
 
     /**

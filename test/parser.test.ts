@@ -5,7 +5,6 @@ import { antlrTypeNumToString, getTokenTypes, getParserErrors, buildTokenSetAndM
 import * as fs from "fs";
 import * as path from "path";
 
-/* eslint-disable no-console */
 describe("Parser module", () => {
     test("Gets an EO grammar token name from an ANTLR token number", () => {
         expect(antlrTypeNumToString(1)).toBe("COMMENTARY");
@@ -13,7 +12,7 @@ describe("Parser module", () => {
 
     test("Retrieves all token type names as defined in EO grammar", () => {
         const types = getTokenTypes();
-        expect(types.size).toBe(31);
+        expect(types.size).toBe(30);
         expect(types.has("COMMENTARY")).toBeTruthy();
         expect(types.has("TEXT")).toBeTruthy();
         expect(types.has("TAB")).toBeFalsy();

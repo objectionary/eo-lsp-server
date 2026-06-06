@@ -3,18 +3,7 @@
 
 import { SemanticTokensProvider } from "../src/semantics";
 import { SemanticTokensBuilder, SemanticTokensClientCapabilities } from "vscode-languageserver/node.js";
-import * as fs from "fs";
-import * as path from "path";
 import { TextDocument } from "vscode-languageserver-textdocument";
-
-/**
- * Return the path to the document
- * @param p - Document's name
- * @returns - Path to document
- */
-function getDocPath(p: string) {
-    return path.resolve(__dirname, "../../testFixture", p);
-}
 
 describe("Semantics module", () => {
     let provider: SemanticTokensProvider;
@@ -83,8 +72,8 @@ describe("Semantics module", () => {
         expect(tokenizeSpy).toHaveBeenCalledWith(document);
         expect(builderSpy).toHaveBeenCalledTimes(3);
         expect(builderSpy).toHaveBeenNthCalledWith(1, 0, 0, 7, 0, 0);
-        expect(builderSpy).toHaveBeenNthCalledWith(2, 1, 3, 1, 7, 0);
-        expect(builderSpy).toHaveBeenNthCalledWith(3, 1, 5, 4, 19, 0);
+        expect(builderSpy).toHaveBeenNthCalledWith(2, 1, 3, 1, 6, 0);
+        expect(builderSpy).toHaveBeenNthCalledWith(3, 1, 5, 4, 18, 0);
         tokenizeSpy.mockRestore();
         builderSpy.mockRestore();
     });

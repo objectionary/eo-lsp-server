@@ -8,10 +8,10 @@
 
 import {
     Token as AntlrToken,
-    ANTLRErrorListener,
+    ErrorListener as ANTLRErrorListener,
     Recognizer,
     RecognitionException
-} from "antlr4ts";
+} from "antlr4";
 import { ParserError } from "./parserError";
 
 export class ErrorListener implements ANTLRErrorListener<AntlrToken> {
@@ -21,8 +21,8 @@ export class ErrorListener implements ANTLRErrorListener<AntlrToken> {
      */
     errors: ParserError[] = [];
 
-    syntaxError(recognizer: Recognizer<AntlrToken, any>, symbol: AntlrToken | undefined, line: number,
-        position: number, msg: string, e: RecognitionException | undefined) {
+    syntaxError(recognizer: Recognizer<AntlrToken>, symbol: AntlrToken | undefined, line: number,
+        position: number, msg: string, _e: RecognitionException | undefined) {
         this.errors.push(new ParserError(line, position, msg));
     }
 }

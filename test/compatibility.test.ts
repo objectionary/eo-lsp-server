@@ -20,6 +20,7 @@ describe("Node.js version compatibility", () => {
     });
 
     test("nullish coalescing operator is supported", () => {
+        // eslint-disable-next-line no-constant-binary-expression
         const value = null ?? "default";
         expect(value).toBe("default");
     });
