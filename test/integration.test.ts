@@ -354,7 +354,7 @@ describe("LSP Server Integration", () => {
         sendNotification("initialized", {});
         sendNotification("workspace/didChangeConfiguration", {
             settings: {
-                languageServerExample: null
+                eo: null
             }
         });
         const uri = "file:///malformed.eo";
@@ -385,5 +385,50 @@ describe("LSP Server Integration", () => {
         });
         const diagnostics = await diagnosticsPromise;
         expect(Array.isArray(diagnostics)).toBeTruthy();
+    }, 15000);
+
+    test("Server reads the diagnostics limit from the eo configuration section", async () => {
+        await sendRequest("initialize", {
+            processId: process.pid,
+            rootUri: null,
+            capabilities: {
+                workspace: {
+                    configuration: false
+                },
+                textDocument: {
+                    semanticTokens: {
+                        tokenTypes: [],
+                        tokenModifiers: []
+                    }
+                }
+            }
+        });
+        sendNotification("initialized", {});
+        sendNotification("workspace/didChangeConfiguration", {
+            settings: {
+                eo: { limit: 0 }
+            }
+        });
+        const uri = "file:///eo-section.eo";
+        const diagnosticsPromise = new Promise(resolve => {
+            const handler = (message: any) => {
+                if (message.method === "textDocument/publishDiagnostics" &&
+                    message.params.uri === uri) {
+                    notifications = notifications.filter(h => h !== handler);
+                    resolve(message.params.diagnostics);
+                }
+            };
+            notifications.push(handler);
+        });
+        sendNotification("textDocument/didOpen", {
+            textDocument: {
+                uri,
+                languageId: "eo",
+                version: 1,
+                text: "-- broken --"
+            }
+        });
+        const diagnostics = await diagnosticsPromise;
+        expect((diagnostics as any[]).length).toBe(0);
     }, 15000);
 });

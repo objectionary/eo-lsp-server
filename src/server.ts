@@ -147,7 +147,7 @@ function getDocumentSettings(resource: string): Thenable<DefaultSettings> {
     if (!result) {
         result = connection.workspace.getConfiguration({
             scopeUri: resource,
-            section: "languageServerExample"
+            section: "eo"
         }).then(config => ((config && typeof config === "object") ? config : defaultSettings));
         cache.set(resource, result);
     }
@@ -194,7 +194,7 @@ connection.onDidChangeConfiguration(change => {
     if (clientCapsAnalyzer.hasConfigurationSupport) {
         cache.clear();
     } else {
-        const config = change.settings.languageServerExample;
+        const config = change.settings.eo;
         settings = (config && typeof config === "object") ? config : defaultSettings;
     }
     validateTextDocuments(
