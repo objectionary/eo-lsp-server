@@ -18,6 +18,7 @@ import {
 } from "vscode-languageserver/node.js";
 import { ClientCapabilitiesAnalyzer } from "./capabilities";
 import { DefaultSettings } from "./defaultSettings";
+import { validateTextDocumentSafely } from "./document-validation";
 import { EoDocumentSymbol } from "./eoDocumentSymbol";
 import { EoVersion } from "./eo-version";
 import { getParserErrors } from "./parser";
@@ -217,7 +218,7 @@ documents.onDidClose(e => {
  * modified.
  */
 documents.onDidChangeContent(change => {
-    validateTextDocument(change.document);
+    validateTextDocumentSafely(change.document, validateTextDocument, connection.console);
 });
 
 /**
