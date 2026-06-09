@@ -25,7 +25,7 @@
     "@types/vscode": "^1.63.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
-    "@vercel/ncc": "^0.38.3",
+    "@vercel/ncc": "^0.44.0",
     "@yao-pkg/pkg": "^6.4.0",
     "babel-jest": "^30.0.0",
     "eslint": "^9.0.0",
