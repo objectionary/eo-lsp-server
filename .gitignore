@@ -7,7 +7,6 @@ bin/
 compiled/
 coverage/
 dist/
-Eo.g4
 node_modules/
 src/eo-version.ts
 src/parser/
