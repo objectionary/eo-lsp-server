@@ -101,7 +101,7 @@ export function tokenize(input: string): AntlrToken[] {
 //  syntax, keeping ANTLR as the fallback for everything else so the existing
 //  tests stay green. Wire it into the diagnostics path so users see genuine
 //  errors from native code, cover the slice with its own test, and leave deeper
-//  @todo puzzles for the line parser, tokens reader and span beneath it.
+//  puzzles for the line parser, tokens reader and span beneath it.
 /**
  * Parses the input text and returns the parsing errors detected
  * @param input - Text to be parsed
