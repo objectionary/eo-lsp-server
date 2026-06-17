@@ -94,6 +94,14 @@ export function tokenize(input: string): AntlrToken[] {
     return processor.tokens.tokens;
 }
 
+// @todo #352:90 Take the first native step on this seam, top-down and
+//  end-to-end: turn on allowJs and settle the ESM/CommonJS interop so ncc still
+//  bundles src, then add one native-JavaScript module (factory functions, no
+//  classes) that getParserErrors delegates to for a thin real slice of EO
+//  syntax, keeping ANTLR as the fallback for everything else so the existing
+//  tests stay green. Wire it into the diagnostics path so users see genuine
+//  errors from native code, cover the slice with its own test, and leave deeper
+//  @todo puzzles for the line parser, tokens reader and span beneath it.
 /**
  * Parses the input text and returns the parsing errors detected
  * @param input - Text to be parsed
