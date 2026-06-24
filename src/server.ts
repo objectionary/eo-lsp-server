@@ -176,7 +176,7 @@ async function validateTextDocument(document: TextDocument): Promise<void> {
             severity: DiagnosticSeverity.Error,
             range: {
                 start: { line: error.line - 1, character: error.column },
-                end: { line: error.line - 1, character: error.column }
+                end: { line: error.line - 1, character: error.column + error.length }
             },
             message: `${error.msg} (EO ${EoVersion})`,
             source: "ex"

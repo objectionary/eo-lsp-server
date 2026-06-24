@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import { antlrTypeNumToString, getTokenTypes, getParserErrors, buildTokenSetAndMap, resetTokenCache } from "../src/parser";
+import { ErrorListener } from "../src/errorListener";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -33,6 +34,23 @@ describe("Parser module", () => {
     test("detects parsing errors", () => {
         const errors = getParserErrors("-- broken syntax --");
         expect(errors.length).toBe(1);
+    });
+
+    test("parser errors carry the offending token length so diagnostic ranges are non-empty", () => {
+        const errors = getParserErrors("-- broken syntax --");
+        expect(errors.length).toBeGreaterThan(0);
+        errors.forEach(error => {
+            expect(error.length).toBeGreaterThanOrEqual(1);
+        });
+    });
+
+    test("error listener falls back to length one when ANTLR omits the offending token", () => {
+        const listener = new ErrorListener();
+        listener.syntaxError(undefined as never, undefined, 3, 7, "boom", undefined);
+        expect(listener.errors).toHaveLength(1);
+        expect(listener.errors[0].length).toBe(1);
+        expect(listener.errors[0].line).toBe(3);
+        expect(listener.errors[0].column).toBe(7);
     });
 
     test("parses fibonacci program from file", () => {
