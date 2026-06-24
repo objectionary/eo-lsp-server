@@ -166,8 +166,7 @@ async function validateTextDocument(document: TextDocument): Promise<void> {
     const text = document.getText();
     const diagnostics: Diagnostic[] = [];
     const errors = getParserErrors(text);
-    const effective = config || defaultSettings;
-    const limit = effective.limit;
+    const limit = config.limit;
     errors.forEach((error, index) => {
         if (limit !== null && index >= limit) {
             return;
