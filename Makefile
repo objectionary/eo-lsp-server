@@ -7,7 +7,6 @@
 SHELL := bash
 
 VERSION := 0.61.1
-GRAMMAR_URL := https://raw.githubusercontent.com/objectionary/eo/refs/tags/$(VERSION)/eo-parser/src/main/antlr4/org/eolang/parser/Eo.g4
 ANTLR4_VERSION := 4.13.2
 
 # a few URLs for download antlr4 tools
@@ -35,13 +34,16 @@ src/eo-version.ts:
 tsc-compiled: $(TSS) Makefile
 	npx tsc -b
 
-Eo.g4: Makefile
-	curl --silent $(GRAMMAR_URL) > $@
-
 antlr4: Makefile
 	mkdir -p $@
 	curl --silent $(ANTLR4_URL) > $@/antlr4-$(ANTLR4_VERSION)-complete.jar
 
+# @todo #352:90 The Eo.g4 grammar is now vendored in the repo (committed, not
+#  fetched) only to keep this ANTLR build green after upstream deleted the
+#  grammar at 0.61.1, so future VERSION bumps can no longer break it. Once the
+#  native line-based parser is implemented and reaches parity, revert this
+#  vendoring: drop the committed Eo.g4 and the ANTLR generation below so the
+#  parser stops depending on a frozen grammar.
 src/parser: Eo.g4 antlr4 Makefile
 	env DYLD_BIND_AT_LAUNCH=1 java -jar antlr4/antlr4-$(ANTLR4_VERSION)-complete.jar -o src/parser -visitor -Dlanguage=TypeScript Eo.g4
 
@@ -52,4 +54,4 @@ lint:
 	npx eslint src --ext .ts
 
 clean:
-	rm -rf Eo.g4 dist coverage tsc-compiled src/parser src/eo-version.ts
+	rm -rf dist coverage tsc-compiled src/parser src/eo-version.ts
