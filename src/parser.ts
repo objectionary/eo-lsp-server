@@ -7,6 +7,7 @@ import { Token as AntlrToken } from "antlr4";
 import { Processor } from "./processor";
 import { ParserError } from "./parserError";
 import { ErrorListener } from "./errorListener";
+import { tabErrors } from "./lines";
 
 /**
  * Set of the token types present in the EO's grammar file
@@ -94,20 +95,12 @@ export function tokenize(input: string): AntlrToken[] {
     return processor.tokens.tokens;
 }
 
-// @todo #352:90 Take the first native step on this seam, top-down and
-//  end-to-end: turn on allowJs and settle the ESM/CommonJS interop so ncc still
-//  bundles src, then add one native-JavaScript module (factory functions, no
-//  classes) that getParserErrors delegates to for a thin real slice of EO
-//  syntax, keeping ANTLR as the fallback for everything else so the existing
-//  tests stay green. Wire it into the diagnostics path so users see genuine
-//  errors from native code, cover the slice with its own test, and leave deeper
-//  puzzles for the line parser, tokens reader and span beneath it.
 /**
- * Parses the input text and returns the parsing errors detected
+ * Parses the input text with ANTLR and returns the parsing errors it detects
  * @param input - Text to be parsed
- * @returns - Array of parsing errors detected during the parsing
+ * @returns - Array of parsing errors detected by ANTLR
  */
-export function getParserErrors(input: string): ParserError[] {
+function antlrErrors(input: string): ParserError[] {
     const processor = new Processor(input);
     const listener = new ErrorListener();
     processor.lexer.removeErrorListeners();
@@ -115,4 +108,18 @@ export function getParserErrors(input: string): ParserError[] {
     processor.parser.addErrorListener(listener);
     processor.parser.program();
     return listener.errors;
+}
+
+/**
+ * Parses the input text and returns the parsing errors detected. At most one
+ * error is reported per line: a line flagged by the native reader suppresses
+ * any error ANTLR raises for the same line.
+ * @param input - Text to be parsed
+ * @returns - Array of parsing errors detected during the parsing
+ */
+export function getParserErrors(input: string): ParserError[] {
+    const native = tabErrors(input)
+        .map(error => new ParserError(error.line, error.column, error.msg));
+    const claimed = new Set(native.map(error => error.line));
+    return native.concat(antlrErrors(input).filter(error => !claimed.has(error.line)));
 }
