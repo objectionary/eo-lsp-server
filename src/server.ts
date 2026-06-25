@@ -4,8 +4,6 @@
 import { TextDocument } from "vscode-languageserver-textdocument";
 import {
     createConnection,
-    Diagnostic,
-    DiagnosticSeverity,
     DidChangeConfigurationNotification,
     DocumentSymbolParams,
     InitializeParams,
@@ -18,6 +16,7 @@ import {
 } from "vscode-languageserver/node.js";
 import { ClientCapabilitiesAnalyzer } from "./capabilities";
 import { DefaultSettings } from "./defaultSettings";
+import { diagnostics } from "./diagnostics";
 import { EoDocumentSymbol } from "./eoDocumentSymbol";
 import { EoVersion } from "./eo-version";
 import { getParserErrors } from "./parser";
@@ -164,26 +163,10 @@ function getDocumentSettings(resource: string): Thenable<DefaultSettings> {
 async function validateTextDocument(document: TextDocument): Promise<void> {
     const config = await getDocumentSettings(document.uri);
     const text = document.getText();
-    const diagnostics: Diagnostic[] = [];
     const errors = getParserErrors(text);
     const effective = config || defaultSettings;
-    const limit = effective.limit;
-    errors.forEach((error, index) => {
-        if (limit !== null && index >= limit) {
-            return;
-        }
-        const diagnostic: Diagnostic = {
-            severity: DiagnosticSeverity.Error,
-            range: {
-                start: { line: error.line - 1, character: error.column },
-                end: { line: error.line - 1, character: error.column }
-            },
-            message: `${error.msg} (EO ${EoVersion})`,
-            source: "ex"
-        };
-        diagnostics.push(diagnostic);
-    });
-    connection.sendDiagnostics({ uri: document.uri, diagnostics });
+    const reported = diagnostics(errors, effective.limit, EoVersion);
+    connection.sendDiagnostics({ uri: document.uri, diagnostics: reported });
 }
 
 /**
