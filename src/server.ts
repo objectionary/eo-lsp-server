@@ -15,7 +15,7 @@ import {
     TextDocumentSyncKind
 } from "vscode-languageserver/node.js";
 import { ClientCapabilitiesAnalyzer } from "./capabilities";
-import { DefaultSettings } from "./defaultSettings";
+import { DefaultSettings, defaultSettings, settings } from "./defaultSettings";
 import { diagnostics } from "./diagnostics";
 import { EoDocumentSymbol } from "./eoDocumentSymbol";
 import { EoVersion } from "./eo-version";
@@ -119,14 +119,9 @@ connection.onInitialized(() => {
 });
 
 /**
- * Settings of the Language Server
- */
-const defaultSettings: DefaultSettings = { limit: 1000 };
-
-/**
  * The global settings, used when the `workspace/configuration` request is not supported by the client.
  */
-let settings: DefaultSettings = defaultSettings;
+let globalSettings: DefaultSettings = defaultSettings;
 
 /**
  * Cache for the settings of all open documents
@@ -140,14 +135,14 @@ const cache: Map<string, Thenable<DefaultSettings>> = new Map();
  */
 function getDocumentSettings(resource: string): Thenable<DefaultSettings> {
     if (!clientCapsAnalyzer.hasConfigurationSupport) {
-        return Promise.resolve(settings);
+        return Promise.resolve(globalSettings);
     }
     let result = cache.get(resource);
     if (!result) {
         result = connection.workspace.getConfiguration({
             scopeUri: resource,
             section: "eo"
-        }).then(config => ((config && typeof config === "object") ? config : defaultSettings));
+        }).then(config => settings(config));
         cache.set(resource, result);
     }
     return result;
@@ -178,7 +173,7 @@ connection.onDidChangeConfiguration(change => {
         cache.clear();
     } else {
         const config = change.settings.eo;
-        settings = (config && typeof config === "object") ? config : defaultSettings;
+        globalSettings = settings(config);
     }
     validateTextDocuments(
         documents.all(),
