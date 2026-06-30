@@ -29,4 +29,8 @@ describe("Capped diagnostics builder", () => {
         const errors = [new ParserError(6, 3, "broken token")];
         expect(diagnostics(errors, 1, "0.57.3")[0].message).toBe("broken token (EO 0.57.3)");
     });
+    test("tags the diagnostic with the eo source", () => {
+        const errors = [new ParserError(1, 0, "broken token")];
+        expect(diagnostics(errors, 1, "0.57.3")[0].source).toBe("eo");
+    });
 });
