@@ -24,4 +24,17 @@ describe("Configuration-triggered document validation", () => {
             "Validation failed for file:///bad.eo: Error: settings transport failed"
         );
     });
+
+    test("reports a rejected single-document validation without throwing, as used by onDidChangeContent", async () => {
+        const document = TextDocument.create("file:///bad.eo", "eo", 0, "[] > bad\n");
+        const validate = jest.fn().mockRejectedValueOnce(new Error("settings transport failed"));
+        const report = jest.fn();
+
+        expect(() => validateTextDocuments([document], validate, report)).not.toThrow();
+        await Promise.resolve();
+
+        expect(report).toHaveBeenCalledWith(
+            "Validation failed for file:///bad.eo: Error: settings transport failed"
+        );
+    });
 });

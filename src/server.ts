@@ -200,7 +200,11 @@ documents.onDidClose(e => {
  * modified.
  */
 documents.onDidChangeContent(change => {
-    validateTextDocument(change.document);
+    validateTextDocuments(
+        [change.document],
+        validateTextDocument,
+        message => connection.console.error(message)
+    );
 });
 
 /**
