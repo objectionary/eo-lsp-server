@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { validateTextDocuments } from "../src/validation";
+import { validateDocument, validateTextDocuments } from "../src/validation";
 
 describe("Configuration-triggered document validation", () => {
     test("reports rejected document validations without stopping remaining validations", async () => {
@@ -30,7 +30,7 @@ describe("Configuration-triggered document validation", () => {
         const validate = jest.fn().mockRejectedValueOnce(new Error("settings transport failed"));
         const report = jest.fn();
 
-        expect(() => validateTextDocuments([document], validate, report)).not.toThrow();
+        expect(() => validateDocument(document, validate, report)).not.toThrow();
         await Promise.resolve();
 
         expect(report).toHaveBeenCalledWith(
