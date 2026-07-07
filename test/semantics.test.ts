@@ -115,4 +115,23 @@ describe("Semantics module", () => {
     test("builds an empty legend when the client advertises no semantic token capability", () => {
         expect(new SemanticTokensProvider(undefined).legend.tokenTypes).toStrictEqual([]);
     });
+
+    test("does not throw when constructed without any capability argument", () => {
+        expect(() => new SemanticTokensProvider()).not.toThrow();
+    });
+
+    test("builds an empty legend when the capability omits its token types", () => {
+        const bare = {} as SemanticTokensClientCapabilities;
+        expect(new SemanticTokensProvider(bare).legend.tokenTypes).toStrictEqual([]);
+    });
+
+    test("computeLegend returns an empty legend for a missing capability", () => {
+        expect(provider.computeLegend(undefined).tokenTypes).toStrictEqual([]);
+    });
+
+    test("produces no semantic tokens for a document when the client advertises no capability", () => {
+        const bare = new SemanticTokensProvider(undefined);
+        const document = TextDocument.create("foo.eo", "eo", 0, "# test.\n[] > test\n");
+        expect(bare.tokenize(document)).toStrictEqual([]);
+    });
 });
