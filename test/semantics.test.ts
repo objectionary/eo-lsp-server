@@ -107,4 +107,12 @@ describe("Semantics module", () => {
         populateBuilderSpy.mockRestore();
         builderSpy.mockRestore();
     });
+
+    test("does not throw when the client advertises no semantic token capability", () => {
+        expect(() => new SemanticTokensProvider(undefined)).not.toThrow();
+    });
+
+    test("builds an empty legend when the client advertises no semantic token capability", () => {
+        expect(new SemanticTokensProvider(undefined).legend.tokenTypes).toStrictEqual([]);
+    });
 });
