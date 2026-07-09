@@ -22,7 +22,7 @@ import { EoVersion } from "./eo-version";
 import { getParserErrors } from "./parser";
 import { Processor } from "./processor";
 import { SemanticTokensProvider } from "./semantics";
-import { validateTextDocuments } from "./validation";
+import { validateDocument, validateTextDocuments } from "./validation";
 
 /**
  * Connection with the server, using Node's IPC as a transport.
@@ -195,7 +195,11 @@ documents.onDidClose(e => {
  * modified.
  */
 documents.onDidChangeContent(change => {
-    validateTextDocument(change.document);
+    validateDocument(
+        change.document,
+        validateTextDocument,
+        message => connection.console.error(message)
+    );
 });
 
 /**

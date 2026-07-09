@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { validateTextDocuments } from "../src/validation";
+import { validateDocument, validateTextDocuments } from "../src/validation";
 
 describe("Configuration-triggered document validation", () => {
     test("reports rejected document validations without stopping remaining validations", async () => {
@@ -20,6 +20,19 @@ describe("Configuration-triggered document validation", () => {
         expect(validate).toHaveBeenNthCalledWith(1, bad);
         expect(validate).toHaveBeenNthCalledWith(2, good);
         expect(report).toHaveBeenCalledTimes(1);
+        expect(report).toHaveBeenCalledWith(
+            "Validation failed for file:///bad.eo: Error: settings transport failed"
+        );
+    });
+
+    test("reports a rejected single-document validation without throwing, as used by onDidChangeContent", async () => {
+        const document = TextDocument.create("file:///bad.eo", "eo", 0, "[] > bad\n");
+        const validate = jest.fn().mockRejectedValueOnce(new Error("settings transport failed"));
+        const report = jest.fn();
+
+        expect(() => validateDocument(document, validate, report)).not.toThrow();
+        await Promise.resolve();
+
         expect(report).toHaveBeenCalledWith(
             "Validation failed for file:///bad.eo: Error: settings transport failed"
         );
