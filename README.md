@@ -38,7 +38,7 @@ in `Settings → Package Settings → LSP → Settings`:
   "clients": {
     "eo-lsp": {
       "enabled": true,
-      "command": ["npx", "-y", "eo-lsp-server@0.4.0", "--stdio"],
+      "command": ["npx", "-y", "eo-lsp-server@0.4.1", "--stdio"],
       "selector": "source.eo"
     }
   }
@@ -89,7 +89,7 @@ Then, register the server and enable it:
 
 ```lua
 vim.lsp.config['eo_lsp'] = {
-  cmd = { 'npx', '-y', 'eo-lsp-server@0.4.0', '--stdio' },
+  cmd = { 'npx', '-y', 'eo-lsp-server@0.4.1', '--stdio' },
   filetypes = { 'eo' },
   root_markers = { '.git', '.eo-root' },
 }
