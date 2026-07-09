@@ -24,7 +24,7 @@ export function diagnostics(errors: ParserError[], limit: number, version: strin
                 end: { line: error.line - 1, character: error.column }
             },
             message: `${error.msg} (EO ${version})`,
-            source: "ex"
+            source: "eo"
         });
     });
     return reported;
