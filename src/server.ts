@@ -51,7 +51,7 @@ let provider: SemanticTokensProvider;
  */
 connection.onInitialize((params: InitializeParams): InitializeResult => {
     clientCapsAnalyzer = new ClientCapabilitiesAnalyzer(params.capabilities);
-    provider = new SemanticTokensProvider(params.capabilities.textDocument!.semanticTokens!);
+    provider = new SemanticTokensProvider(params.capabilities.textDocument?.semanticTokens);
     const result: InitializeResult = {
         capabilities: {
             textDocumentSync: TextDocumentSyncKind.Incremental,

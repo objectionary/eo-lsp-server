@@ -46,9 +46,10 @@ export class SemanticTokensProvider {
     /**
      * Sets the map from EO token to VSCode token types and initializes
      * the semantic legend of Semantic Highlighter
-     * @param capability - Capabilities of the semantic tokens client
+     * @param capability - Capabilities of the semantic tokens client, or
+     * undefined when the client advertises no semantic token support
      */
-    constructor(capability: SemanticTokensClientCapabilities) {
+    constructor(capability?: SemanticTokensClientCapabilities) {
         this.setMap(); // must run before computing legend!
         this.legend = this.computeLegend(capability);
     }
@@ -93,11 +94,12 @@ export class SemanticTokensProvider {
     /**
      * For every token in EO's grammar, checks if it is mapped to VSCode token types
      * and, if so, add that token type to the Semantic Tokens Legend of the grammar.
-     * @param capability - Capabilities of the semantic highlighting feature
+     * @param capability - Capabilities of the semantic highlighting feature, or
+     * undefined when the client advertises no semantic token support
      * @returns - Semantic Tokens Legend for the grammar
      */
-    computeLegend(capability: SemanticTokensClientCapabilities): SemanticTokensLegend {
-        const clientTokenTypes = new Set<string>(capability.tokenTypes);
+    computeLegend(capability?: SemanticTokensClientCapabilities): SemanticTokensLegend {
+        const clientTokenTypes = new Set<string>(capability?.tokenTypes);
         const tokenTypes: string[] = [];
         getTokenTypes().forEach(el => {
             const type = this.tokenTypeMap.get(el) || "";
