@@ -7,7 +7,7 @@ import { Token as AntlrToken } from "antlr4";
 import { Processor } from "./processor";
 import { ParserError } from "./parserError";
 import { ErrorListener } from "./errorListener";
-import { tabErrors } from "./lines";
+import { lineErrors } from "./lines";
 
 /**
  * Set of the token types present in the EO's grammar file
@@ -118,7 +118,7 @@ function antlrErrors(input: string): ParserError[] {
  * @returns - Array of parsing errors detected during the parsing
  */
 export function getParserErrors(input: string): ParserError[] {
-    const native = tabErrors(input)
+    const native = lineErrors(input)
         .map(error => new ParserError(error.line, error.column, error.msg));
     const claimed = new Set(native.map(error => error.line));
     return native.concat(antlrErrors(input).filter(error => !claimed.has(error.line)));
