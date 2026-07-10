@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2026 Objectionary.com
 // SPDX-License-Identifier: MIT
 
+import { tokens } from "./tokens";
+
 /**
  * Reads one source line into its indentation facts.
  * @param {string} text - One line, without its newline terminator
@@ -45,13 +47,14 @@ const closesTextBlock = (one, openIndent) =>
   !one.blank && one.indent === openIndent && one.body.startsWith('"""');
 
 /**
- * Reads the tab-indentation errors of an EO program. Each error names the
- * 1-based line and column 0. A line inside a """ text block is never flagged.
+ * Walks an EO program once, gathering leading-whitespace errors and the tokens
+ * of each claimed line. Lines inside a """ block are never flagged.
  * @param {string} text - The whole EO program
- * @returns {Array<{line: number, column: number, msg: string}>} The errors found
+ * @returns Errors and tokens gathered from the program
  */
-export const tabErrors = (text) => {
+const walk = (text) => {
   const errors = [];
+  const found = [];
   let openIndent = -1;
   text.split("\n").forEach((line, idx) => {
     const one = span(line, idx + 1);
@@ -61,14 +64,27 @@ export const tabErrors = (text) => {
       }
     } else if (one.tab) {
       errors.push({ line: one.line, column: 0, msg: "tab character in leading whitespace" });
-    } else if (opensTextBlock(one) && one.indent % 2 === 0) {
+    } else if (!one.blank && one.indent % 2 === 1) {
+      errors.push({ line: one.line, column: 0, msg: "unexpected odd indent" });
+    } else if (opensTextBlock(one)) {
       openIndent = one.indent;
+    } else if (!one.blank && one.body[0] >= "a" && one.body[0] <= "z") {
+      found.push(tokens(one).readName());
     }
   });
-  return errors;
+  return { errors, tokens: found };
 };
 
-// @todo #352:60 Grow this native port of upstream's Eo.process: add the
-//  "unexpected odd indent" error for a non-blank line whose leading-space count
-//  is odd (right after the tab check, behind the same text-block gate), then
-//  begin a tokens reader that walks each claimed line into its tokens.
+/**
+ * Reads the leading-whitespace errors of an EO program.
+ * @param {string} text - The whole EO program
+ * @returns The errors found
+ */
+export const lineErrors = (text) => walk(text).errors;
+
+/**
+ * Reads the head token of each claimed line.
+ * @param {string} text - The whole EO program
+ * @returns The tokens found
+ */
+export const lineTokens = (text) => walk(text).tokens;
