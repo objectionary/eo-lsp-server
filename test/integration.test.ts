@@ -154,6 +154,15 @@ describe("LSP Server Integration", () => {
         expect(response.capabilities.textDocumentSync).toBe(2);
     }, 15000);
 
+    test("Server responds to a client that advertises no capabilities", async () => {
+        const response = await sendRequest("initialize", {
+            processId: process.pid,
+            rootUri: null,
+            capabilities: {}
+        });
+        expect(response.capabilities.textDocumentSync).toBe(2);
+    }, 15000);
+
     test("Server provides semantic tokens for valid EO code", async () => {
         await sendRequest("initialize", {
             processId: process.pid,
