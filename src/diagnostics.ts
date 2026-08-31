@@ -6,6 +6,11 @@ import { ParserError } from "./parserError";
 
 /**
  * Builds the diagnostics for a document, reporting parser errors up to the limit.
+ *
+ * The range covers one character rather than none. An empty range is allowed
+ * by LSP but paints nothing: some clients draw a caret under the next
+ * character and others drop the diagnostic from the highlighted list
+ * altogether, so the error shows up only in a panel.
  * @param errors - Parser errors found in the document
  * @param limit - Maximum number of diagnostics to report
  * @param version - EO grammar version stamped onto each message
@@ -21,7 +26,7 @@ export function diagnostics(errors: ParserError[], limit: number, version: strin
             severity: DiagnosticSeverity.Error,
             range: {
                 start: { line: error.line - 1, character: error.column },
-                end: { line: error.line - 1, character: error.column }
+                end: { line: error.line - 1, character: error.column + 1 }
             },
             message: `${error.msg} (EO ${version})`,
             source: "ex"
