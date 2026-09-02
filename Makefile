@@ -6,7 +6,7 @@
 .ONESHELL:
 SHELL := bash
 
-VERSION := 0.61.3
+VERSION := 0.63.0
 ANTLR4_VERSION := 4.13.2
 
 # a few URLs for download antlr4 tools
