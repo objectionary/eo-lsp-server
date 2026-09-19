@@ -25,6 +25,11 @@ describe("Capped diagnostics builder", () => {
         const errors = [new ParserError(11, 4, "shifted")];
         expect(diagnostics(errors, 1, "0.57.3")[0].range.start.line).toBe(10);
     });
+    test("paints at least one character so every client shows the squiggle", () => {
+        const errors = [new ParserError(11, 4, "shifted")];
+        const range = diagnostics(errors, 1, "0.57.3")[0].range;
+        expect(range.end.character - range.start.character).toBe(1);
+    });
     test("stamps the eo version onto the diagnostic message", () => {
         const errors = [new ParserError(6, 3, "broken token")];
         expect(diagnostics(errors, 1, "0.57.3")[0].message).toBe("broken token (EO 0.57.3)");
