@@ -159,8 +159,7 @@ async function validateTextDocument(document: TextDocument): Promise<void> {
     const config = await getDocumentSettings(document.uri);
     const text = document.getText();
     const errors = getParserErrors(text);
-    const effective = config || defaultSettings;
-    const reported = diagnostics(errors, effective.limit, EoVersion);
+    const reported = diagnostics(errors, config.limit, EoVersion);
     connection.sendDiagnostics({ uri: document.uri, diagnostics: reported });
 }
 
