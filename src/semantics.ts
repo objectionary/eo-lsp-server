@@ -22,6 +22,40 @@ export type VSCodeToken = {
 }
 
 /**
+ * Builds a lookup table from code point offsets to UTF-16 offsets.
+ * @param text - Document text
+ * @returns - UTF-16 offset for each code point offset
+ */
+function codePointOffsetsToUtf16Offsets(text: string): number[] {
+    const offsets = [0];
+    for (const point of text) {
+        offsets.push(offsets[offsets.length - 1] + point.length);
+    }
+    return offsets;
+}
+
+/**
+ * Converts an ANTLR code point offset to a UTF-16 offset expected by LSP.
+ * @param offset - Code point offset
+ * @param offsets - Code point to UTF-16 lookup table
+ * @returns - UTF-16 offset
+ */
+function codePointOffsetToUtf16Offset(offset: number, offsets: number[]): number {
+    const index = Math.max(0, Math.min(offset, offsets.length - 1));
+    return offsets[index];
+}
+
+/**
+ * Converts an absolute UTF-16 offset to a UTF-16 line character position.
+ * @param text - Document text
+ * @param offset - Absolute UTF-16 offset
+ * @returns - UTF-16 character position inside the line
+ */
+function utf16OffsetInLine(text: string, offset: number): number {
+    return offset - text.lastIndexOf("\n", offset - 1) - 1;
+}
+
+/**
  * Responsible for dealing with semantic highlighting operations
  */
 export class SemanticTokensProvider {
@@ -121,17 +155,21 @@ export class SemanticTokensProvider {
      */
     tokenize(document: TextDocument): VSCodeToken[] {
         const tokens: VSCodeToken[] = [];
-        const antlrTokens = tokenize(document.getText());
+        const text = document.getText();
+        const utf16Offsets = codePointOffsetsToUtf16Offsets(text);
+        const antlrTokens = tokenize(text);
         antlrTokens.forEach(tk => {
             const vscodeTokenType = this.tokenTypeMap.get(antlrTypeNumToString(tk.type));
             const legend = vscodeTokenType ? this.legend.tokenTypes.indexOf(vscodeTokenType) : -1;
             if (legend === -1) {
                 return;
             }
+            const tokenStart = codePointOffsetToUtf16Offset(tk.start, utf16Offsets);
+            const tokenEnd = codePointOffsetToUtf16Offset(tk.stop + 1, utf16Offsets);
             tokens.push({
                 line: tk.line - 1,
-                start: tk.column,
-                length: tk.stop - tk.start + 1,
+                start: utf16OffsetInLine(text, tokenStart),
+                length: tokenEnd - tokenStart,
                 tokenType: legend,
                 tokenModifier: 0
             });
