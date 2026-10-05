@@ -8,6 +8,9 @@ name: codecov
     branches:
       - master
       - development
+concurrency:
+  group: codecov-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   codecov:
     runs-on: ubuntu-24.04
