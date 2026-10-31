@@ -51,7 +51,7 @@ test: build
 	npx jest --coverage
 
 lint:
-	npx eslint src --ext .ts
+	npx eslint src
 
 clean:
 	rm -rf dist coverage tsc-compiled src/parser src/eo-version.ts
