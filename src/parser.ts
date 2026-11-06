@@ -47,8 +47,8 @@ export function buildTokenSetAndMap(locationPath: string) {
                     }
                 }
             });
-        } catch (_e) {
-            throw new Error("EoLexer.tokens file missing");
+        } catch (error) {
+            throw new Error("EoLexer.tokens file missing", { cause: error });
         }
     }
 }

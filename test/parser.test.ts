@@ -43,7 +43,13 @@ describe("Parser module", () => {
     test("we expect buildTokenSetAndMap to throw", () => {
         resetTokenCache();
         const location = path.join(__dirname, "none-existing-path", "pathTo.tokens");
-        expect(() => buildTokenSetAndMap(location)).toThrow();
+        try {
+            buildTokenSetAndMap(location);
+            throw new Error("Expected the missing token file to fail");
+        } catch (error) {
+            expect(error.message).toBe("EoLexer.tokens file missing");
+            expect(error.cause).toMatchObject({ code: "ENOENT", path: location });
+        }
     });
     test("reports a tab indentation error from the native reader", () => {
         const errors = getParserErrors("# app.\n[] > app\n\t42 > @\n");
