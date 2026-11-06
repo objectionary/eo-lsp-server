@@ -4,8 +4,8 @@
     "lib": [
       "es2020"
     ],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "outDir": "tsc-compiled",
     "rootDir": ".",
     "skipLibCheck": true,

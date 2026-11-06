@@ -31,7 +31,7 @@ compiled: src/parser src/eo-version.ts tsc-compiled Makefile
 src/eo-version.ts:
 	echo "export const EoVersion = \"$(VERSION)\";" > $@
 
-tsc-compiled: $(TSS) Makefile
+tsc-compiled: $(TSS) tsconfig.json Makefile
 	npx tsc -b
 
 antlr4: Makefile

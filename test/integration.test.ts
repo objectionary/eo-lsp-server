@@ -119,7 +119,7 @@ describe("LSP Server Integration", () => {
         handlers.clear();
         notifications = [];
         buffer = Buffer.alloc(0);
-        const serverPath = path.join(__dirname, "..", "compiled", "server.js");
+        const serverPath = path.join(__dirname, "..", "dist", "index.js");
         if (!fs.existsSync(serverPath)) {
             throw new Error(`Server not found at ${serverPath}. Run 'make build' first`);
         }

@@ -13,7 +13,7 @@ import {
     SemanticTokensRegistrationType,
     TextDocuments,
     TextDocumentSyncKind
-} from "vscode-languageserver/node.js";
+} from "vscode-languageserver/node";
 import { ClientCapabilitiesAnalyzer } from "./capabilities";
 import { DefaultSettings, defaultSettings, settings } from "./defaultSettings";
 import { diagnostics } from "./diagnostics";

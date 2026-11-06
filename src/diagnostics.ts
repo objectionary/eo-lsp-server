@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2026 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver/node.js";
+import { Diagnostic, DiagnosticSeverity } from "vscode-languageserver/node";
 import { ParserError } from "./parserError";
 
 /**
