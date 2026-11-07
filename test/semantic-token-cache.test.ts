@@ -7,7 +7,7 @@ jest.mock("../src/parser", () => ({
     tokenize: jest.fn(() => [])
 }));
 
-import { SemanticTokensClientCapabilities } from "vscode-languageserver/node.js";
+import { SemanticTokensClientCapabilities } from "vscode-languageserver/node";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { SemanticTokensProvider } from "../src/semantics";
 

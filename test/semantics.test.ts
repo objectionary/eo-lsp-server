@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import { SemanticTokensProvider } from "../src/semantics";
-import { SemanticTokensBuilder, SemanticTokensClientCapabilities } from "vscode-languageserver/node.js";
+import { SemanticTokensBuilder, SemanticTokensClientCapabilities } from "vscode-languageserver/node";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 describe("Semantics module", () => {
