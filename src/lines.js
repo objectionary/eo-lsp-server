@@ -56,7 +56,7 @@ const walk = (text) => {
   const errors = [];
   const found = [];
   let openIndent = -1;
-  text.split("\n").forEach((line, idx) => {
+  text.split(/\r?\n/u).forEach((line, idx) => {
     const one = span(line, idx + 1);
     if (openIndent >= 0) {
       if (closesTextBlock(one, openIndent)) {

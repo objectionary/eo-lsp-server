@@ -61,4 +61,10 @@ describe("Parser module", () => {
         expect(online).toHaveLength(1);
         expect(online[0].msg).toBe("tab character in leading whitespace");
     });
+    test("preserves diagnostics for CRLF text blocks", () => {
+        const source = '# test.\n[] > app\n  """\n   odd text\n\tliteral tab\n  """ > @\n';
+        expect(getParserErrors(source)).toEqual([]);
+        expect(getParserErrors(source.replace(/\n/gu, "\r\n"))).toEqual([]);
+    });
+
 });
