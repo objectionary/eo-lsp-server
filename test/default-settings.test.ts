@@ -19,4 +19,14 @@ describe("settings from a raw configuration", () => {
     test("falls back to defaults when the config is a primitive", () => {
         expect(settings(5).limit).toBe(defaultSettings.limit);
     });
+    test.each([null, undefined, "abc", "2", -1, NaN, Infinity, -Infinity, {}, []])(
+        "uses the default diagnostic limit for invalid value %p",
+        limit => {
+            expect(settings({ limit }).limit).toBe(defaultSettings.limit);
+        }
+    );
+    test.each([0, 1, 2.5, 1000])("preserves usable limit %p", limit => {
+        expect(settings({ limit }).limit).toBe(limit);
+    });
+
 });
