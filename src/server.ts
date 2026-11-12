@@ -157,6 +157,9 @@ function getDocumentSettings(resource: string): Thenable<DefaultSettings> {
  */
 async function validateTextDocument(document: TextDocument): Promise<void> {
     const config = await getDocumentSettings(document.uri);
+    if (documents.get(document.uri) !== document) {
+        return;
+    }
     const text = document.getText();
     const errors = getParserErrors(text);
     const reported = diagnostics(errors, config.limit, EoVersion);
@@ -187,6 +190,7 @@ connection.onDidChangeConfiguration(change => {
 documents.onDidClose(e => {
     cache.delete(e.document.uri);
     provider.deleteTokenBuilder(e.document.uri);
+    connection.sendDiagnostics({ uri: e.document.uri, diagnostics: [] });
 });
 
 /**
