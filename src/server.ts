@@ -129,6 +129,11 @@ let globalSettings: DefaultSettings = defaultSettings;
 const cache: Map<string, Thenable<DefaultSettings>> = new Map();
 
 /**
+ * Revision of the configuration used by in-flight document validations.
+ */
+let configurationRevision = 0;
+
+/**
  * Retrieves the settings for a document
  * @param resource - String for the scheme of the document for which to retrieve its settings
  * @returns - A Promise for the settings of the document requested
@@ -156,11 +161,14 @@ function getDocumentSettings(resource: string): Thenable<DefaultSettings> {
  * @returns {Promise<void>}
  */
 async function validateTextDocument(document: TextDocument): Promise<void> {
+    const revision = configurationRevision;
     const config = await getDocumentSettings(document.uri);
     const text = document.getText();
     const errors = getParserErrors(text);
     const reported = diagnostics(errors, config.limit, EoVersion);
-    connection.sendDiagnostics({ uri: document.uri, diagnostics: reported });
+    if (revision === configurationRevision) {
+        connection.sendDiagnostics({ uri: document.uri, diagnostics: reported });
+    }
 }
 
 /**
@@ -168,6 +176,7 @@ async function validateTextDocument(document: TextDocument): Promise<void> {
  * documents with there is a change in the configuration of the client.
  */
 connection.onDidChangeConfiguration(change => {
+    configurationRevision++;
     if (clientCapsAnalyzer.hasConfigurationSupport) {
         cache.clear();
     } else {
