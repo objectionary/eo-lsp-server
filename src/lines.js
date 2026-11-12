@@ -48,7 +48,7 @@ const closesTextBlock = (one, openIndent) =>
 
 /**
  * Walks an EO program once, gathering leading-whitespace errors and the tokens
- * of each claimed line. Lines inside a """ block are never flagged.
+ * of each claimed line. Inside a """ block, only trailing whitespace is flagged.
  * @param {string} text - The whole EO program
  * @returns Errors and tokens gathered from the program
  */
@@ -70,6 +70,10 @@ const walk = (text) => {
       openIndent = one.indent;
     } else if (!one.blank && one.body[0] >= "a" && one.body[0] <= "z") {
       found.push(tokens(one).readName());
+    }
+    const trailing = /[ \t]\r?$/u.exec(line);
+    if (trailing && /[^ \t\r]/u.test(line) && errors[errors.length - 1]?.line !== one.line) {
+      errors.push({ line: one.line, column: trailing.index, msg: "trailing whitespace at end of line" });
     }
   });
   return { errors, tokens: found };

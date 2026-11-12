@@ -61,4 +61,10 @@ describe("Parser module", () => {
         expect(online).toHaveLength(1);
         expect(online[0].msg).toBe("tab character in leading whitespace");
     });
+    test("reports trailing whitespace through the diagnostic parser entry point", () => {
+        const errors = getParserErrors("# test.\n[] > app  \n  42 > @\n");
+        expect(errors.filter(error => error.line === 2)).toEqual([
+            expect.objectContaining({ line: 2, column: 9, msg: "trailing whitespace at end of line" })
+        ]);
+    });
 });
