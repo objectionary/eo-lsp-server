@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import { SemanticTokensProvider } from "../src/semantics";
+import { getTokenTypes } from "../src/parser";
 import { SemanticTokensBuilder, SemanticTokensClientCapabilities } from "vscode-languageserver/node";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
@@ -44,6 +45,23 @@ describe("Semantics module", () => {
         provider = new SemanticTokensProvider(clientCapabilities);
     });
 
+    test("maps only token names in the current grammar", () => {
+        for (const token of provider.tokenTypeMap.keys()) {
+            expect(getTokenTypes()).toContain(token);
+        }
+    });
+
+    test("highlights the decoration attribute as a method", () => {
+        const document = TextDocument.create("phi.eo", "eo", 0, "# test.\n[] > test\n  42 > @\n");
+        expect(provider.tokenize(document)).toContainEqual({
+            line: 2,
+            start: 7,
+            length: 1,
+            tokenType: provider.legend.tokenTypes.indexOf("method"),
+            tokenModifier: 0
+        });
+    });
+
     test("Compute Legend obtains all used VSCode token types", () => {
         const semanticTokensLegend = new Set<string>(provider.computeLegend(clientCapabilities).tokenTypes);
         const expectedTokens = ["comment", "macro", "keyword", "operator", "method", "number", "string", "variable"];
@@ -73,7 +91,7 @@ describe("Semantics module", () => {
         expect(builderSpy).toHaveBeenCalledTimes(3);
         expect(builderSpy).toHaveBeenNthCalledWith(1, 0, 0, 7, 0, 0);
         expect(builderSpy).toHaveBeenNthCalledWith(2, 1, 3, 1, 6, 0);
-        expect(builderSpy).toHaveBeenNthCalledWith(3, 1, 5, 4, 18, 0);
+        expect(builderSpy).toHaveBeenNthCalledWith(3, 1, 5, 4, provider.legend.tokenTypes.indexOf("variable"), 0);
         tokenizeSpy.mockRestore();
         builderSpy.mockRestore();
     });
