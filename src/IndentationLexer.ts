@@ -129,13 +129,9 @@ export class IndentationLexer extends Lexer {
             current = next;
             next = this.wrapped.nextToken();
         }
-        if (current !== null) {
-            if (current.type === EoLexer.EOL) {
-                const spaceText = this.spaces.pop() || "";
-                this.handleTabs(Math.floor(spaceText.length / 2), next);
-            } else {
-                this.tokens.push(current);
-            }
+        if (current?.type === EoLexer.EOL) {
+            const spaceText = this.spaces.pop() || "";
+            this.handleTabs(Math.floor(spaceText.length / 2), next);
         }
         while (this.indent.length > 1) {
             this.indent.pop();

@@ -4,6 +4,7 @@
 import { CharStreams, Token } from "antlr4";
 import { IndentationLexer } from "../src/IndentationLexer";
 import EoLexer from "../src/parser/EoLexer";
+import { tokenize } from "../src/parser";
 
 describe("IndentationLexer", () => {
 
@@ -52,4 +53,16 @@ describe("IndentationLexer", () => {
             expect(tokens[0].type).toBe(Token.EOF);
         });
     });
+    test.each(["name", "42", '"text"'])("emits the last source token once without a newline for %s", source => {
+        const actual = tokenize(source).filter(token => token.type !== Token.EOF);
+        expect(actual.map(token => token.text)).toEqual([source]);
+    });
+    test("keeps the same source tokens while the final newline is being edited", () => {
+        const source = "# Fibonacci.\n[] > fib\n  42 > value";
+        const sourceTokens = (text: string) => tokenize(text)
+            .filter(token => ![Token.EOF, EoLexer.EOL, IndentationLexer.TAB, IndentationLexer.UNTAB].includes(token.type))
+            .map(token => [token.type, token.text, token.line, token.column]);
+        expect(sourceTokens(source)).toEqual(sourceTokens(`${source}\n`));
+    });
+
 });
