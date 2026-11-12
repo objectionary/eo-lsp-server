@@ -14,14 +14,14 @@ import {
 } from "antlr4";
 import { ParserError } from "./parserError";
 
-export class ErrorListener implements ANTLRErrorListener<AntlrToken> {
+export class ErrorListener<T = AntlrToken> implements ANTLRErrorListener<T> {
 
     /**
      * Array of errors detected during the parsing
      */
     errors: ParserError[] = [];
 
-    syntaxError(recognizer: Recognizer<AntlrToken>, symbol: AntlrToken | undefined, line: number,
+    syntaxError(recognizer: Recognizer<T>, symbol: T | undefined, line: number,
         position: number, msg: string, _e: RecognitionException | undefined) {
         this.errors.push(new ParserError(line, position, msg));
     }

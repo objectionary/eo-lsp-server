@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright (c) 2024-2026 Objectionary.com
 // SPDX-License-Identifier: MIT
 
-import { Token, CommonToken, Lexer, CharStream } from "antlr4";
+import { Token, CommonToken, Lexer, CharStream, ErrorListener } from "antlr4";
 import EoLexer from "./parser/EoLexer";
 import EoParser from "./parser/EoParser";
 
@@ -162,6 +162,16 @@ export class IndentationLexer extends Lexer {
     removeErrorListeners(): void {
         super.removeErrorListeners();
         this.wrapped.removeErrorListeners();
+    }
+
+    /**
+     * Adds an error listener to both this lexer and the wrapped lexer.
+     * @param listener - Listener receiving lexical recognition errors
+     * @returns void
+     */
+    addErrorListener(listener: ErrorListener<number>): void {
+        super.addErrorListener(listener);
+        this.wrapped.addErrorListener(listener);
     }
 
     get channelNames(): string[] {

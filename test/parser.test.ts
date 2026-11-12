@@ -70,5 +70,20 @@ describe("Parser module", () => {
         expect(getTokenTypes()).toContain("TEXT");
         expect(getTokenTypes().size).toBe(30);
     });
+    test("reports lexical errors discarded from an otherwise valid token stream", () => {
+        const errors = getParserErrors('# test.\n[] > test\n  "ok"§ > value\n');
+        expect(errors).toEqual([
+            expect.objectContaining({ line: 3, column: 6, msg: "token recognition error at: '§'" })
+        ]);
+    });
+    test.each(['"ok"', '"ok§"'])("accepts valid string %s", literal => {
+        expect(getParserErrors(`# test.\n[] > test\n  ${literal} > value\n`)).toEqual([]);
+    });
+    test("keeps native indentation precedence over lexical errors on the same line", () => {
+        const errors = getParserErrors('# test.\n[] > test\n\t"ok"§ > value\n');
+        expect(errors.filter(error => error.line === 3)).toEqual([
+            expect.objectContaining({ msg: "tab character in leading whitespace" })
+        ]);
+    });
 
 });
