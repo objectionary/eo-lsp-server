@@ -11,7 +11,7 @@ describe("Names of document symbols", () => {
         ['"answer > misleading" > correct', "correct"],
         ['"answer > @" > correct', "correct"],
         ['42 > valueé', "valueé"],
-        ['43 > valueß', "valueß"],
+        ['43 > value\u00df', "value\u00df"],
         ['42 > @', "@"],
         ['42 +> test-attribute', "test-attribute"],
         ['42 > constant!', "constant"],
