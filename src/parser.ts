@@ -103,11 +103,13 @@ export function tokenize(input: string): AntlrToken[] {
 function antlrErrors(input: string): ParserError[] {
     const processor = new Processor(input);
     const listener = new ErrorListener();
+    const lexical = new ErrorListener<number>();
     processor.lexer.removeErrorListeners();
+    processor.lexer.addErrorListener(lexical);
     processor.parser.removeErrorListeners();
     processor.parser.addErrorListener(listener);
     processor.parser.program();
-    return listener.errors;
+    return lexical.errors.concat(listener.errors);
 }
 
 /**
