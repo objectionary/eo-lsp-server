@@ -123,12 +123,13 @@ export class EoAst {
         }
         const name = EoAst.masterBodyName(ctx);
         const range = EoAst.createRange(ctx);
+        const children = this.topAttributes(ctx);
         const normalized: EoAttribute = {
             type: "attribute",
             name,
             range,
             selectionRange: range,
-            children: [],
+            children,
             text: ctx.getText()
         };
         this.nodes.set(ctx, normalized);
