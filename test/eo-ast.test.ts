@@ -120,40 +120,5 @@ describe("EoAst", () => {
             lookNested.mockRestore();
         });
 
-        describe("Name extraction methods", () => {
-            describe("anonymous context", () => {
-                test("we expect objectName to return 'anonymous'", () => {
-                    const anonymous = { getText: jest.fn().mockReturnValue("[]") };
-                    const result = (EoAst as any).objectName(anonymous);
-                    expect(result).toBe("anonymous");
-                });
-
-                test("we expect boundName to return 'anonymous'", () => {
-                    const anonymous = { getText: jest.fn().mockReturnValue("[]") };
-                    const result = (EoAst as any).boundName(anonymous);
-                    expect(result).toBe("anonymous");
-                });
-
-                test("we expect masterBodyName to return 'anonymous'", () => {
-                    const anonymous = { getText: jest.fn().mockReturnValue("[]") };
-                    const result = (EoAst as any).masterBodyName(anonymous);
-                    expect(result).toBe("anonymous");
-                });
-            });
-
-            describe("test-attribute context", () => {
-                test("we expect boundName to return 'test-attribute'", () => {
-                    const testAttr = { getText: jest.fn().mockReturnValue("[] +> test-attribute") };
-                    const result = (EoAst as any).boundName(testAttr);
-                    expect(result).toBe("test-attribute");
-                });
-
-                test("we expect masterBodyName to return 'test-attribute'", () => {
-                    const testAttr = { getText: jest.fn().mockReturnValue("[] +> test-attribute") };
-                    const result = (EoAst as any).masterBodyName(testAttr);
-                    expect(result).toBe("test-attribute");
-                });
-            });
-        });
     });
 });

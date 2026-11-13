@@ -6,6 +6,7 @@ import {
     BoundContext,
     MasterBodyContext,
     ObjectContext,
+    OnameOrTnameContext,
     ProgramContext,
     SubMasterContext
 } from "./parser/EoParser";
@@ -236,45 +237,44 @@ export class EoAst {
      * @returns string containing `name`
      */
     private static objectName(ctx: ObjectContext): string {
-        const text = ctx.getText();
-        const match = text.match(/(?<!#.*)(?:\]|\[\])\s*>\s*([a-zA-Z_][a-zA-Z0-9_-]*)/u);
-        if (match) {
-            return match[1];
-        }
-        return "anonymous";
+        const master = ctx.masterBody();
+        const bound = ctx.bound();
+        return master ? EoAst.masterBodyName(master) : bound ? EoAst.boundName(bound) : "anonymous";
     }
 
     /**
-     * Bound attribute name extractor
-     *
+     * Extracts the binding owned by a bound attribute.
      * @param ctx BoundContext
-     * @returns string containing `name`
-     * */
+     * @returns Attribute name
+     */
     private static boundName(ctx: BoundContext): string {
-        const text = ctx.getText();
-        if (text.includes("> @")) {
-            return "@";
-        }
-        const match = text.match(/(?:\+)?\s*>\s*([a-zA-Z_][a-zA-Z0-9_-]*)/u);
-        if (match) {
-            return match[1];
-        }
-        return "anonymous";
+        const application = ctx.application();
+        const name = ctx.onameOrTname() || application?.onameOrTname()
+            || application?.vapplication()?.onameOrTname();
+        return EoAst.bindingName(name);
     }
 
     /**
-     * Masterbody attribute name extractor
-     *
+     * Extracts the declaration owned by a master body.
      * @param ctx MasterBodyContext
-     * @returns string containing `name`
-     * */
+     * @returns Object name
+     */
     private static masterBodyName(ctx: MasterBodyContext): string {
-        const text = ctx.getText();
-        const match = text.match(/(?:\+)?\s*>\s*([a-zA-Z_][a-zA-Z0-9_-]*)/u);
-        if (match) {
-            return match[1];
+        const atom = ctx.atom();
+        if (atom) {
+            return (atom.suffix().NAME() || atom.suffix().PHI())?.getText() || "anonymous";
         }
-        return "anonymous";
+        return EoAst.bindingName(ctx.onameOrTname() || ctx.formation()?.onameOrTname());
+    }
+
+    /**
+     * Reads a declaration token without examining its value or nested declarations.
+     * @param ctx Name context
+     * @returns Full declared name, or anonymous for an incomplete declaration
+     */
+    private static bindingName(ctx: OnameOrTnameContext | undefined): string {
+        const name = ctx?.oname()?.suffix() || ctx?.tname();
+        return (name?.NAME() || name?.PHI())?.getText() || "anonymous";
     }
 
     /**
