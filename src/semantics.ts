@@ -103,7 +103,7 @@ export class SemanticTokensProvider {
         const tokenTypes: string[] = [];
         getTokenTypes().forEach(el => {
             const type = this.tokenTypeMap.get(el) || "";
-            if (clientTokenTypes.has(type)) {
+            if (clientTokenTypes.has(type) && !tokenTypes.includes(type)) {
                 tokenTypes.push(type);
             }
         });
