@@ -61,4 +61,15 @@ describe("Parser module", () => {
         expect(online).toHaveLength(1);
         expect(online[0].msg).toBe("tab character in leading whitespace");
     });
+    test.each(["\n", "\r\n"])("accepts one trailing blank line with %p terminators", newline => {
+        const source = ["# test.", "[] > test", "  42 > @", ""].join(newline);
+        expect(getParserErrors(source)).toEqual([]);
+        expect(getParserErrors(source + newline)).toEqual([]);
+        expect(getParserErrors(source + newline.repeat(2)).length).toBeGreaterThan(0);
+    });
+    test("accepts a single trailing blank line after the fibonacci fixture", () => {
+        const source = fs.readFileSync(path.join(__dirname, "../fixtures/fibonacci.eo"), "utf8");
+        expect(getParserErrors(source + "\n")).toEqual([]);
+    });
+
 });
