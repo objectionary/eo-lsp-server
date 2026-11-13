@@ -53,3 +53,16 @@ describe("lineTokens", () => {
     ]);
   });
 });
+
+describe("CRLF source lines", () => {
+  test("treats CRLF and LF identically for text blocks and following code", () => {
+    const source = '[] > app\n  """\n   odd text\n\tliteral tab\n  """ > @\n  following\n';
+    const crlf = source.replace(/\n/gu, "\r\n");
+    expect(lineErrors(crlf)).toEqual(lineErrors(source));
+    expect(lineTokens(crlf)).toEqual(lineTokens(source));
+  });
+  test("keeps whitespace-only CRLF lines blank", () => {
+    expect(lineErrors("   \r\n[] > app\r\n")).toEqual([]);
+  });
+
+});
