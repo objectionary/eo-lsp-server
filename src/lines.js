@@ -11,7 +11,7 @@ import { tokens } from "./tokens";
  */
 const span = (text, line) => {
   let indent = 0;
-  while (indent < text.length && text[indent] === " ") {
+  while (indent < text.length && (text[indent] === " " || text[indent] === "\t")) {
     indent += 1;
   }
   let tab = false;
@@ -62,14 +62,17 @@ const walk = (text) => {
       if (closesTextBlock(one, openIndent)) {
         openIndent = -1;
       }
-    } else if (one.tab) {
-      errors.push({ line: one.line, column: 0, msg: "tab character in leading whitespace" });
-    } else if (!one.blank && one.indent % 2 === 1) {
-      errors.push({ line: one.line, column: 0, msg: "unexpected odd indent" });
-    } else if (opensTextBlock(one)) {
-      openIndent = one.indent;
-    } else if (!one.blank && one.body[0] >= "a" && one.body[0] <= "z") {
-      found.push(tokens(one).readName());
+    } else {
+      if (opensTextBlock(one)) {
+        openIndent = one.indent;
+      }
+      if (one.tab) {
+        errors.push({ line: one.line, column: 0, msg: "tab character in leading whitespace" });
+      } else if (!one.blank && one.indent % 2 === 1) {
+        errors.push({ line: one.line, column: 0, msg: "unexpected odd indent" });
+      } else if (!one.blank && one.body[0] >= "a" && one.body[0] <= "z") {
+        found.push(tokens(one).readName());
+      }
     }
   });
   return { errors, tokens: found };
