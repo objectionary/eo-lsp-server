@@ -142,7 +142,13 @@ function getDocumentSettings(resource: string): Thenable<DefaultSettings> {
         result = connection.workspace.getConfiguration({
             scopeUri: resource,
             section: "eo"
-        }).then(config => settings(config));
+        }).then(config => settings(config), error => {
+            if (cache.get(resource) === result) {
+                cache.delete(resource);
+            }
+            connection.console.error(`Configuration failed for ${resource}: ${error}`);
+            return globalSettings;
+        });
         cache.set(resource, result);
     }
     return result;
