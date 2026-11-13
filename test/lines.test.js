@@ -53,3 +53,27 @@ describe("lineTokens", () => {
     ]);
   });
 });
+
+describe("Trailing whitespace", () => {
+  test.each([" ", "\t"])("reports trailing whitespace %p at its own column", ending => {
+    expect(lineErrors(`[] > app${ending}\n`)).toEqual([
+      { line: 1, column: 8, msg: "trailing whitespace at end of line" }
+    ]);
+    expect(lineErrors(`[] > app${ending}\r\n`)).toEqual([
+      { line: 1, column: 8, msg: "trailing whitespace at end of line" }
+    ]);
+  });
+  test("reports trailing whitespace inside text blocks and resumes after the closing line", () => {
+    expect(lineErrors('  """\n  text \n  """ > @\n  next \n')).toEqual([
+      { line: 2, column: 6, msg: "trailing whitespace at end of line" },
+      { line: 4, column: 6, msg: "trailing whitespace at end of line" }
+    ]);
+  });
+  test("keeps blank space-only lines exempt and preserves indentation error precedence", () => {
+    expect(lineErrors("  \n  \r\n")).toEqual([]);
+    expect(lineErrors(" odd \n")).toEqual([
+      { line: 1, column: 0, msg: "unexpected odd indent" }
+    ]);
+  });
+
+});
