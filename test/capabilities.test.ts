@@ -27,10 +27,20 @@ describe("Client capabilities analyzer", () => {
         } as ClientCapabilities);
         expect(analyzer.hasTokensSupport).toBe(true);
     });
-    test("exposes no fields beyond the three negotiated supports", () => {
+    test.each([false, true])("reads explicit dynamic registration support %p", dynamic => {
+        const analyzer = new ClientCapabilitiesAnalyzer({
+            workspace: { didChangeConfiguration: { dynamicRegistration: dynamic } },
+            textDocument: { semanticTokens: {
+                dynamicRegistration: dynamic, requests: {}, tokenTypes: [], tokenModifiers: [], formats: []
+            } }
+        });
+        expect(analyzer.hasDynamicTokensSupport).toBe(dynamic);
+        expect(analyzer.hasDynamicConfigurationSupport).toBe(dynamic);
+    });
+    test("exposes the negotiated supports", () => {
         const analyzer = new ClientCapabilitiesAnalyzer({} as ClientCapabilities);
         expect(Object.keys(analyzer).sort()).toStrictEqual(
-            ["hasConfigurationSupport", "hasTokensSupport", "hasWorkspaceFolderSupport"]
+            ["hasConfigurationSupport", "hasDynamicConfigurationSupport", "hasDynamicTokensSupport", "hasTokensSupport", "hasWorkspaceFolderSupport"]
         );
     });
 });
