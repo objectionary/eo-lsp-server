@@ -33,8 +33,8 @@ const location = path.join(__dirname, "parser", "EoLexer.tokens");
  */
 export function buildTokenSetAndMap(locationPath: string) {
     if (!types || !mapper) {
-        types = new Set<string>();
-        mapper = new Map<number, string>();
+        const parsedTypes = new Set<string>();
+        const parsedMapper = new Map<number, string>();
         try {
             const text = fs.readFileSync(locationPath, { encoding: "utf-8" });
             text.split("\n").forEach(elem => {
@@ -42,11 +42,13 @@ export function buildTokenSetAndMap(locationPath: string) {
                     const pair = elem.split("=");
 
                     if (pair.length === 2) {
-                        types!.add(pair[0]);
-                        mapper!.set(Number(pair[1]), pair[0]);
+                        parsedTypes.add(pair[0]);
+                        parsedMapper.set(Number(pair[1]), pair[0]);
                     }
                 }
             });
+            types = parsedTypes;
+            mapper = parsedMapper;
         } catch (_e) {
             throw new Error("EoLexer.tokens file missing");
         }

@@ -61,4 +61,14 @@ describe("Parser module", () => {
         expect(online).toHaveLength(1);
         expect(online[0].msg).toBe("tab character in leading whitespace");
     });
+    test("retries token loading after a failed read without resetting the cache", () => {
+        resetTokenCache();
+        const missing = path.join(__dirname, "missing", "EoLexer.tokens");
+        expect(() => buildTokenSetAndMap(missing)).toThrow("EoLexer.tokens file missing");
+        expect(() => buildTokenSetAndMap(missing)).toThrow("EoLexer.tokens file missing");
+        expect(antlrTypeNumToString(1)).toBe("COMMENTARY");
+        expect(getTokenTypes()).toContain("TEXT");
+        expect(getTokenTypes().size).toBe(30);
+    });
+
 });
