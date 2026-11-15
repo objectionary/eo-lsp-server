@@ -22,5 +22,10 @@ export const defaultSettings: DefaultSettings = { limit: 1000 };
  */
 export function settings(config: unknown): DefaultSettings {
     const partial = config && typeof config === "object" ? config as Partial<DefaultSettings> : {};
-    return { ...defaultSettings, ...partial };
+    const limit = partial.limit;
+    return {
+        limit: typeof limit === "number" && Number.isFinite(limit) && limit >= 0
+            ? limit
+            : defaultSettings.limit
+    };
 }
