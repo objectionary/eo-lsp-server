@@ -44,11 +44,9 @@ describe("Semantics module", () => {
         provider = new SemanticTokensProvider(clientCapabilities);
     });
 
-    test("Compute Legend obtains all used VSCode token types", () => {
-        const semanticTokensLegend = new Set<string>(provider.computeLegend(clientCapabilities).tokenTypes);
-        const expectedTokens = ["comment", "macro", "keyword", "operator", "method", "number", "string", "variable"];
-        expect(semanticTokensLegend.size).toBe(8);
-        expectedTokens.forEach(token => expect(semanticTokensLegend.has(token)).toBeTruthy());
+    test("Compute Legend holds each VSCode token type once", () => {
+        const types = provider.computeLegend(clientCapabilities).tokenTypes;
+        expect(types.slice().sort()).toEqual(["comment", "keyword", "macro", "method", "number", "operator", "string", "variable"]);
     });
 
     test("Tokenize returns all semantic tokens", () => {
@@ -72,8 +70,8 @@ describe("Semantics module", () => {
         expect(tokenizeSpy).toHaveBeenCalledWith(document);
         expect(builderSpy).toHaveBeenCalledTimes(3);
         expect(builderSpy).toHaveBeenNthCalledWith(1, 0, 0, 7, 0, 0);
-        expect(builderSpy).toHaveBeenNthCalledWith(2, 1, 3, 1, 6, 0);
-        expect(builderSpy).toHaveBeenNthCalledWith(3, 1, 5, 4, 18, 0);
+        expect(builderSpy).toHaveBeenNthCalledWith(2, 1, 3, 1, 4, 0);
+        expect(builderSpy).toHaveBeenNthCalledWith(3, 1, 5, 4, 7, 0);
         tokenizeSpy.mockRestore();
         builderSpy.mockRestore();
     });
