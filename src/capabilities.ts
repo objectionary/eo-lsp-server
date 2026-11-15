@@ -7,10 +7,14 @@ export class ClientCapabilitiesAnalyzer {
     public readonly hasConfigurationSupport: boolean;
     public readonly hasWorkspaceFolderSupport: boolean;
     public readonly hasTokensSupport: boolean;
+    public readonly hasDynamicTokensSupport: boolean;
+    public readonly hasDynamicConfigurationSupport: boolean;
 
     constructor(capabilities: ClientCapabilities) {
         this.hasConfigurationSupport = !!capabilities.workspace?.configuration;
         this.hasWorkspaceFolderSupport = !!capabilities.workspace?.workspaceFolders;
         this.hasTokensSupport = !!capabilities.textDocument?.semanticTokens;
+        this.hasDynamicTokensSupport = !!capabilities.textDocument?.semanticTokens?.dynamicRegistration;
+        this.hasDynamicConfigurationSupport = !!capabilities.workspace?.didChangeConfiguration?.dynamicRegistration;
     }
 }

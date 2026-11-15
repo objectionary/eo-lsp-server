@@ -58,6 +58,13 @@ connection.onInitialize((params: InitializeParams): InitializeResult => {
             documentSymbolProvider: true
         }
     };
+    if (clientCapsAnalyzer.hasTokensSupport && !clientCapsAnalyzer.hasDynamicTokensSupport) {
+        result.capabilities.semanticTokensProvider = {
+            legend: provider.legend,
+            range: false,
+            full: { delta: true }
+        };
+    }
     if (clientCapsAnalyzer.hasWorkspaceFolderSupport) {
         result.capabilities.workspace = {
             workspaceFolders: {
@@ -97,7 +104,7 @@ connection.onDocumentSymbol((params: DocumentSymbolParams) => {
  * Configuration, Workspace Folder and Document Semantic Tokens
  */
 connection.onInitialized(() => {
-    if (clientCapsAnalyzer.hasConfigurationSupport) {
+    if (clientCapsAnalyzer.hasDynamicConfigurationSupport) {
         connection.client.register(DidChangeConfigurationNotification.type, void 0);
     }
     if (clientCapsAnalyzer.hasWorkspaceFolderSupport) {
@@ -105,7 +112,7 @@ connection.onInitialized(() => {
             connection.console.log("Workspace folder change event received");
         });
     }
-    if (clientCapsAnalyzer.hasTokensSupport) {
+    if (clientCapsAnalyzer.hasDynamicTokensSupport) {
         const options: SemanticTokensRegistrationOptions = {
             documentSelector: null,
             legend: provider.legend,
