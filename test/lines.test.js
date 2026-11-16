@@ -25,10 +25,9 @@ describe("lineErrors", () => {
   test("allows tabs inside a text block", () => {
     expect(lineErrors('[] > app\n  """\n\tnot an error\n  """\n')).toHaveLength(0);
   });
-  test("flags the odd indent of a would-be opener, so the block never opens", () => {
+  test("flags the odd indent of an opener while preserving the text block", () => {
     expect(lineErrors(' """\n\tx\n')).toEqual([
-      { line: 1, column: 0, msg: "unexpected odd indent" },
-      { line: 2, column: 0, msg: "tab character in leading whitespace" }
+      { line: 1, column: 0, msg: "unexpected odd indent" }
     ]);
   });
   test("does not open a text block when the opener is not bare, so a later tab is flagged", () => {
@@ -52,4 +51,17 @@ describe("lineTokens", () => {
       { line: 1, start: 0, length: 3, kind: "identifier", raw: "foo" }
     ]);
   });
+});
+
+describe("Malformed text block openers", () => {
+  test.each(["   ", "\t", "  \t "])("tracks text blocks after malformed indent %p", indent => {
+    const source = `${indent}"""\nfree form text\n\tliteral tab\n${indent}"""\nafter\n`;
+    expect(lineErrors(source)).toEqual([
+      { line: 1, column: 0, msg: indent.includes("\t") ? "tab character in leading whitespace" : "unexpected odd indent" }
+    ]);
+    expect(lineTokens(source)).toEqual([
+      { line: 5, start: 0, length: 5, kind: "identifier", raw: "after" }
+    ]);
+  });
+
 });
