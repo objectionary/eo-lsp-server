@@ -95,5 +95,10 @@ describe("Parser module", () => {
         const source = fs.readFileSync(path.join(__dirname, "../fixtures/fibonacci.eo"), "utf8");
         expect(getParserErrors(source + "\n")).toEqual([]);
     });
+    test("preserves diagnostics for CRLF text blocks", () => {
+        const source = '# test.\n[] > app\n  """\n   odd text\n\tliteral tab\n  """ > @\n';
+        expect(getParserErrors(source)).toEqual([]);
+        expect(getParserErrors(source.replace(/\n/gu, "\r\n"))).toEqual([]);
+    });
 
 });
