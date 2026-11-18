@@ -100,5 +100,11 @@ describe("Parser module", () => {
         expect(getParserErrors(source)).toEqual([]);
         expect(getParserErrors(source.replace(/\n/gu, "\r\n"))).toEqual([]);
     });
+    test("reports trailing whitespace through the diagnostic parser entry point", () => {
+        const errors = getParserErrors("# test.\n[] > app  \n  42 > @\n");
+        expect(errors.filter(error => error.line === 2)).toEqual([
+            expect.objectContaining({ line: 2, column: 9, msg: "trailing whitespace at end of line" })
+        ]);
+    });
 
 });
