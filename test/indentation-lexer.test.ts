@@ -24,6 +24,8 @@ describe("IndentationLexer", () => {
             const untabTokens = tokens.filter(t => t.type === IndentationLexer.UNTAB);
             expect(tabTokens.length).toBeGreaterThan(0);
             expect(untabTokens.length).toBeGreaterThan(0);
+            expect(new Set(tabTokens.map(t => t.text))).toEqual(new Set(["TAB"]));
+            expect(new Set(untabTokens.map(t => t.text))).toEqual(new Set(["UNTAB"]));
         });
 
     });
