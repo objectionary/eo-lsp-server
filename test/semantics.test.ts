@@ -109,14 +109,15 @@ describe("Semantics module", () => {
         builderSpy.mockRestore();
     });
 
-    test("we expect provideDeltas to renew the id, populateBuilder call,return buildEdits() call", () => {
+    test("we expect provideDeltas to forward previousResultId, populateBuilder call, and return buildEdits() call", () => {
         const document = TextDocument.create("test.eo", "eo", 0, "# test.\n[] > eo\n");
         const builder = provider.getTokenBuilder(document);
+        const previous = builder.id;
         const builderSpy = jest.spyOn(builder, "previousResult");
         const populateBuilderSpy = jest.spyOn(provider, "populateBuilder");
         const buildCallSpy = jest.spyOn(builder, "buildEdits");
-        provider.provideDeltas(document);
-        expect(builderSpy).toHaveBeenCalledWith(expect.any(String));
+        provider.provideDeltas(document, previous);
+        expect(builderSpy).toHaveBeenCalledWith(previous);
         expect(populateBuilderSpy).toHaveBeenCalledWith(builder, document);
         expect(buildCallSpy).toHaveBeenCalled();
         buildCallSpy.mockRestore();
