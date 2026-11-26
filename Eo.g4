@@ -7,7 +7,7 @@ tokens { TAB, UNTAB }
 
 // Entry point
 program
-    : metas? object EOL? EOF
+    : (comment+ EOL)? metas? object (EOL? object)* EOL? EOF
     ;
 
 // Double EOL

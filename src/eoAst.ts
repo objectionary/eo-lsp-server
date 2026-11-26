@@ -55,12 +55,7 @@ export class EoAst {
      * @returns EoAstNode array.
      * */
     program(ctx: ProgramContext): EoAstNode[] {
-        const nodes: EoAstNode[] = [];
-        if (ctx.object()) {
-            const object = this.object(ctx.object());
-            nodes.push(object);
-        }
-        return nodes;
+        return ctx.object_list().map(object => this.object(object));
     }
 
     /**

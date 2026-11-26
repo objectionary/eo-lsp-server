@@ -18,6 +18,12 @@ describe("Parser module", () => {
         expect(types.has("UNTAB")).toBeFalsy();
         expect(types.has("Q")).toBeFalsy();
     });
+    test.each(["\n", "\r\n"])("parses a file comment block before metas using %p", eol => {
+        const lines = ["# Program.", "# Continued.", "", "+package foo", "+version 1", "", "[] > app", ""];
+        expect(getParserErrors(lines.join(eol))).toEqual([]);
+        expect(getParserErrors(["# Header.", "", "[] > app", ""].join(eol))).toEqual([]);
+        expect(getParserErrors(["# Header.", "+package foo", "", "[] > app", ""].join(eol))).not.toEqual([]);
+    });
     test("parses valid code", () => {
         const errors = getParserErrors(
             '# test.\n[] > test\n  42 > @\n  xyz > t\n    "hello, world"\n  bar > foo\n'
