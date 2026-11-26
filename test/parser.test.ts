@@ -45,6 +45,14 @@ describe("Parser module", () => {
         const location = path.join(__dirname, "none-existing-path", "pathTo.tokens");
         expect(() => buildTokenSetAndMap(location)).toThrow();
     });
+    test.each(["^", "^ left", "left ^ right", "right ^", "^receiver value"])(
+        "parses bracketed receiver in [%s]", parameters => {
+            expect(getParserErrors(`[${parameters}] > app\n  42 > @\n`)).toEqual([]);
+        }
+    );
+    test("rejects a numeric receiver handle", () => {
+        expect(getParserErrors("[^1] > app\n")).not.toEqual([]);
+    });
     test("reports a tab indentation error from the native reader", () => {
         const errors = getParserErrors("# app.\n[] > app\n\t42 > @\n");
         expect(errors).toContainEqual(
