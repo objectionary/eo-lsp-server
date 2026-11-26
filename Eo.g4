@@ -70,6 +70,22 @@ just: beginner
 // Atom - abstract object with mandatory name
 // Can't contain inner objects
 atom: voids suffix SPACE QUESTION testsOrEol
+    | LSQ RSQ suffix SPACE SLASH atomType atomTail
+    ;
+
+// An atom can declare its voids before its test attributes.
+atomTail
+    : testsOrEol
+    | EOL TAB annotatedVoid+ (tbound | EOL? tsubMaster)* UNTAB
+    ;
+
+annotatedVoid
+    : commentOptional QUESTION arrow (NAME | RHO | PHI) (SPACE SLASH (atomType QUESTION? | LBRACE atomType (SPACE atomType)* RBRACE))? EOL
+    ;
+
+atomType
+    : TYPE_VAR
+    | (NAME (DOT NAME)* | ROOT (DOT NAME)+) (LB atomType (COMMA atomType)* RB)?
     ;
 
 // Formation - abstract object with mandatory name
@@ -100,7 +116,13 @@ innersOrEol
 // No empty lines before "slave"
 // May be one empty line before "master"
 inners
-    : EOL TAB (bound | subMaster) (bound | EOL? subMaster)* UNTAB
+    : EOL TAB verticalVoid+ ((bound | subMaster) (bound | EOL? subMaster)*)? UNTAB
+    | EOL TAB (bound | subMaster) (bound | EOL? subMaster)* UNTAB
+    ;
+
+// A formation may name a void or its receiver before its bound attributes.
+verticalVoid
+    : commentOptional QUESTION arrow (NAME | RHO) EOL
     ;
 
 // Tests
@@ -590,6 +612,12 @@ NAME: [a-z] ~[ \r\n\t,.|':;!?\][}{)(🌵]*
 fragment TEXT_MARK
     : '"""'
     ;
+
+SLASH: '/';
+LBRACE: '{';
+RBRACE: '}';
+COMMA: ',';
+TYPE_VAR: [A-F];
 
 TEXT: TEXT_MARK ('\n' | '\r\n') (~[\\] | ESCAPE_SEQUENCE)*? TEXT_MARK
     ;
