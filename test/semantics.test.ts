@@ -67,6 +67,27 @@ describe("Semantics module", () => {
         expect(types.slice().sort()).toEqual(["comment", "keyword", "macro", "method", "number", "operator", "string", "variable"]);
     });
 
+    test.each(["\n", "\r\n"])("splits a text token on %p without highlighting line breaks", newline => {
+        const source = ['  """', "😀", "", '  """ > after', ""].join(newline);
+        const document = TextDocument.create("block.eo", "eo", 0, source);
+        const tokens = provider.tokenize(document);
+        const string = provider.legend.tokenTypes.indexOf("string");
+        expect(tokens.filter(token => token.tokenType === string).map(token => [
+            token.line, token.start, token.length
+        ])).toEqual([[0, 2, 3], [1, 0, 2], [3, 0, 5]]);
+        expect(tokens).toContainEqual(expect.objectContaining({ line: 3, start: 8, length: 5 }));
+    });
+
+    test("splits byte continuations and measures following columns in UTF-16", () => {
+        const source = 'AA-BB-\n  CC-DD\n"😀" > tail\n';
+        const tokens = provider.tokenize(TextDocument.create("bytes.eo", "eo", 0, source));
+        const number = provider.legend.tokenTypes.indexOf("number");
+        expect(tokens.filter(token => token.tokenType === number).map(token => [
+            token.line, token.start, token.length
+        ])).toEqual([[0, 0, 6], [1, 0, 7]]);
+        expect(tokens).toContainEqual(expect.objectContaining({ line: 2, start: 7, length: 4 }));
+    });
+
     test("Tokenize returns all semantic tokens", () => {
         const textDocument = TextDocument.create("foo.eo", "eo", 0, "# test.\n[] > test\n");
         const actualTokens = provider.tokenize(textDocument);
