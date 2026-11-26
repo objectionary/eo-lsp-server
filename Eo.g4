@@ -414,7 +414,7 @@ reversed
 
 // Auto object name
 aname
-    : ARROW ARROW CONST?
+    : ARROW ARROW (SPACE NAME)? CONST?
     ;
 
 // Formation name
@@ -425,7 +425,7 @@ fname
 
 // Either object name or test name
 onameOrTname
-    : oname | tname
+    : oname | tname | SPACE aname
     ;
 
 // Object name
