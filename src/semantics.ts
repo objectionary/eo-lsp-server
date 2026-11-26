@@ -114,19 +114,31 @@ export class SemanticTokensProvider {
      */
     tokenize(document: TextDocument): VSCodeToken[] {
         const tokens: VSCodeToken[] = [];
-        const antlrTokens = tokenize(document.getText());
+        const source = document.getText();
+        const antlrTokens = tokenize(source);
+        // ANTLR indexes code points; LSP positions are UTF-16 code units.
+        const offsets = [0];
+        for (const character of source) {
+            offsets.push(offsets[offsets.length - 1] + character.length);
+        }
         antlrTokens.forEach(tk => {
             const vscodeTokenType = this.tokenTypeMap.get(antlrTypeNumToString(tk.type));
             const legend = vscodeTokenType ? this.legend.tokenTypes.indexOf(vscodeTokenType) : -1;
             if (legend === -1) {
                 return;
             }
-            tokens.push({
-                line: tk.line - 1,
-                start: tk.column,
-                length: tk.stop - tk.start + 1,
-                tokenType: legend,
-                tokenModifier: 0
+            const start = document.positionAt(offsets[tk.start]);
+            const text = source.slice(offsets[tk.start], offsets[tk.stop + 1]);
+            text.split(/\r\n|[\r\n]/u).forEach((part, index) => {
+                if (part.length > 0) {
+                    tokens.push({
+                        line: start.line + index,
+                        start: index === 0 ? start.character : 0,
+                        length: part.length,
+                        tokenType: legend,
+                        tokenModifier: 0
+                    });
+                }
             });
         });
         return tokens;
