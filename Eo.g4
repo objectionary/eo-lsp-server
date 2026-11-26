@@ -116,6 +116,7 @@ voids
 // Void attribute
 void: NAME
     | PHI
+    | RHO NAME?
     ;
 
 // Application
