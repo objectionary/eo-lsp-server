@@ -173,6 +173,7 @@ happlicationHeadExtended
 // Simple statements that can be used as head of application
 applicable
     : STAR
+    | TERM
     | NAME
     | PHI
     ;
@@ -396,6 +397,8 @@ beginner
     : STAR
     | ROOT
     | XI
+    | TERM
+    | IDENTITY
     | data
     ;
 
@@ -590,6 +593,9 @@ NAME: [a-z] ~[ \r\n\t,.|':;!?\][}{)(🌵]*
 fragment TEXT_MARK
     : '"""'
     ;
+
+TERM: 'T';
+IDENTITY: 'I';
 
 TEXT: TEXT_MARK ('\n' | '\r\n') (~[\\] | ESCAPE_SEQUENCE)*? TEXT_MARK
     ;
