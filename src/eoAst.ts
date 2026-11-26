@@ -275,7 +275,7 @@ export class EoAst {
      */
     private static bindingName(ctx: OnameOrTnameContext | undefined): string {
         const name = ctx?.oname()?.suffix() || ctx?.tname();
-        return (name?.NAME() || name?.PHI())?.getText() || "anonymous";
+        return (name?.NAME() || name?.PHI() || ctx?.aname()?.NAME())?.getText() || "anonymous";
     }
 
     /**
