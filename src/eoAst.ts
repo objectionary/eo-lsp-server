@@ -252,7 +252,7 @@ export class EoAst {
         const application = ctx.application();
         const name = ctx.onameOrTname() || application?.onameOrTname()
             || application?.vapplication()?.onameOrTname();
-        return EoAst.bindingName(name);
+        return ctx.compactName()?.NAME()?.getText() || EoAst.bindingName(name);
     }
 
     /**

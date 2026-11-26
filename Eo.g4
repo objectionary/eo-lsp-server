@@ -37,11 +37,13 @@ object
 // Objects that may be used inside abstract object
 // Ends on the next line
 bound
-    : commentOptional (application | ((method | just) onameOrTname) EOL)
+    : commentOptional (application | ((method | just) onameOrTname) EOL
+        | (happlicationExtended | method | just) compactName EOL)
     ;
 
 tbound
-    : commentOptional (tapplication | ((method | just) tname) EOL)
+    : commentOptional (tapplication | ((method | just) tname) EOL
+        | (happlicationExtended | method | just) compactName EOL | compactTest)
     ;
 
 tsubMaster
@@ -100,7 +102,7 @@ innersOrEol
 // No empty lines before "slave"
 // May be one empty line before "master"
 inners
-    : EOL TAB (bound | subMaster) (bound | EOL? subMaster)* UNTAB
+    : EOL TAB (bound | compactTest | subMaster) (bound | compactTest | EOL? subMaster)* UNTAB
     ;
 
 // Tests
@@ -428,6 +430,16 @@ onameOrTname
     : oname | tname
     ;
 
+// Compact inline-phi test suffix on an expression.
+compactName
+    : SPACE COMPACT_TEST SPACE NAME
+    ;
+
+// Parameterless test attribute written without the brackets.
+compactTest
+    : COMPACT_TEST SPACE NAME innersOrEol
+    ;
+
 // Object name
 oname
     : suffix CONST?
@@ -438,7 +450,7 @@ tname
     ;
 
 tarrow
-    : SPACE PLUS ARROW SPACE
+    : SPACE (PLUS | MINUS) ARROW SPACE
     ;
 
 // Suffix
@@ -590,6 +602,8 @@ NAME: [a-z] ~[ \r\n\t,.|':;!?\][}{)(🌵]*
 fragment TEXT_MARK
     : '"""'
     ;
+
+COMPACT_TEST: '++>' | '-->';
 
 TEXT: TEXT_MARK ('\n' | '\r\n') (~[\\] | ESCAPE_SEQUENCE)*? TEXT_MARK
     ;

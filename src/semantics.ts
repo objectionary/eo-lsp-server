@@ -68,6 +68,7 @@ export class SemanticTokensProvider {
         this.tokenTypeMap.set("CONST", "keyword");
         this.tokenTypeMap.set("COLON", "operator");
         this.tokenTypeMap.set("ARROW", "method");
+        this.tokenTypeMap.set("COMPACT_TEST", "method");
         this.tokenTypeMap.set("XI", "method");
         this.tokenTypeMap.set("PLUS", "operator");
         this.tokenTypeMap.set("MINUS", "operator");
