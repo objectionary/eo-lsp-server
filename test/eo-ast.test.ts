@@ -37,7 +37,7 @@ describe("EoAst", () => {
         test("we expect hierarchy to return 6 nested children", () => {
             const programCtx = program();
             const eoAst = new EoAst();
-            const context = programCtx.object();
+            const context = programCtx.object(0);
             if (!context) {
                 throw new Error("No ObjectContext found in Fibonacci test file");
             }
@@ -65,7 +65,7 @@ describe("EoAst", () => {
         test("we expect object() to return an empty array", () => {
             const eoAst = new EoAst();
             const context = {
-                object: jest.fn().mockReturnValue(null)
+                object_list: jest.fn().mockReturnValue([])
             };
             const nodes = eoAst.program(context as any);
             expect(nodes).toEqual([]);
