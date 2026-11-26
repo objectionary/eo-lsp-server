@@ -387,7 +387,7 @@ vmethodHeadVapplication
 
 // Tail of method
 methodTail
-    : DOT finisher
+    : dispatch finisher
     ;
 
 // Can be at the beginning of the statement
@@ -409,7 +409,12 @@ finisher
 // Reversed notation
 // Only finisher can be used in reversed notation
 reversed
-    : finisher DOT
+    : finisher dispatch
+    ;
+
+// A question mark directly before a dispatch makes it fragile.
+dispatch
+    : QUESTION? DOT
     ;
 
 // Auto object name
