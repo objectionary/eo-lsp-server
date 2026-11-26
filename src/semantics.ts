@@ -64,6 +64,8 @@ export class SemanticTokensProvider {
         this.tokenTypeMap.set("COMMENTARY", "comment");
         this.tokenTypeMap.set("META", "macro");
         this.tokenTypeMap.set("ROOT", "keyword");
+        this.tokenTypeMap.set("TERM", "keyword");
+        this.tokenTypeMap.set("IDENTITY", "keyword");
         this.tokenTypeMap.set("STAR", "operator");
         this.tokenTypeMap.set("CONST", "keyword");
         this.tokenTypeMap.set("COLON", "operator");
