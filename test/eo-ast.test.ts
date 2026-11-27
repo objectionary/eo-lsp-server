@@ -3,6 +3,7 @@
 
 import { EoAst, EoAstNode } from "../src/eoAst";
 import { Processor } from "../src/processor";
+import { Range } from "vscode-languageserver";
 import path from "path";
 import * as fs from "fs";
 
@@ -43,6 +44,17 @@ describe("EoAst", () => {
             }
             const nested = eoAst.hierarchy(context);
             expect(nested.length).toBe(6);
+        });
+
+        test("we expect symbol ranges to end at the last source token", () => {
+            const text = "# test.\n[] > test\n  42 > a\n  [] > b\n    43 > c\n  foo > d\n    \"\"\"\n    hi\n    \"\"\"\n";
+            const [top] = new EoAst().program(new Processor(text).parser.program());
+            expect(top.range).toEqual(Range.create(0, 0, 8, 7));
+            expect(top.children.map(child => child.range)).toEqual([
+                Range.create(2, 2, 2, 8),
+                Range.create(3, 2, 4, 10),
+                Range.create(5, 2, 8, 7)
+            ]);
         });
     });
 

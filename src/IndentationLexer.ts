@@ -65,6 +65,7 @@ export class IndentationLexer extends Lexer {
      */
     private emitIndentationToken(type: number) {
         const tkn = new CommonToken([this.wrapped, this._input], type, Token.DEFAULT_CHANNEL, 0, 0);
+        tkn.text = EoParser.symbolicNames[type] as string;
         tkn.line = this.wrapped.line;
         tkn.column = 0;
         this.tokens.push(tkn);

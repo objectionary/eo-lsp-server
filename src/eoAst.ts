@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import { Range } from "vscode-languageserver";
-import {
+import EoParser, {
     BoundContext,
     MasterBodyContext,
     ObjectContext,
@@ -10,7 +10,7 @@ import {
     ProgramContext,
     SubMasterContext
 } from "./parser/EoParser";
-import { ParserRuleContext, ParseTree } from "antlr4";
+import { ParserRuleContext, ParseTree, TerminalNode, Token } from "antlr4";
 
 /**
  * Describes an EO node in a common way to work with
@@ -285,12 +285,37 @@ export class EoAst {
      */
     private static createRange(ctx: MasterBodyContext | BoundContext | ObjectContext): Range {
         const start = ctx.start;
-        const stop = ctx.stop || ctx.start;
+        const stop = EoAst.lastToken(ctx) || ctx.start;
+        const lines = (stop.text || "").split("\n");
+        const last = lines.length - 1;
         return Range.create(
             start.line - 1,
             start.column,
-            stop.line - 1,
-            stop.column + (stop.text?.length || 0)
+            stop.line - 1 + last,
+            (last === 0 ? stop.column : 0) + lines[last].length
         );
+    }
+
+    /**
+     * Finds the last token of a tree that is not a line break or an indentation token.
+     * @param tree Parse tree
+     * @returns The last source token, or undefined when the tree has none
+     */
+    private static lastToken(tree: ParseTree): Token | undefined {
+        if (tree instanceof TerminalNode) {
+            const type = tree.symbol.type;
+            const layout = type === EoParser.EOL || type === EoParser.TAB
+                || type === EoParser.UNTAB || type === Token.EOF;
+            return layout ? undefined : tree.symbol;
+        }
+        if (tree instanceof ParserRuleContext) {
+            for (let i = tree.getChildCount() - 1; i >= 0; i--) {
+                const token = EoAst.lastToken(tree.getChild(i));
+                if (token) {
+                    return token;
+                }
+            }
+        }
+        return undefined;
     }
 }
