@@ -255,7 +255,7 @@ connection.languages.semanticTokens.onDelta(params => {
     if (!document) {
         return { data: [] };
     }
-    return provider.provideDeltas(document);
+    return provider.provideDeltas(document, params.previousResultId);
 });
 
 /**

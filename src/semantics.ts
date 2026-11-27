@@ -189,14 +189,18 @@ export class SemanticTokensProvider {
     }
 
     /**
-     * Returns a SemanticTokensBuilder for a modified text document
+     * Returns semantic token edits relative to the client's previous result,
+     * or the full token set when the previous result id is unknown or stale.
      * @param document - TextDocument to be semantically highlighted
-     * @returns - SemanticTokensBuilder containing the semantic
-     *            token of the given document
+     * @param previousResultId - Result id reported by the client in the delta request
+     * @returns Semantic token edits or a full semantic tokens result
      */
-    provideDeltas(document: TextDocument) {
+    provideDeltas(document: TextDocument, previousResultId: string) {
+        if (!this.tokenBuilders.has(document.uri)) {
+            return this.provideSemanticTokens(document);
+        }
         const builder = this.getTokenBuilder(document);
-        builder.previousResult(builder.id);
+        builder.previousResult(previousResultId);
         this.populateBuilder(builder, document);
         return builder.buildEdits();
     }
